@@ -122,6 +122,19 @@ server.post('/products',  (req, res)=> {
      }
   });
 
+server.delete('/products/:id', (req, res)=> {
+  const index= products.findIndex(p=>p.id== req.params.id);
+  if(index!== -1)
+  {
+    products.splice(index, 1);
+      res.status(200).send({message : "deleted successfuly"});
+       }
+       else{
+         res.status(404).json({message: "product not found"});
+      }
+});
+  
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
