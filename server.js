@@ -21,17 +21,29 @@ else{
     res.status(404).json({ message: "Category not found" });
 }
 });
+ server.post('/categories', (req, res) => { //רק למנהל
+          
+              const newCategory = {
+            id: categories.length + 1,// אחר כך צריך לשנות את זה לID אוטומתי
+            name: req.body.name
+          };
+          categories.push(newCategory);
+            res.status(201).send(newCategory);
+ });
 
-server.post('/categories', (req, res) => { //רק למנהל
-  
-      const newCategory = {
-    id: categories.length + 1,// אחר כך צריך לשנות את זה לID אוטומתי
-    name: req.body.name
-  };
-  categories.push(newCategory);
-    res.status(201).send(newCategory);
+   server.put('/categories/:id',  (req, res) => { 
+            const category =categories.find(c=>c.id == req.params.id);
+            if(category)
+            {
+                category.name=req.body.name;
+                res.json(category);
+              }
+              else{
+                res.status(404).json({message: "category not found"});
+             }
 
-});
+  });
+
 
 // עד לפה
 server.listen(5000, () => {
