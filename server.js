@@ -45,6 +45,33 @@ else{
   });
 
 
+   server.put('/categories/:id',  (req, res) => { 
+            const category =categories.find(c=>c.id == req.params.id);
+            if(category)
+            {
+                category.name=req.body.name;
+                res.json(category);
+              }
+              else{
+                res.status(404).json({message: "category not found"});
+             }
+
+  });
+
+     server.delete('/categories/:id',  (req, res) => { 
+            const index =categories.findIndex(c=>c.id == req.params.id);
+            if(index !== -1)
+            {
+              categories.splice(index, 1);
+                res.status(200).send({message : "deleted successfuly"});
+              }
+              else{
+                res.status(404).json({message: "category not found"});
+             }
+
+  });
+
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
