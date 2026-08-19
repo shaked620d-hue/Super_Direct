@@ -80,7 +80,6 @@ else{
       res.status(404).json({message :"product not found"});
      }
   });
-
   server.get('/products', (req, res)=> {
     if(req.query.category)
     {
@@ -91,6 +90,20 @@ else{
       res.json(products);
     }
   });
+server.post('/products',  (req, res)=> {
+
+  const newProduct={
+      id: products.length +1,// משתנה אחכ
+    name: req.body.name, 
+    description: req.body.description,
+    price: req.body.price,
+    categoryId: req.body.categoryId,
+    stock: req.body.stock,
+    image: req.body.image
+  }
+  products.push(newProduct);
+  res.status(201).json(newProduct);
+});
 
 // עד לפה
 server.listen(5000, () => {
