@@ -105,6 +105,23 @@ server.post('/products',  (req, res)=> {
   res.status(201).json(newProduct);
 });
 
+  server.put('/products/:id', (req, res)=> {
+     const product= products.find(p=>p.id == req.params.id);
+     if(product)
+     {
+  product.name= req.body.name; 
+    product.description= req.body.description;
+    product.price= req.body.price;
+    product.categoryId= req.body.categoryId;
+   product.stock= req.body.stock;
+    product.image= req.body.image;
+      res.status(200).json(product);
+     }
+     else{
+      res.status(404).json({message :"product not found"});
+     }
+  });
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
