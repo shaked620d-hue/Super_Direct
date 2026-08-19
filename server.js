@@ -2,6 +2,8 @@ import express from 'express'
 import { categories } from './tmp.js';
 
 const server = express();
+server.use(express.json());   
+
 server.get('/', (req, res) => {
   res.send('Server is working!');
 });
@@ -9,9 +11,7 @@ server.get('/', (req, res) => {
 //את כל אלו אחר כך משנים ומעבירים 
 
 server.get('/categories', (req, res) => {
-  res.json(categories);
-});
-
+  res.json(categories);});
 server.get('/categories/:id', (req, res) => {
   const category = categories.find(c => c.id == req.params.id);
    if(category){
@@ -22,6 +22,18 @@ else{
 }
 });
 
+server.post('/categories', (req, res) => { //רק למנהל
+  
+      const newCategory = {
+    id: categories.length + 1,// אחר כך צריך לשנות את זה לID אוטומתי
+    name: req.body.name
+  };
+  categories.push(newCategory);
+    res.status(201).send(newCategory);
+
+});
+
+// עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
 })
