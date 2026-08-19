@@ -70,9 +70,6 @@ else{
   });
 
 
-  server.get('/products', (req, res)=> {
-      res.json(products )
-  });
     server.get('/products/:id', (req, res)=> {
      const product= products.find(p=>p.id == req.params.id);
      if(product)
@@ -84,6 +81,16 @@ else{
      }
   });
 
+  server.get('/products', (req, res)=> {
+    if(req.query.category)
+    {
+      const productsWithSameCategory= products.filter(p=>p.categoryId == req.query.category);
+      res.status(200).json(productsWithSameCategory);
+    }
+    else{
+      res.json(products);
+    }
+  });
 
 // עד לפה
 server.listen(5000, () => {
