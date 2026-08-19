@@ -12,6 +12,16 @@ server.get('/categories', (req, res) => {
   res.json(categories);
 });
 
+server.get('/categories/:id', (req, res) => {
+  const category = categories.find(c => c.id == req.params.id);
+   if(category){
+    res.json(category);
+   }
+else{
+    res.status(404).json({ message: "Category not found" });
+}
+});
+
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
 })
