@@ -1,5 +1,6 @@
 import express from 'express'
-import { categories } from './tmp.js';
+import { categories , products } from './tmp.js';
+
 
 const server = express();
 server.use(express.json());   
@@ -11,11 +12,12 @@ server.get('/', (req, res) => {
 //את כל אלו אחר כך משנים ומעבירים 
 
 server.get('/categories', (req, res) => {
-  res.json(categories);});
+   res.json(categories);
+  });
 server.get('/categories/:id', (req, res) => {
   const category = categories.find(c => c.id == req.params.id);
    if(category){
-    res.json(category);
+    res.status(200).json(category);
    }
 else{
     res.status(404).json({ message: "Category not found" });
@@ -30,7 +32,6 @@ else{
           categories.push(newCategory);
             res.status(201).send(newCategory);
  });
-
    server.put('/categories/:id',  (req, res) => { 
             const category =categories.find(c=>c.id == req.params.id);
             if(category)
@@ -43,8 +44,6 @@ else{
              }
 
   });
-
-
    server.put('/categories/:id',  (req, res) => { 
             const category =categories.find(c=>c.id == req.params.id);
             if(category)
@@ -57,7 +56,6 @@ else{
              }
 
   });
-
      server.delete('/categories/:id',  (req, res) => { 
             const index =categories.findIndex(c=>c.id == req.params.id);
             if(index !== -1)
@@ -69,6 +67,21 @@ else{
                 res.status(404).json({message: "category not found"});
              }
 
+  });
+
+
+  server.get('/products', (req, res)=> {
+      res.json(products )
+  });
+    server.get('/products/:id', (req, res)=> {
+     const product= products.find(p=>p.id == req.params.id);
+     if(product)
+     {
+      res.status(200).json(product);
+     }
+     else{
+      res.status(404).json({message :"product not found"});
+     }
   });
 
 
