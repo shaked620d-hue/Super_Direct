@@ -58,3 +58,19 @@ export let customers = [
 
   }
 ];
+
+export let orders = [
+ {
+  id: 1,
+  customerId: 1,
+  orderDate: "2026-08-20",
+  expectedDelivery: "2026-08-22",
+  items: [
+    { productId: 1, name: "עגבניות שרשרת", price: 8.90, qty: 2 },
+    { productId: 3, name: "חלב טרי 3%", price: 6.50, qty: 1 }
+  ],
+  deliveryFee: 12,
+  totalPrice: 36.30,
+  status: "התקבלה"
+}
+];

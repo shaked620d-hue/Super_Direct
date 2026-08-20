@@ -1,5 +1,5 @@
 import express from 'express'
-import { categories , products , customers} from './tmp.js';
+import { categories , products , customers, orders} from './tmp.js';
 
 
 const server = express();
@@ -185,6 +185,18 @@ server.post('/auth/login', (req, res) => {
 } else {
   res.status(401).json({ message: "Wrong password" });
 }
+});
+
+server.get('/orders', (req, res) => {
+ res.json(orders);
+});
+server.get('/orders/:id', (req, res) => {
+  const order = orders.find(o => o.id == req.params.id);
+  if (order) {
+    res.status(200).json(order);
+  } else {
+    res.status(404).json({ message: "order not found" });
+  }
 });
 
 // עד לפה
