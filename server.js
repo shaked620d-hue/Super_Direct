@@ -157,6 +157,22 @@ server.put('/customers/:id', (req, res)=>{
   }
   });
 
+server.post('/auth/register', (req, res) => {
+  const newCustomer = {
+    id: customers.length + 1,// בהמשך זה אוטומתי
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    address: req.body.address,
+    password: req.body.password,
+    paymentMethod: req.body.paymentMethod,
+    role: "customer"
+  };
+  customers.push(newCustomer);
+  res.status(201).json(newCustomer);
+
+});
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
