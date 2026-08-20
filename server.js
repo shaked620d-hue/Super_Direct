@@ -190,6 +190,11 @@ server.post('/auth/login', (req, res) => {
 server.get('/orders', (req, res) => {
  res.json(orders);
 });
+
+server.get('/orders/my', (req, res) => {
+  // TODO: להשלים אחרי שיהיה JWT - כרגע אין דרך לדעת מי המשתמש המחובר
+});
+
 server.get('/orders/:id', (req, res) => {
   const order = orders.find(o => o.id == req.params.id);
   if (order) {
@@ -209,6 +214,7 @@ server.put('/orders/:id/status', (req, res) => {
   }
 });
 
+
 server.delete('/orders/:id', (req, res) => {
   const index = orders.findIndex(o => o.id == req.params.id);
   if (index !== -1) {
@@ -218,6 +224,63 @@ server.delete('/orders/:id', (req, res) => {
     res.status(404).json({ message: "order not found" });
   }
 });
+
+// פונקציית עזר - מחשבת מתי ההזמנה תגיע
+function calculateExpectedDelivery() {
+  const now = new Date();
+  const cutoffHour = 14;
+
+  const delivery = new Date();
+
+  if (now.getHours() < cutoffHour) {
+    delivery.setHours(18, 0, 0, 0);
+  } else {
+    delivery.setDate(delivery.getDate() + 1);
+    delivery.setHours(18, 0, 0, 0);
+  }
+
+  return delivery;
+}
+
+// יצירת הזמנה חדשה
+server.post('/orders', (req, res) => {
+  const orderItems = req.body.items.map(item => {
+    const product = products.find(p => p.id == item.productId);
+    product.stock = product.stock - item.qty;
+    return {
+      productId: item.productId,
+      name: product.name,
+      price: product.price,
+      qty: item.qty
+    };
+  });
+
+  const totalPrice = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const deliveryFee = totalPrice >= 250 ? 0 : 15;
+
+  const newOrder = {
+    id: orders.length + 1,
+    customerId: req.body.customerId,
+    orderDate: new Date(),
+    expectedDelivery: calculateExpectedDelivery(),
+    items: orderItems,
+    deliveryFee: deliveryFee,
+    totalPrice: totalPrice + deliveryFee,
+    status: "התקבלה"
+  };
+
+  orders.push(newOrder);
+  res.status(201).json(newOrder);
+});
+
+server.get('/auth/me', (req, res) => {
+  // TODO: להשלים אחרי שיהיה JWT - כרגע אין דרך לדעת מי המשתמש המחובר
+});
+
+
+
+
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
