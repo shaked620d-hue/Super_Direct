@@ -199,6 +199,16 @@ server.get('/orders/:id', (req, res) => {
   }
 });
 
+server.put('/orders/:id/status', (req, res) => {
+  const order = orders.find(o => o.id == req.params.id);
+  if (order) {
+    order.status = req.body.status;
+    res.json(order);
+  } else {
+    res.status(404).json({ message: "order not found" });
+  }
+});
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
