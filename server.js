@@ -209,6 +209,15 @@ server.put('/orders/:id/status', (req, res) => {
   }
 });
 
+server.delete('/orders/:id', (req, res) => {
+  const index = orders.findIndex(o => o.id == req.params.id);
+  if (index !== -1) {
+    orders.splice(index, 1);
+    res.status(200).json({ message: "order cancelled successfully" });
+  } else {
+    res.status(404).json({ message: "order not found" });
+  }
+});
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
