@@ -44,18 +44,7 @@ else{
              }
 
   });
-   server.put('/categories/:id',  (req, res) => { 
-            const category =categories.find(c=>c.id == req.params.id);
-            if(category)
-            {
-                category.name=req.body.name;
-                res.json(category);
-              }
-              else{
-                res.status(404).json({message: "category not found"});
-             }
-
-  });
+ 
      server.delete('/categories/:id',  (req, res) => { 
             const index =categories.findIndex(c=>c.id == req.params.id);
             if(index !== -1)
@@ -109,13 +98,13 @@ server.post('/products',  (req, res)=> {
      const product= products.find(p=>p.id == req.params.id);
      if(product)
      {
-  product.name= req.body.name; 
-    product.description= req.body.description;
-    product.price= req.body.price;
-    product.categoryId= req.body.categoryId;
-   product.stock= req.body.stock;
-    product.image= req.body.image;
-      res.status(200).json(product);
+  if (req.body.name) product.name = req.body.name;
+    if (req.body.description) product.description = req.body.description;
+    if (req.body.price) product.price = req.body.price;
+    if (req.body.categoryId) product.categoryId = req.body.categoryId;
+    if (req.body.stock !== undefined) product.stock = req.body.stock;
+    if (req.body.image) product.image = req.body.image;
+    res.status(200).json(product);
      }
      else{
       res.status(404).json({message :"product not found"});
@@ -155,12 +144,12 @@ server.put('/customers/:id', (req, res)=>{
    const customer = customers.find(c=>c.id == req.params.id);
     if(customer)
   {
-   customer.firstName= req.body.firstName;
-    customer.lastName=req.body.lastName;
-    customer.address= req.body.address;
-    customer.password= req.body.password;
-    customer.paymentMethod=req.body.paymentMethod;
-     customer.email= req.body.email;
+   if (req.body.firstName) customer.firstName = req.body.firstName;
+      if (req.body.lastName) customer.lastName = req.body.lastName;
+      if (req.body.email) customer.email = req.body.email;
+      if (req.body.address) customer.address = req.body.address;
+      if (req.body.password) customer.password = req.body.password;
+      if (req.body.paymentMethod) customer.paymentMethod = req.body.paymentMethod;;
     res.status(200).json(customer);
   }
   else{
