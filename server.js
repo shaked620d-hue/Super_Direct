@@ -139,6 +139,7 @@ server.get('/customers',  (req, res)=>{
   res.json(customers);
 });
 //  כנל פה
+// לא נראה לי שצריך את זה
 server.get('/customers/:id', (req, res)=>{
   const customer = customers.find(c=>c.id == req.params.id);
   if(customer)
@@ -149,6 +150,23 @@ server.get('/customers/:id', (req, res)=>{
     res.status(404).json({message: "customer not found"});
   }
 });
+// גם פה
+server.put('/customers/:id', (req, res)=>{
+   const customer = customers.find(c=>c.id == req.params.id);
+    if(customer)
+  {
+   customer.firstName= req.body.firstName;
+    customer.lastName=req.body.lastName;
+    customer.address= req.body.address;
+    customer.password= req.body.password;
+    customer.paymentMethod=req.body.paymentMethod;
+     customer.email= req.body.email;
+    res.status(200).json(customer);
+  }
+  else{
+    res.status(404).json({message: "customer not found"});
+  }
+  });
 
 // עד לפה
 server.listen(5000, () => {
