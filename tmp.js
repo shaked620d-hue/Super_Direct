@@ -33,3 +33,28 @@ export let products = [
     image: "milk.jpg"
   }
 ];
+
+
+export let customers = [
+  {
+    id: 1,
+    firstName: "יעל",
+    lastName: "כהן",
+    address: "הרצל 12, גבעת שמואל",
+    password: "123456",
+    paymentMethod: "4291",
+    role: "customer", 
+    email: "abc@gmail.com"
+  }, 
+    {
+    id: 2,
+    firstName: "חיים",
+    lastName: "כהן",
+    address: "הרצל 12, גבעת שמואל",
+    password: "123456",
+    paymentMethod: "4291",
+    role: "customer", 
+     email: "abc@gmail.com"
+
+  }
+];

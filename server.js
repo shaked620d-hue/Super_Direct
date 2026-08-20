@@ -1,5 +1,5 @@
 import express from 'express'
-import { categories , products } from './tmp.js';
+import { categories , products , customers} from './tmp.js';
 
 
 const server = express();
@@ -134,6 +134,21 @@ server.delete('/products/:id', (req, res)=> {
       }
 });
   
+// צריך פה כשמשנים לבטח את זה שלא תחזור גם הסיסמא
+server.get('/customers',  (req, res)=>{
+  res.json(customers);
+});
+//  כנל פה
+server.get('/customers/:id', (req, res)=>{
+  const customer = customers.find(c=>c.id == req.params.id);
+  if(customer)
+  {
+    res.status(200).json(customer);
+  }
+  else{
+    res.status(404).json({message: "customer not found"});
+  }
+});
 
 // עד לפה
 server.listen(5000, () => {
