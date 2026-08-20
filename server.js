@@ -173,6 +173,20 @@ server.post('/auth/register', (req, res) => {
 
 });
 
+server.post('/auth/login', (req, res) => {
+  const customer = customers.find(c => c.email == req.body.email);
+  
+  if (!customer) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  // בהמשך צריך לשנות את זה כי הסיסמא תיהיה מוצפנת 
+ if (req.body.password === customer.password) {
+   res.status(200).json(customer);// גם פה צריך לשנות אחר כך
+} else {
+  res.status(401).json({ message: "Wrong password" });
+}
+});
+
 // עד לפה
 server.listen(5000, () => {
   console.log('Server is running on http://localhost:5000')
