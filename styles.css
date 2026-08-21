@@ -67,9 +67,36 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .form-field label { font-weight:700; font-size:.88rem; }
 .form-field input { width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px; color:var(--ink); background:var(--cream); }
 .form-field input:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
-.auth-submit { border:0; background:var(--green); color:white; padding:13px 20px; border-radius:10px; font-weight:800; font-size:1rem; margin-top:8px; }
+.auth-submit { display:inline-block; border:0; background:var(--green); color:white; padding:13px 20px; border-radius:10px; font-weight:800; font-size:1rem; margin-top:8px; text-decoration:none; text-align:center; }
 .auth-submit:hover { background:#175a49; }
 .auth-switch { text-align:center; margin-top:22px; color:var(--muted); font-size:.92rem; }
 .auth-switch a { color:var(--green); font-weight:700; text-decoration:none; }
 .auth-switch a:hover { text-decoration:underline; }
-@media (max-width:760px) { .nav-wrap { gap:12px; padding:0 16px; } .nav-links { display:none; } .hero { grid-template-columns:1fr; padding-top:34px; gap:25px; } .hero-image { min-height:260px; } main { padding-inline:16px; } .category-list { grid-template-columns:repeat(3,1fr); } .category { padding:13px 6px; font-size:.9rem; } .category-icon { font-size:1.9rem; } .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-info { padding:12px; } .product-info h3 { font-size:1rem; } .product-description { font-size:.82rem; } .benefits { grid-template-columns:1fr; padding:22px; margin-top:40px; } h1 { font-size:3.1rem; } .auth-main { padding:0 16px; margin-top:36px; } .auth-card { padding:26px 20px; } .form-row { grid-template-columns:1fr; } }
+.form-field textarea { width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px; color:var(--ink); background:var(--cream); resize:vertical; min-height:120px; }
+.form-field textarea:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
+.page-header { max-width:760px; margin:50px auto 6px; padding:0 24px; }
+.page-header h1 { font-size:clamp(2.2rem,4vw,3.2rem); margin:10px 0 18px; max-width:none; }
+.page-copy { color:var(--muted); font-size:1.05rem; line-height:1.75; max-width:680px; margin:0 0 16px; }
+.faq-list { display:flex; flex-direction:column; gap:12px; max-width:760px; }
+.faq-item { border:1px solid var(--line); border-radius:14px; background:var(--white); padding:2px 20px; }
+.faq-item summary { padding:16px 0; font-weight:700; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary::after { content:'+'; color:var(--green); font-size:1.3rem; font-weight:800; flex-shrink:0; }
+.faq-item[open] summary::after { content:'\2212'; }
+.faq-item p { color:var(--muted); line-height:1.7; margin:0; padding:0 0 18px; }
+.contact-card { max-width:620px; margin:0 0 60px; }
+.contact-info { display:flex; flex-direction:column; gap:10px; margin:0 0 30px; max-width:680px; }
+.contact-info span { color:var(--muted); }
+.contact-info strong { color:var(--ink); }
+.error-page { max-width:520px; margin:110px auto; padding:0 24px; text-align:center; }
+.error-code { font-family:'Rubik',sans-serif; font-weight:800; font-size:clamp(4rem,10vw,7rem); color:var(--green); line-height:1; margin:0; }
+.error-page h1 { margin:14px 0 10px; }
+.error-page p { color:var(--muted); margin:0 0 26px; }
+.site-footer { margin-top:60px; border-top:1px solid var(--line); background:var(--white); }
+.footer-wrap { max-width:1180px; margin:auto; padding:30px 24px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.footer-wrap .brand { font-size:1.15rem; }
+.footer-links { display:flex; gap:20px; flex-wrap:wrap; }
+.footer-links a { color:var(--muted); text-decoration:none; font-weight:600; font-size:.9rem; }
+.footer-links a:hover { color:var(--green); }
+.footer-copy { max-width:1180px; margin:0 auto; padding:0 24px 24px; color:var(--muted); font-size:.82rem; text-align:center; }
+@media (max-width:760px) { .nav-wrap { gap:12px; padding:0 16px; } .nav-links { display:none; } .hero { grid-template-columns:1fr; padding-top:34px; gap:25px; } .hero-image { min-height:260px; } main { padding-inline:16px; } .category-list { grid-template-columns:repeat(3,1fr); } .category { padding:13px 6px; font-size:.9rem; } .category-icon { font-size:1.9rem; } .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-info { padding:12px; } .product-info h3 { font-size:1rem; } .product-description { font-size:.82rem; } .benefits { grid-template-columns:1fr; padding:22px; margin-top:40px; } h1 { font-size:3.1rem; } .auth-main { padding:0 16px; margin-top:36px; } .auth-card { padding:26px 20px; } .form-row { grid-template-columns:1fr; } .page-header { padding:0 16px; margin-top:30px; } .footer-wrap { padding:24px 16px 12px; justify-content:center; text-align:center; } .error-page { margin:60px auto; } }
