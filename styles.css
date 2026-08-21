@@ -14,7 +14,7 @@ button { cursor:pointer; }
 .nav-links a { color:var(--muted); text-decoration:none; font-weight:600; }
 .nav-links a:hover { color:var(--green); }
 .header-actions { display:flex; align-items:center; gap:10px; }
-.icon-button { width:42px; height:42px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); position:relative; }
+.icon-button { width:42px; height:42px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); position:relative; display:grid; place-items:center; text-decoration:none; }
 .cart-count { position:absolute; top:-4px; right:-3px; background:#ee7258; color:white; border-radius:50%; min-width:19px; height:19px; font-size:.7rem; display:grid; place-items:center; }
 .hero { max-width:1180px; margin:0 auto; padding:48px 24px 30px; display:grid; grid-template-columns:1.02fr .98fr; gap:42px; align-items:center; }
 .eyebrow { color:var(--green); font-weight:800; letter-spacing:.04em; margin:0 0 12px; }
@@ -54,4 +54,22 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .benefit span { color:#c3d2c8; font-size:.87rem; }
 .toast { position:fixed; bottom:22px; left:22px; background:var(--ink); color:white; padding:13px 18px; border-radius:10px; transform:translateY(100px); transition:.3s; z-index:10; }
 .toast.show { transform:translateY(0); }
-@media (max-width:760px) { .nav-wrap { gap:12px; padding:0 16px; } .nav-links { display:none; } .hero { grid-template-columns:1fr; padding-top:34px; gap:25px; } .hero-image { min-height:260px; } main { padding-inline:16px; } .category-list { grid-template-columns:repeat(3,1fr); } .category { padding:13px 6px; font-size:.9rem; } .category-icon { font-size:1.9rem; } .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-info { padding:12px; } .product-info h3 { font-size:1rem; } .product-description { font-size:.82rem; } .benefits { grid-template-columns:1fr; padding:22px; margin-top:40px; } h1 { font-size:3.1rem; } }
+.auth-main { max-width:460px; margin:56px auto 100px; padding:0 24px; }
+.auth-back { display:inline-block; margin-bottom:18px; color:var(--muted); text-decoration:none; font-weight:600; font-size:.88rem; }
+.auth-back:hover { color:var(--green); }
+.auth-card { background:var(--white); border:1px solid var(--line); border-radius:22px; padding:38px 34px; box-shadow:0 12px 30px #264b3910; }
+.auth-eyebrow { color:var(--green); font-weight:800; letter-spacing:.04em; margin:0 0 8px; font-size:.85rem; }
+.auth-card h1 { font-size:1.9rem; margin-bottom:8px; }
+.auth-subtitle { color:var(--muted); margin:0 0 26px; line-height:1.6; }
+.auth-form { display:flex; flex-direction:column; gap:16px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-field { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.form-field label { font-weight:700; font-size:.88rem; }
+.form-field input { width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px; color:var(--ink); background:var(--cream); }
+.form-field input:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
+.auth-submit { border:0; background:var(--green); color:white; padding:13px 20px; border-radius:10px; font-weight:800; font-size:1rem; margin-top:8px; }
+.auth-submit:hover { background:#175a49; }
+.auth-switch { text-align:center; margin-top:22px; color:var(--muted); font-size:.92rem; }
+.auth-switch a { color:var(--green); font-weight:700; text-decoration:none; }
+.auth-switch a:hover { text-decoration:underline; }
+@media (max-width:760px) { .nav-wrap { gap:12px; padding:0 16px; } .nav-links { display:none; } .hero { grid-template-columns:1fr; padding-top:34px; gap:25px; } .hero-image { min-height:260px; } main { padding-inline:16px; } .category-list { grid-template-columns:repeat(3,1fr); } .category { padding:13px 6px; font-size:.9rem; } .category-icon { font-size:1.9rem; } .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-info { padding:12px; } .product-info h3 { font-size:1rem; } .product-description { font-size:.82rem; } .benefits { grid-template-columns:1fr; padding:22px; margin-top:40px; } h1 { font-size:3.1rem; } .auth-main { padding:0 16px; margin-top:36px; } .auth-card { padding:26px 20px; } .form-row { grid-template-columns:1fr; } }
