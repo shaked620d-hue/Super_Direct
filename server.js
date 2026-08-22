@@ -1,12 +1,15 @@
 import express from 'express'
 import { categories , products , customers, orders} from './tmp.js';
+import path from 'node:path';
 
 
 const server = express();
 server.use(express.json());   
+server.use(express.static(path.join(process.cwd(), 'HTML')));
+server.use('/CSS', express.static(path.join(process.cwd(), 'CSS')));
 
 server.get('/', (req, res) => {
-  res.send('Server is working!');
+  res.sendFile(path.join(process.cwd(), 'HTML', 'index.html'));
 });
 
 //את כל אלו אחר כך משנים ומעבירים 

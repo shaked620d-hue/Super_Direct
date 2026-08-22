@@ -33,7 +33,7 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .section-heading h2 { font-size:1.65rem; }
 .section-heading a { color:var(--green); font-weight:700; text-decoration:none; }
 .category-list { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
-.category { border:1px solid var(--line); background:var(--white); border-radius:16px; padding:20px 10px; text-align:center; color:var(--ink); font-weight:700; transition:.2s; }
+.category { border:1px solid var(--line); background:var(--white); border-radius:16px; padding:20px 10px; text-align:center; color:var(--ink); font-weight:700; text-decoration:none; transition:.2s; }
 .category:hover { transform:translateY(-3px); border-color:var(--green); }
 .category-icon { display:block; font-size:2.4rem; margin-bottom:7px; }
 .products { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
