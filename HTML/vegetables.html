@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../CSS/styles.css" />
     <link rel="stylesheet" href="../CSS/category.css" />
   </head>
-  <body class="category-page">
+  <body class="category-page vegetables-page">
     <aside class="announcement">
       משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית
     </aside>
@@ -39,21 +39,14 @@
             ירקות צבעוניים ופריכים, שנבחרו כשהם בשיא הטריות שלהם.
           </p>
         </div>
-        <div
-          class="category-banner"
-          role="img"
-          aria-label="ירקות טריים"
-          style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=85&quot;);
-          "
-        ></div>
+        <div class="category-banner" role="img" aria-label="ירקות טריים"></div>
       </section>
       <section aria-labelledby="products-title">
         <div class="section-heading">
           <h2 id="products-title">כל הירקות</h2>
           <span class="product-tag">בחירה טרייה להיום</span>
         </div>
-        <div class="products">
+        <div class="products" data-category="ירקות">
           <article class="product-card">
             <img
               class="product-image"
@@ -130,4 +123,7 @@
       </div>
     </footer>
   </body>
+  <script src="../JS/product-data.js"></script>
+  <script src="../JS/products.js"></script>
+  <script src="../JS/cart.js"></script>
 </html>

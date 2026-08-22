@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../CSS/styles.css" />
     <link rel="stylesheet" href="../CSS/category.css" />
   </head>
-  <body class="category-page">
+  <body class="category-page bakery-page">
     <aside class="announcement">
       משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית
     </aside>
@@ -39,21 +39,14 @@
             לחמים, לחמניות ומאפים שנאפים מדי יום ומגיעים אליכם ריחניים וטריים.
           </p>
         </div>
-        <div
-          class="category-banner"
-          role="img"
-          aria-label="מאפים טריים"
-          style="
-            background-image: url(&quot;https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85&quot;);
-          "
-        ></div>
+        <div class="category-banner" role="img" aria-label="מאפים טריים"></div>
       </section>
       <section aria-labelledby="products-title">
         <div class="section-heading">
           <h2 id="products-title">כל המאפים</h2>
           <span class="product-tag">בחירה טרייה להיום</span>
         </div>
-        <div class="products">
+        <div class="products" data-category="מאפים">
           <article class="product-card">
             <img
               class="product-image"
@@ -132,4 +125,7 @@
       </div>
     </footer>
   </body>
+  <script src="../JS/product-data.js"></script>
+  <script src="../JS/products.js"></script>
+  <script src="../JS/cart.js"></script>
 </html>
