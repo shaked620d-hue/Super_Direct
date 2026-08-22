@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="סל הקניות שלכם בסופר דיירקט.">
+    <title>סל הקניות | סופר דיירקט</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/styles.css">
+</head>
+<body data-cart-path="cart.html">
+    <aside class="announcement" aria-label="מבצע השבוע">משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית</aside>
+    <header class="site-header">
+        <nav class="nav-wrap" aria-label="ניווט ראשי">
+            <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <div class="nav-links"><a href="../index.html#categories">קטגוריות</a><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
+            <div class="header-actions"><a class="icon-button" href="login.html" aria-label="כניסה לחשבון">♙</a><a class="icon-button" href="cart.html" aria-label="סל הקניות">🛒<span class="cart-count"></span></a></div>
+        </nav>
+    </header>
+    <main class="cart-page">
+        <section class="page-header cart-header" aria-labelledby="cart-title"><p class="eyebrow">כמעט אצלכם במטבח</p><h1 id="cart-title">סל הקניות</h1><p class="page-copy">בדקו את הבחירה שלכם, עדכנו כמויות והמשיכו להזמנה.</p></section>
+        <section class="cart-layout" aria-label="פרטי סל הקניות">
+            <div id="cartItems" class="cart-items"></div>
+            <div id="emptyCart" class="empty-cart" hidden><span class="empty-cart-icon" aria-hidden="true">🛒</span><h2>הסל עדיין מחכה למוצרים</h2><p>בחרו מוצרים טריים ונשמור אותם כאן עבורכם.</p><a class="auth-submit" href="../index.html#fresh">לבחירת מוצרים</a></div>
+            <aside id="cartSummary" class="cart-summary" hidden><h2>סיכום הזמנה</h2><div><span>סכום מוצרים</span><strong id="subtotal">0.00 ₪</strong></div><div><span>משלוח</span><strong id="delivery">חינם</strong></div><hr><div class="summary-total"><span>סה״כ לתשלום</span><strong id="total">0.00 ₪</strong></div><button class="auth-submit checkout-button" type="button" id="checkoutButton">המשך לתשלום</button><small>משלוח חינם בקנייה מעל 250 ₪</small></aside>
+        </section>
+    </main>
+    <footer class="site-footer"><div class="footer-wrap"><a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a><nav class="footer-links" aria-label="ניווט תחתון"><a href="about.html">אודות</a><a href="contact.html">צור קשר</a><a href="faq.html">שאלות נפוצות</a><a href="terms.html">תנאי שימוש ופרטיות</a></nav></div><p class="footer-copy">© 2026 סופר דיירקט. כל הזכויות שמורות.</p></footer>
+    <script src="../JS/cart.js"></script>
+</body>
+</html>
