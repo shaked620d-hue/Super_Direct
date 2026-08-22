@@ -7,9 +7,10 @@ const server = express();
 server.use(express.json());   
 server.use(express.static(path.join(process.cwd(), 'HTML')));
 server.use('/CSS', express.static(path.join(process.cwd(), 'CSS')));
+server.use('/JS', express.static(path.join(process.cwd(), 'JS')));
 
 server.get('/', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'HTML', 'index.html'));
+  res.sendFile(path.join(process.cwd(), 'index.html'));
 });
 
 //את כל אלו אחר כך משנים ומעבירים 
