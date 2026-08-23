@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>סופר דיירקט</title>
+  <rect width="64" height="64" rx="16" fill="#18322f"/>
+  <path d="M18 26h28l-3 26H21l-3-26Z" fill="#d8ef72"/>
+  <path d="M25 27v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M34 16c3-5 8-6 12-5-1 5-5 8-11 8" fill="#83c95a"/>
+  <path d="M11 35h8M9 42h9M45 35h8M47 42h9" stroke="#ff8364" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="27" cy="38" r="2" fill="#18322f"/>
+  <circle cx="37" cy="38" r="2" fill="#18322f"/>
+</svg>

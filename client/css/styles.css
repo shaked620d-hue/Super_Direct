@@ -9,7 +9,7 @@ button { cursor:pointer; }
 .site-header { background:var(--white); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
 .nav-wrap { max-width:1180px; margin:auto; min-height:76px; display:flex; align-items:center; gap:32px; padding:0 24px; }
 .brand { color:var(--ink); text-decoration:none; font-family:'Rubik',sans-serif; font-size:1.45rem; font-weight:800; display:flex; align-items:center; gap:10px; white-space:nowrap; }
-.brand-mark { width:38px; height:38px; display:grid; place-items:center; background:var(--lime); border-radius:12px; font-size:1.3rem; }
+.brand-mark { width:38px; height:38px; display:grid; place-items:center; background:var(--lime) url('../../favicon.svg') center/100% no-repeat; border-radius:12px; font-size:0; }
 .nav-links { display:flex; gap:24px; margin-left:auto; }
 .nav-links a { color:var(--muted); text-decoration:none; font-weight:600; }
 .nav-links a:hover { color:var(--green); }
