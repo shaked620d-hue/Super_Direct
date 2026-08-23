@@ -10,6 +10,14 @@ server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
 server.use('/js', express.static(path.join(clientDir, 'js')));
 
+server.get('/favicon.svg', (req, res) => {
+  res.sendFile(path.join(clientDir, '..', 'favicon.svg'));
+});
+
+server.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
+});
+
 server.get('/', (req, res) => {
   res.sendFile(path.join(clientDir, 'index.html'));
 });
