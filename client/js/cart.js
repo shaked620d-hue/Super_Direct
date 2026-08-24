@@ -98,6 +98,16 @@ const initMobileMenu = () => {
     });
 }
 
+const handleCheckout= () =>{
+   const checkOutBtn= document.getElementById('checkoutButton');
+    if (!checkOutBtn) return;
+    checkOutBtn.addEventListener('click',  () =>{
+       writeCart([]);
+        showToast('ההזמנה בוצעה בהצלחה');
+        renderCart();
+    })
+    
+}
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     document.querySelectorAll('.add-button').forEach((button) => button.addEventListener('click', () => addToCart(button.closest('.product-card'))));
@@ -109,5 +119,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
+ document.addEventListener('DOMContentLoaded', handleCheckout);
 document.addEventListener('DOMContentLoaded', initMobileMenu);
