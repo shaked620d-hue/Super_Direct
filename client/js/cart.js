@@ -81,6 +81,22 @@ const renderCart = () => {
     document.querySelector('#delivery').textContent = delivery === 0 ? 'חינם' : `${delivery.toFixed(2)} ₪`;
     document.querySelector('#total').textContent = `${(subtotal + delivery).toFixed(2)} ₪`;
 };
+const initMobileMenu = () => {
+    const navWrap = document.querySelector('.nav-wrap');
+    if (!navWrap) return;
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.className = 'menu-toggle';
+    toggleBtn.textContent = '☰';
+    toggleBtn.setAttribute('aria-label', 'תפריט');
+    navWrap.append(toggleBtn);
+
+    const navLinks = document.querySelector('.nav-links');
+    toggleBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+    });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
@@ -91,3 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderCart();
 });
+
+
+
+document.addEventListener('DOMContentLoaded', initMobileMenu);
