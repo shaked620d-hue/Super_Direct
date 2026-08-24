@@ -51,5 +51,6 @@ id: products.length+1, // בהמשך זה לפי הDB
 
 }
 
+
 document.getElementById('productForm').addEventListener('submit', addOrUpdateProduct);
 document.addEventListener('DOMContentLoaded', takeData);

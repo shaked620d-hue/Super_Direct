@@ -53,6 +53,8 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .admin-btn.edit:hover { background:#c7e052; }
 .admin-btn.delete { background:#f3d9d3; color:#a13a2a; }
 .admin-btn.delete:hover { background:#eec3ba; }
+.admin-add-product { display:inline-block; margin-bottom:14px; border:0; background:var(--green); color:white; padding:11px 18px; border-radius:10px; font-weight:800; text-decoration:none; }
+.admin-add-product:hover { background:#175a49; }
 .benefits { margin-top:60px; background:var(--ink); color:white; border-radius:22px; padding:27px 32px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .benefit { display:flex; gap:14px; align-items:center; }
 .benefit-icon { font-size:1.7rem; }

@@ -79,5 +79,20 @@ const deleteProduct = (event) => {
     renderProducts();
 };
 
+
+
+const addNewProductButton = () => {
+    if (!isAdmin) return;
+    const headerActions = document.querySelector('.header-actions');
+    if (!headerActions) return;
+
+    const button = document.createElement('a');
+    button.href = '/HTML/product-form.html';
+    button.className = 'admin-add-product';
+    button.textContent = 'הוספת מוצר חדש +';
+    headerActions.append(button);
+}
+
 document.addEventListener('DOMContentLoaded', renderProducts);
+document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
