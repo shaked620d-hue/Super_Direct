@@ -7,14 +7,21 @@ const saveMessage= (details)=>{
       showToast('ההודעה נשמרה בהצלחה'); 
 }
 
-
 const handleContactSubmit=() =>{
     const contactForm=document.getElementById('contactForm');
-
+const attachment=  document.getElementById('attachment');
     if(!contactForm)
     {
     return;
     }
+
+    attachment.addEventListener('change', () => {
+        const file = attachment.files[0];
+        const preview = document.getElementById('attachmentPreview');
+        preview.src = URL.createObjectURL(file);
+        preview.hidden = false;
+
+});
     contactForm.addEventListener('submit',  (event)=>{
         event.preventDefault();
         
