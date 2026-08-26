@@ -1,3 +1,11 @@
+// כשיהיה שרת זה ישתנה 
+const saveMessage= (details)=>{
+    
+ const messages=  JSON.parse(localStorage.getItem('superDirectMessages')) || [];
+     messages.push(details);
+    localStorage.setItem('superDirectMessages', JSON.stringify(messages));
+      showToast('ההודעה נשמרה בהצלחה'); 
+}
 
 
 const handleContactSubmit=() =>{
@@ -15,12 +23,10 @@ const handleContactSubmit=() =>{
                          email: document.getElementById('email').value,
                          message: document.getElementById('message').value  }
     
-// זה משתנה כשיש שרת
-     const messages=  JSON.parse(localStorage.getItem('superDirectMessages')) || [];
-     messages.push(details);
-    localStorage.setItem('superDirectMessages', JSON.stringify(messages));
-      showToast('ההודעה נשמרה בהצלחה'); 
-    })
+        saveMessage(details)// כשיהיה שרת זה ישתנה גם 
+})
 }
+
+
 
 document.addEventListener('DOMContentLoaded', handleContactSubmit)
