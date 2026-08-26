@@ -102,11 +102,9 @@ const handleCheckout= () =>{
    const checkOutBtn= document.getElementById('checkoutButton');
     if (!checkOutBtn) return;
     checkOutBtn.addEventListener('click',  () =>{
-       writeCart([]);
-        showToast('ההזמנה בוצעה בהצלחה');
-        renderCart();
+       window.location.href = '/HTML/checkout.html';
     })
-    
+
 }
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
