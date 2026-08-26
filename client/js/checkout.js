@@ -25,4 +25,19 @@ const renderCheckout = () =>{
   confirmTotal.textContent= totalP+ delivery ;
 }
 
-ocument.addEventListener('DOMContentLoaded', renderCheckout)
+const handleConfirmOrder = ()=>{
+   const confimbtn=   document.getElementById('confirmOrderButton');
+if(!confimbtn)
+{
+    return;
+}
+ confimbtn.addEventListener('click',()=>{
+    writeCart([]);
+    showToast('ההזמנה בוצעה בהצלחה תודה שקניתם אצלינו');
+    window.setTimeout(() => { window.location.href = '/index.html'; }, 1500)
+ } )
+
+}
+
+document.addEventListener('DOMContentLoaded', renderCheckout);
+document.addEventListener('DOMContentLoaded', handleConfirmOrder);
