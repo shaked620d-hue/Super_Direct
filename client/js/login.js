@@ -23,6 +23,8 @@ const email = document.getElementById('email').value;
     else{
         localStorage.setItem('superDirectCurrentUser' , JSON.stringify(u));
         showToast('התחברת בהצלחה');
+        window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+
     }
 
     });

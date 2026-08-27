@@ -52,5 +52,13 @@ id: products.length+1, // בהמשך זה לפי הDB
 }
 
 
+const guardAdminOnly = () => {
+    if (!isAdmin()) {
+        window.location.href = '../index.html';
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', guardAdminOnly);
 document.getElementById('productForm').addEventListener('submit', addOrUpdateProduct);
 document.addEventListener('DOMContentLoaded', takeData);
