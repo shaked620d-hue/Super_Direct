@@ -32,3 +32,16 @@ const isAdmin = ()=>{
     const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
     return currentUser?.role === 'admin';
 }
+
+const updateAuthUI = ()=>{
+    const authButton= document.getElementById('authButton');
+    if(!authButton){return;}
+
+        const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+
+    if(currentUser)
+    {
+        authButton.textContent = currentUser.firstName || currentUser.email;
+    }
+}
+document.addEventListener('DOMContentLoaded', updateAuthUI);
