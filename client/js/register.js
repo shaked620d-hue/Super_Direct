@@ -13,11 +13,12 @@ const handleRegisterSubmit  =()=>{
             email: document.getElementById('email').value,
             address: document.getElementById('address').value,
             password: document.getElementById('password').value,
-            confirmPassword : document.getElementById('confirmPassword').value}
+            role: 'customer' 
+        }
 
-            if(details.password!= details.confirmPassword)
+            if(details.password != document.getElementById('confirmPassword').value)
             {
-                showToast ('הסיסמא לא תואמת ')
+                showToast ('הסיסמא לא תואמת')
                 return;
             }
             saveLocalStorage( 'superDirectUsers', details);// זה משתנה כשיש שרת
