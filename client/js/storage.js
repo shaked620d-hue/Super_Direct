@@ -27,3 +27,8 @@ const seedAdminUser= ()=>{
         localStorage.setItem('superDirectUsers', JSON.stringify(users))
     }
 }
+
+const isAdmin = ()=>{
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    return currentUser?.role === 'admin';
+}

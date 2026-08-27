@@ -1,4 +1,3 @@
-const isAdmin = true;// זמני כדי שיעבוד בלי להתחבר לכלום
 
 const createProductCard = (product) => {
     const img = document.createElement('img');
@@ -35,7 +34,7 @@ const createProductCard = (product) => {
     info.className = 'product-info';
     info.append(tag, title, description, bottom);
 
-    if (isAdmin) {
+    if (isAdmin()) {
         const editLink = document.createElement('a');
         editLink.className = 'admin-btn edit';
         editLink.href = `/HTML/product-form.html?id=${product.id}`;
@@ -82,7 +81,7 @@ const deleteProduct = (event) => {
 
 
 const addNewProductButton = () => {
-    if (!isAdmin) return;
+    if (!isAdmin()) return;
     const headerActions = document.querySelector('.header-actions');
     if (!headerActions) return;
 
