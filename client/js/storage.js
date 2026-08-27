@@ -44,4 +44,23 @@ const updateAuthUI = ()=>{
         authButton.textContent = currentUser.firstName || currentUser.email;
     }
 }
+const handleLogout = ()=>{
+    
+    const authButton = document.getElementById('authButton');
+    if(!authButton ){return; }
+    authButton.addEventListener('click', (event)=>{
+      
+
+   const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+   if(currentUser){ 
+   event.preventDefault();
+    localStorage.removeItem('superDirectCurrentUser'); 
+    showToast('התנתקת בהצלחה'); 
+
+    location.reload();
+    }
+    })
+}
+
 document.addEventListener('DOMContentLoaded', updateAuthUI);
+document.addEventListener('DOMContentLoaded', handleLogout);

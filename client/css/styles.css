@@ -17,6 +17,8 @@ button { cursor:pointer; }
 .header-actions { display:flex; align-items:center; gap:10px; }
 .icon-button { width:42px; height:42px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); position:relative; display:grid; place-items:center; text-decoration:none; }
 #authButton { width:auto; min-width:42px; max-width:200px; padding:0 14px; border-radius:999px; font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; unicode-bidi:plain-text; }
+.logout-btn { width:22px; height:22px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); opacity:0.6; display:grid; place-items:center; font-size:0.7rem; line-height:1; cursor:pointer; padding:0; }
+.logout-btn:hover { opacity:1; border-color:#c0392b; color:#c0392b; }
 .cart-count { position:absolute; top:-4px; right:-3px; background:#ee7258; color:white; border-radius:50%; min-width:19px; height:19px; font-size:.7rem; display:grid; place-items:center; }
 .hero { max-width:1180px; margin:0 auto; padding:48px 24px 30px; display:grid; grid-template-columns:1.02fr .98fr; gap:42px; align-items:center; }
 .eyebrow { color:var(--green); font-weight:800; letter-spacing:.04em; margin:0 0 12px; }
