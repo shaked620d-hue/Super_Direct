@@ -41,14 +41,17 @@ const updateAuthUI = ()=>{
 
     if(currentUser)
     {
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) { logoutButton.hidden = false; }
+
         authButton.textContent = currentUser.firstName || currentUser.email;
     }
 }
 const handleLogout = ()=>{
     
-    const authButton = document.getElementById('authButton');
-    if(!authButton ){return; }
-    authButton.addEventListener('click', (event)=>{
+    const logoutButton  = document.getElementById('logoutButton');
+    if(!logoutButton  ){return; }
+    logoutButton .addEventListener('click', (event)=>{
       
 
    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
