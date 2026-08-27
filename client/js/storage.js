@@ -2,6 +2,7 @@
 
 const ADMIN_EMAIL = 'admin@superdirect.co.il'; // זמני
 const ADMIN_PASSWORD = '123456789';// כנל
+const ADMIN_NAME= 'ADMIN'
 
 
 
@@ -19,6 +20,7 @@ const seedAdminUser= ()=>{
     if(!a)
     {
         const admin= {
+            firstName:ADMIN_NAME, 
             role:'admin', 
             password: ADMIN_PASSWORD, 
             email: ADMIN_EMAIL 
