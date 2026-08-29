@@ -60,5 +60,9 @@ const guardAdminOnly = () => {
 
 
 document.addEventListener('DOMContentLoaded', guardAdminOnly);
-document.getElementById('productForm').addEventListener('submit', addOrUpdateProduct);
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('productForm').addEventListener('submit', addOrUpdateProduct);
+});
+
 document.addEventListener('DOMContentLoaded', takeData);
