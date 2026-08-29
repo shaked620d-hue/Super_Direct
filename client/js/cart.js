@@ -102,7 +102,7 @@ const handleCheckout= () =>{
    const checkOutBtn= document.getElementById('checkoutButton');
     if (!checkOutBtn) return;
     checkOutBtn.addEventListener('click',  () =>{
-       window.location.href = '/HTML/checkout.html';
+       window.location.href = 'checkout.html';
     })
 
 }

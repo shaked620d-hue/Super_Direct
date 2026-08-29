@@ -49,6 +49,9 @@ id: products.length+1, // בהמשך זה לפי הDB
    products.push(newProduct);
 }
 
+showToast('המוצר נשמר בהצלחה');
+window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+
 }
 
 
