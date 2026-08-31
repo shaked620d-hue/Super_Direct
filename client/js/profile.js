@@ -1,0 +1,19 @@
+
+const guardLoggedIn =()=>{
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+
+   if (!currentUser) {
+    window.location.href = 'login.html';
+}
+}
+const fillProfileForm =()=>{
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+
+    document.getElementById('firstName').value = currentUser.firstName || '';// ה או זה בשביל המנהל כי לו אין פרטים
+    document.getElementById('lastName').value = currentUser.lastName || '';
+    document.getElementById('email').value = currentUser.email || '';
+    document.getElementById('address').value = currentUser.address || '';
+}
+
+document.addEventListener('DOMContentLoaded', fillProfileForm); 
+document.addEventListener('DOMContentLoaded', guardLoggedIn);
