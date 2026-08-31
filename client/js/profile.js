@@ -28,12 +28,23 @@ const handleProfileSave= (event)=>{
 if(!currentUser){return;}
     currentUser.firstName = document.getElementById('firstName').value;
     currentUser.lastName=document.getElementById('lastName').value;
-  
     currentUser.address=document.getElementById('address').value;
-
 
     localStorage.setItem('superDirectCurrentUser', JSON.stringify(currentUser))
     showToast('הפרטים נשמרו בהצלחה');
+
+        const users= JSON.parse(localStorage.getItem('superDirectUsers')) || [];
+                if(!users){return;}
+
+const user= users.find(u => u.email === currentUser.email)
+        if(!user){return;}
+   user.firstName = document.getElementById('firstName').value;
+    user.lastName=document.getElementById('lastName').value;
+    user.address=document.getElementById('address').value;
+    
+    localStorage.setItem('superDirectUsers', JSON.stringify(users));
+        
+    
 }
 
 document.addEventListener('DOMContentLoaded', revealSaveButton);
