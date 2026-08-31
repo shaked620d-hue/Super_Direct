@@ -22,6 +22,21 @@ const revealSaveButton=()=>{
          profileSaveButton.hidden=false;
 })
 }
+const handleProfileSave= (event)=>{
+    event.preventDefault();
+        const currentUser= JSON.parse(localStorage.getItem('superDirectCurrentUser')) || [];
+if(!currentUser){return;}
+    currentUser.firstName = document.getElementById('firstName').value;
+    currentUser.lastName=document.getElementById('lastName').value;
+  
+    currentUser.address=document.getElementById('address').value;
+
+
+    localStorage.setItem('superDirectCurrentUser', JSON.stringify(currentUser))
+    showToast('הפרטים נשמרו בהצלחה');
+}
+
 document.addEventListener('DOMContentLoaded', revealSaveButton);
-document.addEventListener('DOMContentLoaded', fillProfileForm); 
+document.addEventListener('DOMContentLoaded', fillProfileForm);
 document.addEventListener('DOMContentLoaded', guardLoggedIn);
+document.addEventListener('submit', handleProfileSave);
