@@ -58,6 +58,7 @@ window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
 const guardAdminOnly = () => {
     if (!isAdmin()) {
         window.location.href = '../index.html';
+
     }
 }
 

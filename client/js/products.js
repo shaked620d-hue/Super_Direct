@@ -1,3 +1,4 @@
+const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 const createProductCard = (product) => {
     const img = document.createElement('img');
@@ -37,8 +38,7 @@ const createProductCard = (product) => {
     if (isAdmin()) {
         const editLink = document.createElement('a');
         editLink.className = 'admin-btn edit';
-        editLink.href = `/HTML/product-form.html?id=${product.id}`;
-        editLink.textContent = 'עריכה';
+editLink.href = `${getBasePath()}product-form.html?id=${product.id}`;
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'admin-btn delete';
@@ -86,7 +86,8 @@ const addNewProductButton = () => {
     if (!headerActions) return;
 
     const button = document.createElement('a');
-    button.href = '/HTML/product-form.html';
+    button.href =   getBasePath() + 'product-form.html';
+  
     button.className = 'admin-add-product';
     button.textContent = 'הוספת מוצר חדש +';
     headerActions.append(button);
