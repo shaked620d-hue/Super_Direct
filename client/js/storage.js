@@ -4,6 +4,7 @@ const ADMIN_EMAIL = 'admin@superdirect.co.il'; // זמני
 const ADMIN_PASSWORD = '123456789';// כנל
 const ADMIN_NAME= 'ADMIN'
 
+const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 
   const saveLocalStorage= (key, item)=>{
@@ -47,6 +48,8 @@ const updateAuthUI = ()=>{
         if (logoutButton) { logoutButton.hidden = false; }
 
         authButton.textContent = currentUser.firstName || currentUser.email;
+        authButton.href = getBasePath() + 'profile.html';
+
     }
 }
 const handleLogout = ()=>{
@@ -66,6 +69,8 @@ const handleLogout = ()=>{
     }
     })
 }
+
+
 
 document.addEventListener('DOMContentLoaded', updateAuthUI);
 document.addEventListener('DOMContentLoaded', handleLogout);

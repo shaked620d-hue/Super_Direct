@@ -1,4 +1,3 @@
-const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 const createProductCard = (product) => {
     const img = document.createElement('img');
