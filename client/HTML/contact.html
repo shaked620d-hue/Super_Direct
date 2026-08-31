@@ -58,7 +58,10 @@
                     <div class="form-field">
                         <label for="attachment">צרפו תמונה (אופציונלי, למשל בעיה עם המוצר שקיבלתם)</label>
                         <input id="attachment" name="attachment" type="file" accept="image/*">
-                        <img id="attachmentPreview" class="attachment-preview" alt="תצוגה מקדימה של התמונה שצורפה" hidden>
+                        <div class="attachment-preview-wrap" id="attachmentPreviewWrap" hidden>
+                            <img id="attachmentPreview" class="attachment-preview" alt="תצוגה מקדימה של התמונה שצורפה">
+                            <button type="button" id="clearAttachmentButton" class="attachment-clear-btn" aria-label="הסרת התמונה" title="הסרת התמונה">✕</button>
+                        </div>
                     </div>
                     <button class="auth-submit" type="submit">שליחת הודעה</button>
                 </form>

@@ -12,9 +12,17 @@ const attachment=  document.getElementById('attachment');
         const file = attachment.files[0];
         const preview = document.getElementById('attachmentPreview');
         preview.src = URL.createObjectURL(file);
-        preview.hidden = false;
+      document.getElementById('attachmentPreviewWrap').hidden=false; 
 
 });
+    const clearAttachmentButton= document.getElementById('clearAttachmentButton');
+    if(!clearAttachmentButton){return;}
+
+    clearAttachmentButton.addEventListener('click', ()=>{
+        attachment.value = '';
+document.getElementById('attachmentPreviewWrap').hidden = true;
+    });
+
     contactForm.addEventListener('submit',  (event)=>{
         event.preventDefault();
         
