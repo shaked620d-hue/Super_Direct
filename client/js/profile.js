@@ -15,5 +15,13 @@ const fillProfileForm =()=>{
     document.getElementById('address').value = currentUser.address || '';
 }
 
+const revealSaveButton=()=>{
+ const   profileForm = document.getElementById('profileForm');
+    const profileSaveButton= document.getElementById('profileSaveButton');
+        profileForm.addEventListener('input', ()=>{
+         profileSaveButton.hidden=false;
+})
+}
+document.addEventListener('DOMContentLoaded', revealSaveButton);
 document.addEventListener('DOMContentLoaded', fillProfileForm); 
 document.addEventListener('DOMContentLoaded', guardLoggedIn);
