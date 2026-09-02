@@ -1,8 +1,10 @@
 import express from 'express';
 import { products } from '../tmp.js';
 
+// Router לכל הפעולות הקשורות למוצרים.
 const router = express.Router();
 
+// מחזיר מוצר אחד לפי מזהה.
 router.get('/:id', (req, res) => {
   const product = products.find((product) => product.id == req.params.id);
   if (product) {
@@ -12,6 +14,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// מחזיר את כל המוצרים, עם אפשרות לסינון לפי קטגוריה.
 router.get('/', (req, res) => {
   if (req.query.category) {
     const productsWithSameCategory = products.filter(
@@ -23,6 +26,7 @@ router.get('/', (req, res) => {
   }
 });
 
+// יוצר מוצר חדש מתוך הנתונים שבגוף הבקשה.
 router.post('/', (req, res) => {
   const newProduct = {
     id: products.length + 1,
@@ -37,6 +41,7 @@ router.post('/', (req, res) => {
   res.status(201).json(newProduct);
 });
 
+// מעדכן רק את השדות שנשלחו עבור מוצר קיים.
 router.put('/:id', (req, res) => {
   const product = products.find((product) => product.id == req.params.id);
   if (product) {
@@ -52,6 +57,7 @@ router.put('/:id', (req, res) => {
   }
 });
 
+// מוחק מוצר לפי מזהה.
 router.delete('/:id', (req, res) => {
   const index = products.findIndex((product) => product.id == req.params.id);
   if (index !== -1) {

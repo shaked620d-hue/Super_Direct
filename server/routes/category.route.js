@@ -1,12 +1,15 @@
 import express from 'express';
 import { categories } from '../tmp.js';
 
+// Router לכל הפעולות הקשורות לקטגוריות.
 const router = express.Router();
 
+// מחזיר את כל הקטגוריות.
 router.get('/', (req, res) => {
   res.json(categories);
 });
 
+// מחזיר קטגוריה אחת לפי מזהה.
 router.get('/:id', (req, res) => {
   const category = categories.find((category) => category.id == req.params.id);
   if (category) {
@@ -16,6 +19,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// יוצר קטגוריה חדשה מתוך הנתונים שבגוף הבקשה.
 router.post('/', (req, res) => {
   const newCategory = {
     id: categories.length + 1,
@@ -25,6 +29,7 @@ router.post('/', (req, res) => {
   res.status(201).send(newCategory);
 });
 
+// מעדכן את שם הקטגוריה לפי מזהה.
 router.put('/:id', (req, res) => {
   const category = categories.find((category) => category.id == req.params.id);
   if (category) {
@@ -35,6 +40,7 @@ router.put('/:id', (req, res) => {
   }
 });
 
+// מוחק קטגוריה לפי מזהה.
 router.delete('/:id', (req, res) => {
   const index = categories.findIndex((category) => category.id == req.params.id);
   if (index !== -1) {

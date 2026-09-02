@@ -1,8 +1,10 @@
 import express from 'express';
 import { customers } from '../tmp.js';
 
+// Router עבור הרשמה, התחברות וזיהוי המשתמש המחובר.
 const router = express.Router();
 
+// יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
 router.post('/register', (req, res) => {
   const newCustomer = {
     id: customers.length + 1,
@@ -18,6 +20,7 @@ router.post('/register', (req, res) => {
   res.status(201).json(newCustomer);
 });
 
+// מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
 router.post('/login', (req, res) => {
   const customer = customers.find((customer) => customer.email == req.body.email);
   if (!customer) {
@@ -30,6 +33,7 @@ router.post('/login', (req, res) => {
   }
 });
 
+// יחזיר בעתיד את פרטי המשתמש לפי אסימון JWT.
 router.get('/me', (req, res) => {
   // TODO: להשלים אחרי שיהיה JWT
 });

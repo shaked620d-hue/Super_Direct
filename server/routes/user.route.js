@@ -1,12 +1,15 @@
 import express from 'express';
 import { customers } from '../tmp.js';
 
+// Router לניהול פרטי הלקוחות.
 const router = express.Router();
 
+// מחזיר את רשימת הלקוחות. בעתיד יש להגביל פעולה זו למנהל.
 router.get('/', (req, res) => {
   res.json(customers);
 });
 
+// מחזיר לקוח אחד לפי מזהה.
 router.get('/:id', (req, res) => {
   const customer = customers.find((customer) => customer.id == req.params.id);
   if (customer) {
@@ -16,6 +19,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה.
 router.put('/:id', (req, res) => {
   const customer = customers.find((customer) => customer.id == req.params.id);
   if (customer) {

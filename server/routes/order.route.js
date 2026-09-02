@@ -1,16 +1,20 @@
 import express from 'express';
 import { orders, products } from '../tmp.js';
 
+// Router לניהול הזמנות ומלאי המוצרים.
 const router = express.Router();
 
+// מחזיר את כל ההזמנות. בעתיד יש להגביל פעולה זו למנהל.
 router.get('/', (req, res) => {
   res.json(orders);
 });
 
+// יחזיר את הזמנות המשתמש המחובר לאחר הוספת JWT.
 router.get('/my', (req, res) => {
   // TODO: להשלים אחרי שיהיה JWT
 });
 
+// מחזיר הזמנה אחת לפי מזהה.
 router.get('/:id', (req, res) => {
   const order = orders.find((order) => order.id == req.params.id);
   if (order) {
@@ -20,6 +24,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
+// מעדכן את סטטוס ההזמנה לפי מזהה.
 router.put('/:id/status', (req, res) => {
   const order = orders.find((order) => order.id == req.params.id);
   if (order) {
@@ -30,6 +35,7 @@ router.put('/:id/status', (req, res) => {
   }
 });
 
+// מוחק או מבטל הזמנה לפי מזהה.
 router.delete('/:id', (req, res) => {
   const index = orders.findIndex((order) => order.id == req.params.id);
   if (index !== -1) {
@@ -40,6 +46,7 @@ router.delete('/:id', (req, res) => {
   }
 });
 
+// מחשבת את מועד המשלוח לפי שעת ביצוע ההזמנה.
 function calculateExpectedDelivery() {
   const now = new Date();
   const delivery = new Date();
@@ -54,6 +61,7 @@ function calculateExpectedDelivery() {
   return delivery;
 }
 
+// יוצר הזמנה, מעדכן את מלאי המוצרים ומחשב את המחיר הכולל.
 router.post('/', (req, res) => {
   const orderItems = req.body.items.map((item) => {
     const product = products.find((product) => product.id == item.productId);
