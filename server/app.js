@@ -1,10 +1,6 @@
 import express from 'express'
 import path from 'node:path';
-import categoryRouter from './routes/category.route.js';
-import productRouter from './routes/product.route.js';
-import authRouter from './routes/auth.route.js';
-import userRouter from './routes/user.route.js';
-import orderRouter from './routes/order.route.js';
+import indexRouter from './routes/index.route.js';
 
 
 const server = express();
@@ -26,11 +22,7 @@ server.get('/', (req, res) => {
   res.sendFile(path.join(clientDir, 'index.html'));
 });
 
-server.use('/categories', categoryRouter);
-server.use('/products', productRouter);
-server.use('/auth', authRouter);
-server.use('/customers', userRouter);
-server.use('/orders', orderRouter);
+server.use('/api', indexRouter);
 
 
 // עד לפה
