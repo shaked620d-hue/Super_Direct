@@ -1,32 +1,42 @@
 
-const handleLoginSubmit  =()=>{
+// מטפלת בשליחת טופס ההתחברות.
+const handleLoginSubmit = () => {
+  // מוצאים את הטופס. אם אנחנו בדף אחר, אין צורך להמשיך.
+  const loginForm = document.getElementById('loginForm');
+  if (!loginForm) return;
 
-seedAdminUser();
-  const loginForm= document.getElementById('loginForm');
-if(!loginForm) {return};
-
-  loginForm.addEventListener('submit', (event)=>{
+  // מונעים שליחה רגילה של הטופס ושולחים את הנתונים לשרת באמצעות JavaScript.
+  loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-   const password = document.getElementById('password').value;
-const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-    const users= JSON.parse(localStorage.getItem('superDirectUsers')) || []; 
- const u  =    users.find(u=>u.password==password && u.email== email);
+    try {
+      // שולחים את כתובת האימייל והסיסמה לראוטר האימות בשרת.
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-
-    if(!u)
-    {
+      // תשובה שאינה 2xx מציינת שהאימייל או הסיסמה אינם תקינים.
+      if (!response.ok) {
         showToast('אימייל או סיסמה שגויים');
         return;
-    }
-    else{
-        localStorage.setItem('superDirectCurrentUser' , JSON.stringify(u));
-        showToast('התחברת בהצלחה');
-        window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+      }
 
+      // שומרים את המשתמש שהשרת החזיר כדי לזהות אותו בדפים הבאים.
+      const user = await response.json();
+      localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+      showToast('התחברת בהצלחה');
+      window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+    } catch {
+      // מטפלים במצב שבו לא ניתן להגיע לשרת.
+      showToast('אירעה שגיאה בהתחברות לשרת');
     }
+  });
+};
 
-    });
-    }
-    document.addEventListener('DOMContentLoaded',handleLoginSubmit  );
+// מפעילים את הקוד רק לאחר טעינת טופס ההתחברות בדף.
+document.addEventListener('DOMContentLoaded', handleLoginSubmit);
