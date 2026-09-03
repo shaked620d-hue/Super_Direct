@@ -24,9 +24,27 @@ server.use(rateLimit({
   message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
 }));
 
+// מידלוואר cors: מאפשר לכל דפדפן לשלוח בקשות מה־client
+// אל השרת, גם אם המקור שונה.
 server.use(cors());
+
+// מידלוואר morgan:
+// HTTP רושם כל בקשת 
+//  לקונסול
+// כדי לעקוב אחרי מה שהלקוח מבקש והסטטוס המתקבל.
 server.use(morgan('dev'));
+
+// מידלוואר express.json:
+// JSON מפרש  
+// POST ו־PUT שנשלח בבקשות 
+// וממלא את 
+// req.body עם הנתונים.
 server.use(express.json());
+
+// מידלוואר express.static:
+//  frontend משרת את קבצי ה־ 
+// מהתיקייה client, 
+// כולל HTML, CSS ו־JS.
 server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
 server.use('/js', express.static(path.join(clientDir, 'js')));
