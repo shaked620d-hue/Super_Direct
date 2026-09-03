@@ -1,10 +1,12 @@
 import express from 'express'
 import path from 'node:path';
+import cors from 'cors';
 import indexRouter from './routes/index.route.js';
 
 
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
+server.use(cors());
 server.use(express.json());
 server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
