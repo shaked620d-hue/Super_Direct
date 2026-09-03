@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { requestLogger } from './middleware/requestLogger.js';
+import { requestDate } from './middleware/requestDate.js';
 import indexRouter from './routes/index.route.js';
 
 
@@ -31,6 +32,12 @@ server.use(cors());
 
 // מידלוואר מותאם אישית: רושם לכל בקשה את השיטה, הנתיב והזמן.
 server.use(requestLogger);
+
+// מידלוואר מותאם אישית:
+// GET עבור בקשות ,
+// req מוסיף לתוך 
+//  את התאריך הנוכחי.
+server.use(requestDate);
 
 // מידלוואר morgan:
 // HTTP רושם כל בקשת 
