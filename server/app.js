@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { requestLogger } from './middleware/requestLogger.js';
 import { requestDate } from './middleware/requestDate.js';
 import { createTimeBlocker } from './middleware/timeBlocker.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import indexRouter from './routes/index.route.js';
 
@@ -88,6 +89,9 @@ server.get('/', (req, res) => {
 });
 
 server.use('/api', indexRouter);
+
+// Middleware לטיפול בנתיבים שלא קיימים.
+server.use(notFoundHandler);
 
 // Middleware לטיפול בשגיאות כלליות: 
 // מחזיר 
