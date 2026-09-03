@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { requestLogger } from './middleware/requestLogger.js';
 import { requestDate } from './middleware/requestDate.js';
+import { createTimeBlocker } from './middleware/timeBlocker.js';
 import indexRouter from './routes/index.route.js';
 
 
@@ -34,10 +35,23 @@ server.use(cors());
 server.use(requestLogger);
 
 // מידלוואר מותאם אישית:
-// GET עבור בקשות ,
-// req מוסיף לתוך 
-//  את התאריך הנוכחי.
+// מוסיף לכל בקשה את currentDate,
+//  כך שניתן לבדוק בזמן אמת
+// האם היא נשלחת בתוך חלון הזמן האסור.
 server.use(requestDate);
+
+// מידלוואר חסימת זמן:
+//  מונע גישה בימי שישי ושבת
+// המוגדר על ידי 
+// startHour ו־endHour.
+//  בתוך החלון 
+server.use(createTimeBlocker({
+  blockedDays: [5, 6],
+  startHour: 12,
+  endHour: 22,
+  statusCode: 503,
+  message: 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
+}));
 
 // מידלוואר morgan:
 // HTTP רושם כל בקשת 
