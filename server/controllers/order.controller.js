@@ -11,34 +11,43 @@ export const getMyOrders = (req, res) => {
 };
 
 // מחזיר הזמנה אחת לפי מזהה.
-export const getOrderById = (req, res) => {
+export const getOrderById = (req, res, next) => {
 	const order = orders.find((order) => order.id == req.params.id);
 	if (order) {
 		res.status(200).json(order);
 	} else {
-		res.status(404).json({ message: 'order not found' });
+		const error = new Error('order not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
 // מעדכן את סטטוס ההזמנה לפי מזהה.
-export const updateOrderStatus = (req, res) => {
+export const updateOrderStatus = (req, res, next) => {
 	const order = orders.find((order) => order.id == req.params.id);
 	if (order) {
 		order.status = req.body.status;
 		res.json(order);
 	} else {
-		res.status(404).json({ message: 'order not found' });
+		const error = new Error('order not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
 // מוחק או מבטל הזמנה לפי מזהה.
-export const deleteOrder = (req, res) => {
+export const deleteOrder = (req, res, next) => {
 	const index = orders.findIndex((order) => order.id == req.params.id);
 	if (index !== -1) {
 		orders.splice(index, 1);
 		res.status(200).json({ message: 'order cancelled successfully' });
 	} else {
-		res.status(404).json({ message: 'order not found' });
+		const error = new Error('order not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 

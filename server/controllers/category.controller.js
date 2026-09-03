@@ -6,12 +6,15 @@ export const getCategories = (req, res) => {
 };
 
 // מחזיר קטגוריה אחת לפי מזהה.
-export const getCategoryById = (req, res) => {
+export const getCategoryById = (req, res, next) => {
 	const category = categories.find((category) => category.id == req.params.id);
 	if (category) {
 		res.status(200).json(category);
 	} else {
-		res.status(404).json({ message: 'Category not found' });
+		const error = new Error('Category not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
@@ -26,23 +29,29 @@ export const createCategory = (req, res) => {
 };
 
 // מעדכן את שם הקטגוריה לפי מזהה.
-export const updateCategory = (req, res) => {
+export const updateCategory = (req, res, next) => {
 	const category = categories.find((category) => category.id == req.params.id);
 	if (category) {
 		category.name = req.body.name;
 		res.json(category);
 	} else {
-		res.status(404).json({ message: 'category not found' });
+		const error = new Error('category not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
 // מוחק קטגוריה לפי מזהה.
-export const deleteCategory = (req, res) => {
+export const deleteCategory = (req, res, next) => {
 	const index = categories.findIndex((category) => category.id == req.params.id);
 	if (index !== -1) {
 		categories.splice(index, 1);
 		res.status(200).send({ message: 'deleted successfuly' });
 	} else {
-		res.status(404).json({ message: 'category not found' });
+		const error = new Error('category not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };

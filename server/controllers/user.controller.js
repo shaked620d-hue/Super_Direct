@@ -6,17 +6,20 @@ export const getUsers = (req, res) => {
 };
 
 // מחזיר לקוח אחד לפי מזהה.
-export const getUserById = (req, res) => {
+export const getUserById = (req, res, next) => {
 	const customer = customers.find((customer) => customer.id == req.params.id);
 	if (customer) {
 		res.status(200).json(customer);
 	} else {
-		res.status(404).json({ message: 'customer not found' });
+		const error = new Error('customer not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
 // מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה.
-export const updateUser = (req, res) => {
+export const updateUser = (req, res, next) => {
 	const customer = customers.find((customer) => customer.id == req.params.id);
 	if (customer) {
 		if (req.body.firstName) customer.firstName = req.body.firstName;
@@ -27,6 +30,9 @@ export const updateUser = (req, res) => {
 		if (req.body.paymentMethod) customer.paymentMethod = req.body.paymentMethod;
 		res.status(200).json(customer);
 	} else {
-		res.status(404).json({ message: 'customer not found' });
+		const error = new Error('customer not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };

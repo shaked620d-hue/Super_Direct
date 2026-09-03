@@ -1,12 +1,15 @@
 import { products } from '../tmp.js';
 
 // מחזיר מוצר אחד לפי מזהה.
-export const getProductById = (req, res) => {
+export const getProductById = (req, res, next) => {
 	const product = products.find((product) => product.id == req.params.id);
 	if (product) {
 		res.status(200).json(product);
 	} else {
-		res.status(404).json({ message: 'product not found' });
+		const error = new Error('product not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
@@ -38,7 +41,7 @@ export const createProduct = (req, res) => {
 };
 
 // מעדכן רק את השדות שנשלחו עבור מוצר קיים.
-export const updateProduct = (req, res) => {
+export const updateProduct = (req, res, next) => {
 	const product = products.find((product) => product.id == req.params.id);
 	if (product) {
 		if (req.body.name) product.name = req.body.name;
@@ -49,17 +52,23 @@ export const updateProduct = (req, res) => {
 		if (req.body.image) product.image = req.body.image;
 		res.status(200).json(product);
 	} else {
-		res.status(404).json({ message: 'product not found' });
+		const error = new Error('product not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };
 
 // מוחק מוצר לפי מזהה.
-export const deleteProduct = (req, res) => {
+export const deleteProduct = (req, res, next) => {
 	const index = products.findIndex((product) => product.id == req.params.id);
 	if (index !== -1) {
 		products.splice(index, 1);
 		res.status(200).send({ message: 'deleted successfuly' });
 	} else {
-		res.status(404).json({ message: 'product not found' });
+		const error = new Error('product not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 };

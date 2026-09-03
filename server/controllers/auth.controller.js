@@ -17,15 +17,21 @@ export const register = (req, res) => {
 };
 
 // מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
-export const login = (req, res) => {
+export const login = (req, res, next) => {
 	const customer = customers.find((customer) => customer.email == req.body.email);
 	if (!customer) {
-		return res.status(404).json({ message: 'User not found' });
+		const error = new Error('User not found');
+		error.statusCode = 404;
+		error.type = 'not found';
+		return next(error);
 	}
 	if (req.body.password === customer.password) {
 		res.status(200).json(customer);
 	} else {
-		res.status(401).json({ message: 'Wrong password' });
+		const error = new Error('Wrong password');
+		error.statusCode = 401;
+		error.type = 'unauthorized';
+		return next(error);
 	}
 };
 
