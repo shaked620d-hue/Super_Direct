@@ -29,15 +29,14 @@ server.get('/', (req, res) => {
 
 server.use('/api', indexRouter);
 
-// --- Middleware calls (at the end of the file) ---
 // אבטחה: מוסיף כותרות HTTP
 // שמגנות על השרת מפני התקפות נפוצות.
-server.use(helmet());
+ server.use(helmet());
 
 // אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
-server.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
+ server.use(rateLimit({
+   windowMs: 15 * 60 * 1000,
+   max: 200,
   message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
 }));
 
@@ -59,7 +58,7 @@ server.use(createTimeBlocker({
   message: 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
 }));
 
-// רושם לכל בקשת HTTP לקונסולה.
+// רושם לכל בקשת HTTP לקונסולה. )
 server.use(morgan('dev'));
 
 // מפרש JSON שנשלח בבקשות POST/PUT.
