@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { requestLogger } from './middleware/requestLogger.js';
 import indexRouter from './routes/index.route.js';
 
 
@@ -27,6 +28,9 @@ server.use(rateLimit({
 // מידלוואר cors: מאפשר לכל דפדפן לשלוח בקשות מה־client
 // אל השרת, גם אם המקור שונה.
 server.use(cors());
+
+// מידלוואר מותאם אישית: רושם לכל בקשה את השיטה, הנתיב והזמן.
+server.use(requestLogger);
 
 // מידלוואר morgan:
 // HTTP רושם כל בקשת 
