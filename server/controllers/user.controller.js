@@ -1,15 +1,16 @@
 import { customers } from '../tmp.js';
+import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 
 // מחזיר את רשימת הלקוחות.
 export const getUsers = (req, res) => {
-	res.json(customers);
+	res.json(customers.map(sanitizeCustomer));
 };
 
 // מחזיר לקוח אחד לפי מזהה.
 export const getUserById = (req, res, next) => {
 	const customer = customers.find((customer) => customer.id == req.params.id);
 	if (customer) {
-		res.status(200).json(customer);
+		res.status(200).json(sanitizeCustomer(customer));
 	} else {
 		const error = new Error('customer not found');
 		error.statusCode = 404;
@@ -28,7 +29,7 @@ export const updateUser = (req, res, next) => {
 		if (req.body.address) customer.address = req.body.address;
 		if (req.body.password) customer.password = req.body.password;
 		if (req.body.paymentMethod) customer.paymentMethod = req.body.paymentMethod;
-		res.status(200).json(customer);
+		res.status(200).json(sanitizeCustomer(customer));
 	} else {
 		const error = new Error('customer not found');
 		error.statusCode = 404;

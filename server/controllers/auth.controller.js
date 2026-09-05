@@ -1,4 +1,5 @@
 import { customers } from '../tmp.js';
+import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 
 // יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
 export const register = (req, res) => {
@@ -12,8 +13,9 @@ export const register = (req, res) => {
 		paymentMethod: req.body.paymentMethod,
 		role: 'customer'
 	};
+	
 	customers.push(newCustomer);
-	res.status(201).json(newCustomer);
+	res.status(201).json(sanitizeCustomer(newCustomer));
 };
 
 // מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
@@ -26,7 +28,7 @@ export const login = (req, res, next) => {
 		return next(error);
 	}
 	if (req.body.password === customer.password) {
-		res.status(200).json(customer);
+		res.status(200).json(sanitizeCustomer(customer));
 	} else {
 		const error = new Error('Wrong password');
 		error.statusCode = 401;

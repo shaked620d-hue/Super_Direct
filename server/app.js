@@ -27,6 +27,9 @@ server.get('/', (req, res) => {
   res.sendFile(path.join(clientDir, 'index.html'));
 });
 
+// מפרש JSON שנשלח בבקשות POST/PUT.
+server.use(express.json());
+
 server.use('/api', indexRouter);
 
 // אבטחה: מוסיף כותרות HTTP
@@ -61,8 +64,7 @@ server.use(createTimeBlocker({
 // רושם לכל בקשת HTTP לקונסולה. )
 server.use(morgan('dev'));
 
-// מפרש JSON שנשלח בבקשות POST/PUT.
-server.use(express.json());
+
 
 // משרת קבצים סטטיים מהתיקיית client.
 server.use(express.static(clientDir));
