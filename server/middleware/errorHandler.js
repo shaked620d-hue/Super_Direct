@@ -19,6 +19,13 @@ export const errorHandler = (err, req, res, next) => {
       message: err.message || 'Internal Server Error',
       type: err.type || 'server error',
 
+
+
+      // אם לבעיה יש פרטים מוסיפים לג'ייסון
+      ...(err.details && { details: err.details }),
+
+
+
       // stack מופיע רק במצב פיתוח כדי לא לחשוף מידע sensitive בייצור.
       ...(isDev && { stack: err.stack || '' })
     }
