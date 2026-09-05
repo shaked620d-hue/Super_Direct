@@ -34,7 +34,9 @@ export const createProduct = (req, res) => {
 		price: req.body.price,
 		categoryId: req.body.categoryId,
 		stock: req.body.stock,
-		image: req.body.image
+
+		image: req.file ? req.file.filename : undefined
+
 	};
 	products.push(newProduct);
 	res.status(201).json(newProduct);
@@ -49,7 +51,8 @@ export const updateProduct = (req, res, next) => {
 		if (req.body.price) product.price = req.body.price;
 		if (req.body.categoryId) product.categoryId = req.body.categoryId;
 		if (req.body.stock !== undefined) product.stock = req.body.stock;
-		if (req.body.image) product.image = req.body.image;
+		if (req.file) product.image = req.file.filename;
+
 		res.status(200).json(product);
 	} else {
 		const error = new Error('product not found');
