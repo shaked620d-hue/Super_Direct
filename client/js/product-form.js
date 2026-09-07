@@ -10,7 +10,7 @@ const product= products.find(i=>i.id == id );
 if(product)
 {
      document.getElementById('name').value = product.name;
-     document.getElementById('category').value = product.category;
+     document.getElementById('categoryId').value = product.categoryId;
      document.getElementById('price').value = product.price;
 
      document.getElementById('image').value = product.image;
@@ -31,7 +31,7 @@ if(id)
 {
    const product = products.find(i=>i.id == id );
    product.name = document.getElementById('name').value;
-   product.category = document.getElementById('category').value;
+   product.categoryId = Number(document.getElementById('categoryId').value);
    product.price = document.getElementById('price').value;
    product.image = document.getElementById('image').value;
    product.description = document.getElementById('description').value;
@@ -40,7 +40,7 @@ else
 {
    const  newProduct= {
       name :  document.getElementById('name').value,
-      category :document.getElementById('category').value ,
+      categoryId : Number(document.getElementById('categoryId').value) ,
    price :   document.getElementById('price').value ,
       image : document.getElementById('image').value ,
       description : document.getElementById('description').value ,

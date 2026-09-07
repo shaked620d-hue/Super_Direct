@@ -1,7 +1,10 @@
 
 export let categories = [
   { id: 1, name: "פירות" },
-  { id: 2, name: "ירקות" }
+  { id: 2, name: "ירקות" },
+  { id: 3, name: "מחלבה" },
+  { id: 4, name: "מאפים" },
+  { id: 5, name: "מזווה" }
 ]
 
 export let products = [

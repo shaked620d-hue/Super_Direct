@@ -8,7 +8,7 @@ const createProductCard = (product) => {
 
     const tag = document.createElement('span');
     tag.className = 'product-tag';
-    tag.textContent = product.category;
+    tag.textContent = categoryNames[product.categoryId];
 
     const title = document.createElement('h3');
     title.textContent = product.name;
@@ -59,8 +59,8 @@ editLink.href = `${getBasePath()}product-form.html?id=${product.id}`;
 
 const renderProducts = () => {
     document.querySelectorAll('.products[data-category]').forEach((grid) => {
-        const category = grid.dataset.category;
-        const visibleProducts = products.filter((product) => product.category === category);
+        const categoryId = Number(grid.dataset.category);
+        const visibleProducts = products.filter((product) => product.categoryId === categoryId);
         grid.replaceChildren(...visibleProducts.map(createProductCard));
     });
 
