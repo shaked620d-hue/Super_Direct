@@ -1,8 +1,10 @@
-import { products } from '../tmp.js';
+import { Product } from '../models/product.model.js';
 
 // מחזיר מוצר אחד לפי מזהה.
-export const getProductById = (req, res, next) => {
-	const product = products.find((product) => product.id == req.params.id);
+export const getProductById = async(req, res, next) => {
+	try {
+		const product = await Product.findById(req.params.id);
+
 	if (product) {
 		res.status(200).json(product);
 	} else {
@@ -11,40 +13,54 @@ export const getProductById = (req, res, next) => {
 		error.type = 'not found';
 		return next(error);
 	}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
+	}
+	
 };
 
 // מחזיר את כל המוצרים, עם אפשרות לסינון לפי קטגוריה.
-export const getProducts = (req, res) => {
-	if (req.query.category) {
-		const productsWithSameCategory = products.filter(
-			(product) => product.categoryId == req.query.category
-		);
-		res.status(200).json(productsWithSameCategory);
-	} else {
-		res.json(products);
+export const getProducts = async (req, res, next) => {
+	try {
+		if (req.query.category) {
+			const productsWithSameCategory = await Product.find({ categoryId: req.query.category });
+			res.status(200).json(productsWithSameCategory);
+		} else {
+			const products = await Product.find();
+			res.status(200).json(products);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
 
 // יוצר מוצר חדש.
-export const createProduct = (req, res) => {
-	const newProduct = {
-		id: products.length + 1,
-		name: req.body.name,
-		description: req.body.description,
-		price: req.body.price,
-		categoryId: req.body.categoryId,
-		stock: req.body.stock,
-
-		image: req.file ? req.file.filename : undefined
-
-	};
-	products.push(newProduct);
-	res.status(201).json(newProduct);
+export const createProduct = async (req, res, next) => {
+	try {
+		const newProduct = await Product.create({
+			name: req.body.name,
+			description: req.body.description,
+			price: req.body.price,
+			categoryId: req.body.categoryId,
+			stock: req.body.stock,
+			image: req.file ? req.file.filename : undefined
+		});
+		res.status(201).json(newProduct);
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
+	}
 };
 
+
 // מעדכן רק את השדות שנשלחו עבור מוצר קיים.
-export const updateProduct = (req, res, next) => {
-	const product = products.find((product) => product.id == req.params.id);
+export const updateProduct = async (req, res, next) => {
+	try{
+		
+	const product = await Product.findById(req.params.id);
+
 	if (product) {
 		if (req.body.name) product.name = req.body.name;
 		if (req.body.description) product.description = req.body.description;
@@ -53,6 +69,7 @@ export const updateProduct = (req, res, next) => {
 		if (req.body.stock !== undefined) product.stock = req.body.stock;
 		if (req.file) product.image = req.file.filename;
 
+		await product.save();
 		res.status(200).json(product);
 	} else {
 		const error = new Error('product not found');
@@ -60,18 +77,28 @@ export const updateProduct = (req, res, next) => {
 		error.type = 'not found';
 		return next(error);
 	}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
+	}
+	
 };
 
 // מוחק מוצר לפי מזהה.
-export const deleteProduct = (req, res, next) => {
-	const index = products.findIndex((product) => product.id == req.params.id);
-	if (index !== -1) {
-		products.splice(index, 1);
-		res.status(200).send({ message: 'deleted successfuly' });
-	} else {
-		const error = new Error('product not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+
+export const deleteProduct = async (req, res, next) => {
+	try {
+		const deleted = await Product.findByIdAndDelete(req.params.id);
+		if (deleted) {
+			res.status(200).send({ message: 'deleted successfuly' });
+		} else {
+			const error = new Error('product not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
