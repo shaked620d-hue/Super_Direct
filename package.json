@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "morgan": "^1.12.0",
-    "multer": "^2.3.0"
-  }
-}
