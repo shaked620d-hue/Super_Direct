@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express'
 import path from 'node:path';
 import cors from 'cors';
@@ -10,10 +11,13 @@ import { createTimeBlocker } from './middleware/timeBlocker.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import indexRouter from './routes/index.route.js';
+import { connectDB } from './config/db.js';
 
 
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
+
+connectDB();
 
 server.use('/public', express.static(path.join(import.meta.dirname, 'public')));
 
