@@ -69,33 +69,35 @@ const renderProducts = () => {
     });
 };
 
+// הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
 const renderSearchResults = (query) => {
-    // מאתרים את אזור המוצרים בדף הבית, שבו מוצגות תוצאות החיפוש.
-    document.querySelectorAll('.products[data-featured]').forEach((grid) => {
-        // אם יש טקסט לחיפוש, מסננים לפי שם המוצר או התיאור שלו.
-        const visibleProducts = query
-            // מחברים את שם המוצר והתיאור למחרוזת אחת ובודקים אם היא מכילה את החיפוש.
-            ? products.filter((product) => `${product.name} ${product.description}`.includes(query))
-            // אם החיפוש ריק, מציגים מחדש רק את ארבעת המוצרים המובילים.
-            : products.slice(0, 4);
+    // מאתרים את מיכל המוצרים שבו יוצגו תוצאות החיפוש.
+    const productContainer = document.querySelector('#productGrid');
+    // אם המיכל לא קיים בדף הנוכחי, אין פעולה שאפשר לבצע.
+    if (!productContainer) return;
+    // אם יש טקסט לחיפוש, מסננים לפי שם המוצר או התיאור שלו.
+    const visibleProducts = query
+        // מחברים את שם המוצר והתיאור למחרוזת אחת ובודקים אם היא מכילה את החיפוש.
+        ? products.filter((product) => `${product.name} ${product.description}`.includes(query))
+        // אם החיפוש ריק, מציגים מחדש רק את ארבעת המוצרים המובילים.
+        : products.slice(0, 4);
 
-        // בודקים אם הסינון לא מצא אף מוצר.
-        if (visibleProducts.length === 0) {
-            // יוצרים אלמנט טקסט שיודיע למשתמש שאין תוצאות מתאימות.
-            const emptyMessage = document.createElement('p');
-            // מוסיפים לאלמנט מחלקה כדי שאפשר יהיה לעצב אותו ב-CSS.
-            emptyMessage.className = 'search-empty';
-            // מגדירים את הטקסט שיופיע למשתמש.
-            emptyMessage.textContent = 'לא מצאנו מוצרים שמתאימים לחיפוש';
-            // מחליפים את תוכן אזור המוצרים בהודעת האפס תוצאות.
-            grid.replaceChildren(emptyMessage);
-            // עוצרים את הטיפול באזור המוצרים הנוכחי.
-            return;
-        }
+    // בודקים אם הסינון לא מצא אף מוצר.
+    if (visibleProducts.length === 0) {
+        // יוצרים אלמנט טקסט שיודיע למשתמש שאין תוצאות מתאימות.
+        const emptyMessage = document.createElement('p');
+        // מוסיפים לאלמנט מחלקה כדי שאפשר יהיה לעצב אותו ב-CSS.
+        emptyMessage.className = 'search-empty';
+        // מגדירים את הטקסט שיופיע למשתמש.
+        emptyMessage.textContent = 'לא מצאנו מוצרים שמתאימים לחיפוש';
+        // מחליפים את תוכן אזור המוצרים בהודעת האפס תוצאות.
+        productContainer.replaceChildren(emptyMessage);
+        // עוצרים את הטיפול לאחר הצגת הודעת האפס תוצאות.
+        return;
+    }
 
-        // יוצרים כרטיס HTML עבור כל מוצר ומחליפים את התוצאות הישנות בחדשות.
-        grid.replaceChildren(...visibleProducts.map(createProductCard));
-    });
+    // יוצרים כרטיס HTML עבור כל מוצר ומחליפים את התוצאות הישנות בחדשות.
+    productContainer.replaceChildren(...visibleProducts.map(createProductCard));
 };
 
 const handleSearch = (event) => {
