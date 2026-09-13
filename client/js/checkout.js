@@ -26,16 +26,41 @@ const renderCheckout = () =>{
 }
 
 const handleConfirmOrder = ()=>{
-   const confimbtn=   document.getElementById('confirmOrderButton');
-if(!confimbtn)
-{
+  const paymentForm= document.getElementById('paymentForm');
+  if(!paymentForm)
+  {
     return;
+  }
+  paymentForm.addEventListener('submit', (event)=>{
+    event.preventDefault();
+
+    const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');//לוקח מחרוזת ומסיר ממנה את כל הרווחים
+    if (cardNumber.length !== 16) {
+   showToast('מספר כרטיס לא תקין');
+  return;
 }
- confimbtn.addEventListener('click',()=>{
+
+const lastFourDigits = cardNumber.slice(-4);
+
+const cardCvv = document.getElementById('cardCvv').value;
+if (cardCvv.length !== 3) {
+  showToast('CVV לא תקין');
+  return;
+}
+const cardExpiry = document.getElementById('cardExpiry').value;
+const [month, year] = cardExpiry.split('/');
+const expiryDate = new Date(2000 + Number(year), Number(month));// פלוס אלפיים כי במחרוזת זה לא כתוב מלא
+if (!month || !year || expiryDate < new Date()) {
+  showToast('תוקף הכרטיס לא תקין או פג');
+  return;
+}
+
     writeCart([]);
-    showToast('ההזמנה בוצעה בהצלחה תודה שקניתם אצלינו');
+
+showToast(`ההזמנה בוצעה בהצלחה, שולם בכרטיס המסתיים ב-${lastFourDigits}`);
     window.setTimeout(() => { window.location.href = '/index.html'; }, 1500)
- } )
+  })
+
 
 }
 
