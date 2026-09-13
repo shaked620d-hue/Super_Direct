@@ -35,6 +35,12 @@ const addToCart = (card) => {
     showToast(`${name} נוסף לסל`);
 };
 
+const handleAddToCartClick = (event) => {
+    const button = event.target.closest('.add-button');
+    if (!button) return;
+    addToCart(button.closest('.product-card'));
+};
+
 const showToast = (message) => {
     let toast = document.querySelector('.toast');
     if (!toast) {
@@ -108,7 +114,6 @@ const handleCheckout= () =>{
 }
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
-    document.querySelectorAll('.add-button').forEach((button) => button.addEventListener('click', () => addToCart(button.closest('.product-card'))));
     document.querySelectorAll('[aria-label="פתיחת סל הקניות"], [aria-label="סל הקניות"]').forEach((link) => {
         const cartPath = document.body.dataset.cartPath || 'cart.html';
         link.href = cartPath;
@@ -119,3 +124,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
  document.addEventListener('DOMContentLoaded', handleCheckout);
 document.addEventListener('DOMContentLoaded', initMobileMenu);
+document.addEventListener('click', handleAddToCartClick);
