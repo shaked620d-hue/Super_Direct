@@ -69,6 +69,35 @@ const renderProducts = () => {
     });
 };
 
+const renderSearchResults = (query) => {
+    document.querySelectorAll('.products[data-featured]').forEach((grid) => {
+        const visibleProducts = query
+            ? products.filter((product) => `${product.name} ${product.description}`.includes(query))
+            : products.slice(0, 4);
+
+        if (visibleProducts.length === 0) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.className = 'search-empty';
+            emptyMessage.textContent = 'לא מצאנו מוצרים שמתאימים לחיפוש';
+            grid.replaceChildren(emptyMessage);
+            return;
+        }
+
+        grid.replaceChildren(...visibleProducts.map(createProductCard));
+    });
+};
+
+const handleSearch = (event) => {
+    event.preventDefault();
+    const input = document.querySelector('#searchInput');
+    const query = input?.value.trim().toLocaleLowerCase('he') || '';
+    const resultsTitle = document.querySelector('#fresh-title');
+
+    renderSearchResults(query);
+    if (resultsTitle) resultsTitle.textContent = query ? `תוצאות לחיפוש: ${input.value.trim()}` : 'נבחרת טרייה להיום';
+    document.querySelector('#fresh')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
 const deleteProduct = (event) => {
     if (!event.target.classList.contains('delete')) return;
     const id = Number(event.target.dataset.id);
@@ -95,3 +124,6 @@ const addNewProductButton = () => {
 document.addEventListener('DOMContentLoaded', renderProducts);
 document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('#searchForm')?.addEventListener('submit', handleSearch);
+});
