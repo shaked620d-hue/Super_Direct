@@ -67,6 +67,10 @@ const renderProducts = () => {
     document.querySelectorAll('.products[data-featured]').forEach((grid) => {
         grid.replaceChildren(...products.slice(0, 4).map(createProductCard));
     });
+
+    document.querySelectorAll('.products[data-all-products]').forEach((container) => {
+        container.replaceChildren(...products.map(createProductCard));
+    });
 };
 
 // הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
