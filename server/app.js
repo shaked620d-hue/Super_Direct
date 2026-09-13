@@ -1,6 +1,6 @@
-import 'dotenv/config';
-import express from 'express'
+import './config/env.js';
 import path from 'node:path';
+import express from 'express'
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
