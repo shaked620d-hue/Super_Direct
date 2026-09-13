@@ -73,6 +73,30 @@ const renderProducts = () => {
     });
 };
 
+const normalizeProduct = (product) => ({
+    id: product._id || product.id,
+    name: product.name,
+    categoryId: Number(product.categoryId),
+    description: product.description,
+    price: Number(product.price),
+    image: product.image?.startsWith('http') ? product.image : product.image ? `/public/${product.image}` : ''
+});
+
+const loadProducts = async () => {
+    renderProducts();
+
+    try {
+        const response = await fetch('/api/product');
+        if (!response.ok) throw new Error('טעינת המוצרים נכשלה');
+
+        const serverProducts = await response.json();
+        products.splice(0, products.length, ...serverProducts.map(normalizeProduct));
+        renderProducts();
+    } catch {
+        // במקרה שהשרת לא זמין, משאירים את המוצרים המקומיים שכבר הוצגו.
+    }
+};
+
 // הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
 const renderSearchResults = (query) => {
     // מאתרים את מיכל המוצרים שבו יוצגו תוצאות החיפוש.
@@ -124,8 +148,8 @@ const handleSearch = (event) => {
 
 const deleteProduct = (event) => {
     if (!event.target.classList.contains('delete')) return;
-    const id = Number(event.target.dataset.id);
-    const index = products.findIndex((p) => p.id === id);
+    const id = event.target.dataset.id;
+    const index = products.findIndex((product) => String(product.id) === String(id));
     if (index !== -1) products.splice(index, 1);
     renderProducts();
 };
@@ -145,7 +169,7 @@ const addNewProductButton = () => {
     headerActions.append(button);
 }
 
-document.addEventListener('DOMContentLoaded', renderProducts);
+document.addEventListener('DOMContentLoaded', loadProducts);
 document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
 document.addEventListener('DOMContentLoaded', () => {
