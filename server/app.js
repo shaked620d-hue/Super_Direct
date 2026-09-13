@@ -40,7 +40,15 @@ server.use('/api', indexRouter);
 
 // אבטחה: מוסיף כותרות HTTP
 // שמגנות על השרת מפני התקפות נפוצות.
- server.use(helmet());
+// img-src מורחב כדי לאפשר תמונות מוצר מ-Unsplash (מוק זמני, עד שיהיו תמונות אמיתיות מ-public/).
+ server.use(helmet({
+   contentSecurityPolicy: {
+     directives: {
+       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+       'img-src': ["'self'", 'data:', 'https://images.unsplash.com']
+     }
+   }
+ }));
 
 // אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
  server.use(rateLimit({
