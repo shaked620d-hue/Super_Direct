@@ -36,8 +36,11 @@ const addToCart = (card) => {
 };
 
 const handleAddToCartClick = (event) => {
+    // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
+    // אם הלחיצה לא הייתה על כפתור הוספה, לא מבצעים פעולה.
     if (!button) return;
+    // מוצא את כרטיס המוצר ומעביר אותו לפונקציה שמוסיפה אותו לסל.
     addToCart(button.closest('.product-card'));
 };
 
