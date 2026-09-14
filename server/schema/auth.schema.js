@@ -6,7 +6,7 @@ export const  registerSchema = Joi.object({
       address: Joi.string().min(2).required(),
       email :Joi.string().email().required(), 
       password : Joi.string().min(6).required(), 
-      paymentMethod :Joi.string().pattern(/^\d{4}$/).required(), 
+      paymentMethod :Joi.string().pattern(/^\d{4}$/), 
 
 })
   
