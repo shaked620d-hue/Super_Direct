@@ -58,7 +58,7 @@ if (!month || !year || expiryDate < new Date()) {
     writeCart([]);
 
 showToast(`ההזמנה בוצעה בהצלחה, שולם בכרטיס המסתיים ב-${lastFourDigits}`);
-    window.setTimeout(() => { window.location.href = '/index.html'; }, 1500)
+    window.setTimeout(() => { window.location.href = '../index.html'; }, 1500)
   })
 
 
