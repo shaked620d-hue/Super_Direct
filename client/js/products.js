@@ -1,4 +1,16 @@
 
+let categoryNames = {};
+
+const loadCategoryNames = async () => {
+    const response = await getCategories();
+    const categories = await response.json();
+    categories.forEach((category) => {
+        categoryNames[category.id] = category.name;
+    });
+};
+
+
+
 const createProductCard = (product) => {
     const img = document.createElement('img');
     img.className = 'product-image';
@@ -59,6 +71,7 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
 
 const renderProducts = async () => {
     try {
+        await loadCategoryNames();
         const response = await getProducts();
         const products = await response.json();
 
