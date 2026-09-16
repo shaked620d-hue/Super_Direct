@@ -2,7 +2,7 @@
 const createProductCard = (product) => {
     const img = document.createElement('img');
     img.className = 'product-image';
-    img.src = product.image;
+    img.src = product.image ? `/public/${product.image}` : '';
     img.alt = product.name;
     img.loading = 'lazy';
 
@@ -37,12 +37,12 @@ const createProductCard = (product) => {
     if (isAdmin()) {
         const editLink = document.createElement('a');
         editLink.className = 'admin-btn edit';
-editLink.href = `${getBasePath()}product-form.html?id=${product.id}`;
+editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'admin-btn delete';
         deleteButton.type = 'button';
-        deleteButton.dataset.id = product.id;
+        deleteButton.dataset.id = product._id;
         deleteButton.textContent = 'מחיקה';
 
         const adminActions = document.createElement('div');
@@ -57,7 +57,11 @@ editLink.href = `${getBasePath()}product-form.html?id=${product.id}`;
     return card;
 };
 
-const renderProducts = () => {
+const renderProducts  = async () => {
+
+     const response = await getProducts();
+    const products = await response.json();
+
     document.querySelectorAll('.products[data-category]').forEach((grid) => {
         const categoryId = Number(grid.dataset.category);
         const visibleProducts = products.filter((product) => product.categoryId === categoryId);
