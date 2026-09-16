@@ -41,6 +41,16 @@ export let products = [
 export let customers = [
   {
     id: 1,
+    firstName: "ADMIN",
+    lastName: "",
+    address: "",
+    password: "123456789",
+    paymentMethod: "",
+    role: "admin",
+    email: "admin@superdirect.co.il"
+  },
+  {
+    id: 2,
     firstName: "יעל",
     lastName: "כהן",
     address: "הרצל 12, גבעת שמואל",
@@ -50,7 +60,7 @@ export let customers = [
     email: "abc@gmail.com"
   }, 
     {
-    id: 2,
+    id: 3,
     firstName: "חיים",
     lastName: "כהן",
     address: "הרצל 12, גבעת שמואל",
@@ -65,7 +75,7 @@ export let customers = [
 export let orders = [
  {
   id: 1,
-  customerId: 1,
+  customerId: 2,
   orderDate: "2026-08-20",
   expectedDelivery: "2026-08-22",
   items: [
