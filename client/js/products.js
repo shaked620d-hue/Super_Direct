@@ -57,20 +57,23 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     return card;
 };
 
-const renderProducts  = async () => {
+const renderProducts = async () => {
+    try {
+        const response = await getProducts();
+        const products = await response.json();
 
-     const response = await getProducts();
-    const products = await response.json();
+        document.querySelectorAll('.products[data-category]').forEach((grid) => {
+            const categoryId = Number(grid.dataset.category);
+            const visibleProducts = products.filter((product) => product.categoryId === categoryId);
+            grid.replaceChildren(...visibleProducts.map(createProductCard));
+        });
 
-    document.querySelectorAll('.products[data-category]').forEach((grid) => {
-        const categoryId = Number(grid.dataset.category);
-        const visibleProducts = products.filter((product) => product.categoryId === categoryId);
-        grid.replaceChildren(...visibleProducts.map(createProductCard));
-    });
-
-    document.querySelectorAll('.products[data-featured]').forEach((grid) => {
-        grid.replaceChildren(...products.slice(0, 4).map(createProductCard));
-    });
+        document.querySelectorAll('.products[data-featured]').forEach((grid) => {
+            grid.replaceChildren(...products.slice(0, 4).map(createProductCard));
+        });
+    } catch {
+        showToast('שגיאה בטעינת המוצרים');
+    }
 };
 
 const deleteProduct = (event) => {

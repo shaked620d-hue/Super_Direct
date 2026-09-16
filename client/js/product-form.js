@@ -1,25 +1,28 @@
 let id;
 
-const takeData = ()=>{
+const takeData = async ()=>{
     const data =new URLSearchParams(window.location.search);
 id=data.get('id');
 if(id)
 {
-id=Number(id);
-const product= products.find(i=>i.id == id );
-if(product)
-{
-     document.getElementById('name').value = product.name;
+    try{
+    const response = await getProductById(id);
+const product = await response.json();
+
+
+
+  document.getElementById('name').value = product.name;
      document.getElementById('categoryId').value = product.categoryId;
      document.getElementById('price').value = product.price;
-
-     document.getElementById('image').value = product.image;
 
      document.getElementById('description').value = product.description;
 document.getElementById('formTitle').textContent = 'עריכת מוצר';
     document.getElementById('submitButton').textContent = 'שמירת שינויים';
 
-}
+    }
+  catch{
+       showToast('שגיאה בטעינת המוצר');
+  }
 }
 }
 

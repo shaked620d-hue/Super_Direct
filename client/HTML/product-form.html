@@ -53,8 +53,8 @@
                         <textarea id="description" name="description" required></textarea>
                     </div>
                     <div class="form-field">
-                        <label for="image">קישור לתמונה</label>
-                        <input id="image" name="image" type="url" placeholder="https://...">
+                        <label for="image">תמונת מוצר</label>
+                        <input id="image" name="image" type="file" accept="image/*">
                     </div>
                     <button class="auth-submit" type="submit" id="submitButton">הוספת מוצר</button>
                 </form>
@@ -71,6 +71,8 @@
     <script src="../js/product-data.js"></script>
     <script src="../js/cart.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/services/productService.js"></script>
     <script src="../js/product-form.js"></script>
 </body>
 </html>
