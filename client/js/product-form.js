@@ -27,33 +27,34 @@ document.getElementById('formTitle').textContent = 'עריכת מוצר';
 }
 
 
-const addOrUpdateProduct = (event) =>{
+const addOrUpdateProduct = async (event) =>{
    event.preventDefault();
 
-if(id)
-{
-   const product = products.find(i=>i.id == id );
-   product.name = document.getElementById('name').value;
-   product.categoryId = Number(document.getElementById('categoryId').value);
-   product.price = document.getElementById('price').value;
-   product.image = document.getElementById('image').value;
-   product.description = document.getElementById('description').value;
-}
-else
-{
-   const  newProduct= {
-      name :  document.getElementById('name').value,
-      categoryId : Number(document.getElementById('categoryId').value) ,
-   price :   document.getElementById('price').value ,
-      image : document.getElementById('image').value ,
-      description : document.getElementById('description').value ,
-id: products.length+1, // בהמשך זה לפי הDB
-   }
-   products.push(newProduct);
+const formData = new FormData();
+formData.append('name', document.getElementById('name').value);
+formData.append('categoryId', document.getElementById('categoryId').value);
+formData.append('price', document.getElementById('price').value);
+formData.append('description', document.getElementById('description').value);
+
+const imageFile = document.getElementById('image').files[0];// שאפשר להכניס יותר מתמונה אחת 
+if (imageFile) {
+    formData.append('image', imageFile);
 }
 
-showToast('המוצר נשמר בהצלחה');
-window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+try {
+    // אם יש מוצר קוראים לו ומשנים אותו אם לא יוצרים חדש
+    const response = id ? await updateProduct(id, formData) : await createProduct(formData);
+
+    if (!response.ok) {
+        showToast('שמירת המוצר נכשלה');
+        return;
+    }
+
+    showToast('המוצר נשמר בהצלחה');
+    window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+} catch {
+    showToast('אירעה שגיאה בשמירת המוצר');
+}
 
 }
 
