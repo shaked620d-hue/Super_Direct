@@ -76,12 +76,22 @@ const renderProducts = async () => {
     }
 };
 
-const deleteProduct = (event) => {
+const deleteProduct = async  (event) => {
     if (!event.target.classList.contains('delete')) return;
-    const id = Number(event.target.dataset.id);
-    const index = products.findIndex((p) => p.id === id);
-    if (index !== -1) products.splice(index, 1);
-    renderProducts();
+     const id = event.target.dataset.id;
+
+       try {
+        const response = await deleteProductRequest(id);
+        if (!response.ok) {
+            showToast('מחיקת המוצר נכשלה');
+            return;
+        }
+        renderProducts();
+    } catch {
+        showToast('אירעה שגיאה במחיקת המוצר');
+    }
+
+   
 };
 
 

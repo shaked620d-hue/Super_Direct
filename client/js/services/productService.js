@@ -18,3 +18,9 @@ const updateProduct = async (id, formData) => {
         body: formData
     });
 };
+
+const deleteProductRequest = async (id) => {
+    return fetch(`${API_BASE_URL}/api/product/${id}`, {
+        method: 'DELETE'
+    });
+};
