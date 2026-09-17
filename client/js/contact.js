@@ -23,16 +23,30 @@ const attachment=  document.getElementById('attachment');
 document.getElementById('attachmentPreviewWrap').hidden = true;
     });
 
-    contactForm.addEventListener('submit',  (event)=>{
+    contactForm.addEventListener('submit', async (event)=>{
         event.preventDefault();
-        
-        const details= { name: document.getElementById('name').value,
-                         subject: document.getElementById('subject').value,
-                         email: document.getElementById('email').value,
-                         message: document.getElementById('message').value  }
-    
-        saveLocalStorage( 'superDirectMessages', details)// כשיהיה שרת זה ישתנה גם 
-        showToast('ההודעה נשמרה בהצלחה'); 
+
+        const formData = new FormData();
+        formData.append('name', document.getElementById('name').value);
+        formData.append('subject', document.getElementById('subject').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('message', document.getElementById('message').value);
+
+        const file = attachment.files[0];
+        if (file) {
+            formData.append('attachment', file);
+        }
+
+        try {
+            const response = await createMessage(formData);
+            if (!response.ok) {
+                showToast('שליחת ההודעה נכשלה');
+                return;
+            }
+            showToast('ההודעה נשלחה בהצלחה');
+        } catch {
+            showToast('אירעה שגיאה בשליחת ההודעה');
+        }
 })
 }
 
