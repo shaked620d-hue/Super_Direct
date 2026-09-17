@@ -2,6 +2,8 @@ let id;
 
 const takeData = async ()=>{
     const data =new URLSearchParams(window.location.search);
+    await loadCategoryOptions();
+
 id=data.get('id');
 if(id)
 {
@@ -18,6 +20,7 @@ const product = await response.json();
      document.getElementById('description').value = product.description;
 document.getElementById('formTitle').textContent = 'עריכת מוצר';
     document.getElementById('submitButton').textContent = 'שמירת שינויים';
+    
 
     }
   catch{
@@ -65,6 +68,20 @@ const guardAdminOnly = () => {
 
     }
 }
+
+// בשביל לשלוף את כל הקטגוריות במקום שיהיה רשימה
+const loadCategoryOptions = async () => {
+    const response = await getCategories();
+    const categories = await response.json();
+    const select = document.getElementById('categoryId');
+    categories.forEach((category) => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        select.append(option);
+    });
+};
+
 
 
 document.addEventListener('DOMContentLoaded', guardAdminOnly);
