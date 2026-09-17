@@ -67,17 +67,24 @@ function calculateExpectedDelivery() {
 }
 
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
-export const createOrder = (req, res) => {
-	const orderItems = req.body.items.map((item) => {
+export const createOrder = (req, res, next) => {
+	const orderItems = [];
+	for (const item of req.body.items) {
 		const product = products.find((product) => product.id == item.productId);
+		if (!product) {
+			const error = new Error('Product not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
 		product.stock = product.stock - item.qty;
-		return {
+		orderItems.push({
 			productId: item.productId,
 			name: product.name,
 			price: product.price,
 			qty: item.qty
-		};
-	});
+		});
+	}
 
 	const totalPrice = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
 	const deliveryFee = totalPrice >= 250 ? 0 : 15;
