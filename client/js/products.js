@@ -76,8 +76,8 @@ const renderProducts = async () => {
         const products = await response.json();
 
         document.querySelectorAll('.products[data-category]').forEach((grid) => {
-            const categoryId = Number(grid.dataset.category);
-            const visibleProducts = products.filter((product) => product.categoryId === categoryId);
+            const categoryName = grid.dataset.category;
+            const visibleProducts = products.filter((product) => categoryNames[product.categoryId] === categoryName);
             grid.replaceChildren(...visibleProducts.map(createProductCard));
         });
 
