@@ -29,9 +29,9 @@ server.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
 });
 
-server.get('/', (req, res) => {
-  res.sendFile(path.join(clientDir, 'index.html'));
-});
+// server.get('/', (req, res) => {
+//   res.sendFile(path.join(clientDir, 'index.html'));
+// });
 
 // מפרש JSON שנשלח בבקשות POST/PUT.
 server.use(express.json());
