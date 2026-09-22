@@ -31,7 +31,8 @@ const handleConfirmOrder = ()=>{
   {
     return;
   }
-  paymentForm.addEventListener('submit', (event)=>{
+  paymentForm.addEventListener('submit', async (event)=>{
+
     event.preventDefault();
 
     const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');//לוקח מחרוזת ומסיר ממנה את כל הרווחים
@@ -55,7 +56,23 @@ if (!month || !year || expiryDate < new Date()) {
   return;
 }
 
-    writeCart([]);
+
+const cart = readCart();
+const items = cart.map((item) => ({ productId: item.productId, qty: item.quantity }));
+const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+
+try {
+    const response = await createOrderRequest({ items, customerId: currentUser.id });
+    if (!response.ok) {
+        showToast('שליחת ההזמנה נכשלה');
+        return;
+    }
+} catch {
+    showToast('אירעה שגיאה בשליחת ההזמנה');
+    return;
+}
+
+writeCart([]);
 
 showToast(`ההזמנה בוצעה בהצלחה, שולם בכרטיס המסתיים ב-${lastFourDigits}`);
     window.setTimeout(() => { window.location.href = '../index.html'; }, 1500)

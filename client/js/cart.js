@@ -25,12 +25,15 @@ const addToCart = (card) => {
     const name = card.querySelector('h3')?.textContent.trim();
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
     const image = card.querySelector('.product-image')?.src || '';
+    const productId = card.dataset.id;
+
     if (!name || Number.isNaN(price)) return;
 
     const cart = readCart();
     const existing = cart.find((item) => item.name === name);
     if (existing) existing.quantity += 1;
-    else cart.push({ name, price, image, quantity: 1 });
+else cart.push({ productId, name, price, image, quantity: 1 });
+
     writeCart(cart);
     showToast(`${name} נוסף לסל`);
 };

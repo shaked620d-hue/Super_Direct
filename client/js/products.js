@@ -110,6 +110,7 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
 
     const card = document.createElement('article');
     card.className = 'product-card';
+    card.dataset.id = product._id;
     card.append(img, info);
     return card;
 };
