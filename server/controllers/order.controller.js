@@ -14,9 +14,17 @@ export const getOrders = async (req, res, next) => {
 };
 
 // יחזיר את הזמנות המשתמש המחובר לאחר הוספת JWT.
-export const getMyOrders = (req, res) => {
-	// TODO: להשלים אחרי שיהיה JWT
+// צריך להתאים את זה 
+export const getMyOrders = async (req, res, next) => {
+    try {
+        const orders = await Order.find({ customerId: req.query.customerId });
+        res.json(orders);
+    } catch (error) {
+        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        next(error);
+    }
 };
+
 
 // מחזיר הזמנה אחת לפי מזהה.
 export const getOrderById = async (req, res, next) => {

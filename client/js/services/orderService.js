@@ -5,3 +5,7 @@ const createOrderRequest = async (details) => {
         body: JSON.stringify(details)
     });
 };
+
+const getMyOrdersRequest = async (customerId) => {
+    return fetch(`${API_BASE_URL}/api/order/my?customerId=${customerId}`);
+};

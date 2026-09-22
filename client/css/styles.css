@@ -121,6 +121,11 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .contact-info strong { color:var(--ink); }
 .cart-page { padding-top:20px; }
 .cart-header { max-width:1180px; padding-inline:0; margin-bottom:28px; }
+.order-card { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px; }
+.order-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+.order-status { font-weight:700; color:var(--green); background:var(--cream); border-radius:999px; padding:4px 12px; font-size:.85rem; }
+.order-item-line { display:flex; justify-content:space-between; font-size:.92rem; color:var(--muted); padding:3px 0; }
+.order-total { display:flex; justify-content:space-between; font-weight:800; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
 .cart-layout { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(280px,.75fr); gap:24px; align-items:start; }
 .cart-items { display:flex; flex-direction:column; gap:12px; }
 .cart-item { display:grid; grid-template-columns:90px 1fr auto auto auto; gap:16px; align-items:center; padding:14px; background:var(--white); border:1px solid var(--line); border-radius:16px; }
