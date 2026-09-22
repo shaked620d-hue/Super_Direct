@@ -16,6 +16,12 @@ const takeData = async ()=>{
             document.getElementById('description').value = product.description;
             document.getElementById('formTitle').textContent = 'עריכת מוצר';
             document.getElementById('submitButton').textContent = 'שמירת שינויים';
+            document.getElementById('containsGluten').checked = product.containsGluten;
+            document.getElementById('containsDairy').checked = product.containsDairy;
+            document.getElementById('containsNuts').checked = product.containsNuts;
+            document.getElementById('containsEggs').checked = product.containsEggs;
+            document.getElementById('containsSoy').checked = product.containsSoy;
+
         }
     } catch {
         showToast('שגיאה בטעינת הנתונים');
@@ -31,6 +37,13 @@ formData.append('name', document.getElementById('name').value);
 formData.append('categoryId', document.getElementById('categoryId').value);
 formData.append('price', document.getElementById('price').value);
 formData.append('description', document.getElementById('description').value);
+formData.append('containsGluten', document.getElementById('containsGluten').checked);
+
+formData.append('containsDairy', document.getElementById('containsDairy').checked);
+formData.append('containsNuts', document.getElementById('containsNuts').checked);
+formData.append('containsSoy', document.getElementById('containsSoy').checked);
+formData.append('containsEggs', document.getElementById('containsEggs').checked);
+
 
 const imageFile = document.getElementById('image').files[0];// שאפשר להכניס יותר מתמונה אחת 
 if (imageFile) {

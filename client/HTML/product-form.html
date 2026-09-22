@@ -15,6 +15,7 @@
     <header class="site-header">
         <nav class="nav-wrap" aria-label="ניווט ראשי">
             <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <img class="kosher-badge-header" src="../images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
             <div class="nav-links"><a href="../index.html#categories">קטגוריות</a><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
         </nav>
     </header>
@@ -50,6 +51,16 @@
                     <div class="form-field">
                         <label for="image">תמונת מוצר</label>
                         <input id="image" name="image" type="file" accept="image/*">
+                    </div>
+                    <div class="form-field">
+                        <label>אלרגנים</label>
+                        <div class="tags-checkboxes">
+                            <label><input id="containsGluten" name="containsGluten" type="checkbox"> מכיל גלוטן</label>
+                            <label><input id="containsDairy" name="containsDairy" type="checkbox"> מכיל חלב</label>
+                            <label><input id="containsNuts" name="containsNuts" type="checkbox"> מכיל אגוזים</label>
+                            <label><input id="containsEggs" name="containsEggs" type="checkbox"> מכיל ביצים</label>
+                            <label><input id="containsSoy" name="containsSoy" type="checkbox"> מכיל סויה</label>
+                        </div>
                     </div>
                     <button class="auth-submit" type="submit" id="submitButton">הוספת מוצר</button>
                 </form>

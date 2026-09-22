@@ -17,6 +17,7 @@
     <header class="site-header">
         <nav class="nav-wrap" aria-label="ניווט ראשי">
             <a class="brand" href="index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <img class="kosher-badge-header" src="images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
             <div class="nav-links"><a href="#categories">קטגוריות</a><a href="#fresh">טרי על המדף</a><a href="HTML/about.html">למה אנחנו</a></div>
             <div class="header-actions"><a class="icon-button" id="authButton" href="HTML/login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" id="cartButton" href="HTML/cart.html" aria-label="פתיחת סל הקניות">🛒<span class="cart-count" id="cartCount"></span></a></div>
         </nav>
@@ -24,7 +25,7 @@
     <main>
         <section class="hero" aria-labelledby="hero-title">
             <div><p class="eyebrow">קניות טובות מתחילות כאן</p><h1 id="hero-title">טרי, פשוט,<br><em>ישר אל הדלת.</em></h1><p class="hero-copy">כל מה שצריך למטבח, מהחקלאי ועד הבית. בוחרים, מזמינים ומקבלים משלוח מדויק ונעים.</p><form class="search" role="search" id="searchForm"><label for="searchInput" class="search-label">חיפוש מוצר</label><input id="searchInput" name="q" type="search" placeholder="מה מתחשק לכם היום?" autocomplete="off"><button type="submit">חיפוש</button></form></div>
-            <div class="hero-image" role="img" aria-label="סלסלת ירקות טריים"><div class="delivery-note">הזמנה עד 14:00 <small>ומקבלים עוד היום</small></div></div>
+            <div class="hero-image" role="img" aria-label="סלסלת ירקות טריים"><div class="kosher-seal"><img src="images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית"></div><div class="delivery-note">הזמנה עד 14:00 <small>ומקבלים עוד היום</small></div></div>
         </section>
         <section id="categories" aria-labelledby="categories-title"><div class="section-heading"><h2 id="categories-title">מה במטבח?</h2></div><div class="category-list"><a class="category" href="HTML/category.html?cat=fruits"><span class="category-icon" aria-hidden="true">🍎</span>פירות</a><a class="category" href="HTML/category.html?cat=vegetables"><span class="category-icon" aria-hidden="true">🥬</span>ירקות</a><a class="category" href="HTML/category.html?cat=dairy"><span class="category-icon" aria-hidden="true">🥛</span>מחלבה</a><a class="category" href="HTML/category.html?cat=bakery"><span class="category-icon" aria-hidden="true">🥖</span>מאפים</a><a class="category" href="HTML/category.html?cat=pantry"><span class="category-icon" aria-hidden="true">🫙</span>מזווה</a></div></section>
         <section id="fresh" aria-labelledby="fresh-title"><div class="section-heading"><h2 id="fresh-title">נבחרת טרייה להיום</h2></div><div class="products" id="productGrid" data-featured></div></section>

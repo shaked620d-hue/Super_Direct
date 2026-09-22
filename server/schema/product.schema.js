@@ -6,7 +6,12 @@ export const createProductSchema= Joi.object({
   price: Joi.number().positive().required(),
   stock: Joi.number().integer().min(0),
 categoryId: Joi.number().integer().positive(),
-  image: Joi.string()
+  image: Joi.string(),
+  containsGluten: Joi.boolean(),
+  containsDairy: Joi.boolean(),
+  containsNuts: Joi.boolean(),
+  containsEggs: Joi.boolean(),
+  containsSoy: Joi.boolean()
 })
 
 
@@ -16,5 +21,10 @@ export const updateProductSchema = Joi.object({
    price: Joi.number().positive(),
   stock: Joi.number().integer().min(0),
 categoryId: Joi.number().integer().positive(),
-  image: Joi.string()
+  image: Joi.string(),
+  containsGluten: Joi.boolean(),
+  containsDairy: Joi.boolean(),
+  containsNuts: Joi.boolean(),
+  containsEggs: Joi.boolean(),
+  containsSoy: Joi.boolean()
 });

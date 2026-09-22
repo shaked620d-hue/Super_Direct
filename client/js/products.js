@@ -22,6 +22,49 @@ const createProductCard = (product) => {
     tag.className = 'product-tag';
     tag.textContent = categoryNames[product.categoryId];
 
+        const badges = document.createElement('div');
+    badges.className = 'product-badges';
+
+    if (product.containsGluten) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'מכיל גלוטן';
+        badges.append(badge);
+    }
+
+        if (product.containsDairy) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'מכיל חלב';
+        badges.append(badge);
+    }
+    if (product.containsNuts) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'מכיל אגוזים';
+        badges.append(badge);
+    }
+    if (product.containsEggs) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'מכיל ביצים';
+        badges.append(badge);
+    }
+    if (product.containsSoy) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'מכיל סויה';
+        badges.append(badge);
+    }
+
+        if (badges.children.length === 0) {
+        const badge = document.createElement('span');
+        badge.className = 'product-badge';
+        badge.textContent = 'ללא אלרגנים';
+        badges.append(badge);
+    }
+
+
     const title = document.createElement('h3');
     title.textContent = product.name;
 
@@ -44,12 +87,14 @@ const createProductCard = (product) => {
 
     const info = document.createElement('div');
     info.className = 'product-info';
-    info.append(tag, title, description, bottom);
+    info.append(tag, badges, title, description, bottom);
+
 
     if (isAdmin()) {
         const editLink = document.createElement('a');
         editLink.className = 'admin-btn edit';
 editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
+        editLink.textContent = 'עריכה';
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'admin-btn delete';
