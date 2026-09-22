@@ -131,7 +131,7 @@ const searchQuery = new URLSearchParams(window.location.search).get('q');
 
         document.querySelectorAll('.products[data-featured]').forEach((grid) => {
             grid.replaceChildren( 
-            ...(searchQuery ?  products.filter((product) => product.name.includes(searchQuery)) : products.slice(0, 4)).map(createProductCard));
+            ...(searchQuery ?  products.filter((product) => product.name.includes(searchQuery)) : [...products].sort(() => Math.random() - 0.5).slice(0, 4)).map(createProductCard));
 
 
         });
