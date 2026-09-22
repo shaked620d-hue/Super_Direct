@@ -1,14 +1,14 @@
-
-let categoryNames = {};
+let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
+let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
 
 const loadCategoryNames = async () => {
     const response = await getCategories();
     const categories = await response.json();
     categories.forEach((category) => {
         categoryNames[category.id] = category.name;
+        categoryIdsBySlug[category.slug] = category.id;
     });
 };
-
 
 
 const createProductCard = (product) => {
@@ -121,11 +121,12 @@ const renderProducts = async () => {
         const products = await response.json();
 const searchQuery = new URLSearchParams(window.location.search).get('q');
 
-        document.querySelectorAll('.products[data-category]').forEach((grid) => {
-            const categoryName = grid.dataset.category;
-            const visibleProducts = products.filter((product) => categoryNames[product.categoryId] === categoryName);
-            grid.replaceChildren(...visibleProducts.map(createProductCard));
-        });
+      document.querySelectorAll('.products[data-category]').forEach((grid) => {
+    const categoryId = categoryIdsBySlug[grid.dataset.category];
+    const visibleProducts = products.filter((product) => product.categoryId === categoryId);
+    grid.replaceChildren(...visibleProducts.map(createProductCard));
+});
+
 
         document.querySelectorAll('.products[data-featured]').forEach((grid) => {
             grid.replaceChildren( 
