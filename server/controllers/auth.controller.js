@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
+import { createToken } from '../utils/jwt.js';
 
 // יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
 export const register = async (req, res) => {
@@ -13,7 +14,8 @@ export const register = async (req, res) => {
 		paymentMethod: req.body.paymentMethod
 	});
 
-	res.status(201).json(sanitizeCustomer(newCustomer.toObject()));
+	const safeCustomer = sanitizeCustomer(newCustomer.toObject());
+	res.status(201).json({ ...safeCustomer, token: createToken(newCustomer) });
 };
 
 // מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
@@ -26,7 +28,8 @@ export const login = async (req, res, next) => {
 		return next(error);
 	}
 	if (await bcrypt.compare(req.body.password, customer.password)) {
-		res.status(200).json(sanitizeCustomer(customer.toObject()));
+		const safeCustomer = sanitizeCustomer(customer.toObject());
+		res.status(200).json({ ...safeCustomer, token: createToken(customer) });
 	} else {
 		const error = new Error('Wrong password');
 		error.statusCode = 401;
