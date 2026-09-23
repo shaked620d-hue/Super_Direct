@@ -1,15 +1,24 @@
-const CART_KEY = 'superDirectCart';
+const getCartStorage = () => {
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    if (currentUser) {
+        return { storage: localStorage, key: `superDirectCart_${currentUser.id}` };
+    }
+    return { storage: sessionStorage, key: 'superDirectCart_guest' };
+};
+
 
 const readCart = () => {
     try {
-        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const { storage, key } = getCartStorage();
+        return JSON.parse(storage.getItem(key)) || [];
     } catch {
         return [];
     }
 };
 
 const writeCart = (cart) => {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    const { storage, key } = getCartStorage();
+    storage.setItem(key, JSON.stringify(cart));
     updateCartCount(cart);
 };
 
