@@ -1,57 +1,83 @@
-import { categories } from '../tmp.js';
+import { Category } from '../models/category.model.js';
 
 // מחזיר את כל הקטגוריות.
-export const getCategories = (req, res) => {
-	res.json(categories);
+export const getCategories = async (req, res, next) => {
+	try {
+		const categories = await Category.find().sort({ name: 1 });
+		res.status(200).json(categories);
+	} catch (error) {
+		error.statusCode = 500;
+		next(error);
+	}
 };
 
 // מחזיר קטגוריה אחת לפי מזהה.
-export const getCategoryById = (req, res, next) => {
-	const category = categories.find((category) => category.id == req.params.id);
-	if (category) {
-		res.status(200).json(category);
-	} else {
-		const error = new Error('Category not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+export const getCategoryById = async (req, res, next) => {
+	try {
+		const category = await Category.findById(req.params.id);
+		if (category) {
+			res.status(200).json(category);
+		} else {
+			const error = new Error('Category not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
 
 // יוצר קטגוריה חדשה.
-export const createCategory = (req, res) => {
-	const newCategory = {
-		id: categories.length + 1,
-		name: req.body.name
-	};
-	categories.push(newCategory);
-	res.status(201).send(newCategory);
+export const createCategory = async (req, res, next) => {
+	try {
+		const newCategory = await Category.create(req.body);
+		res.status(201).json(newCategory);
+	} catch (error) {
+		error.statusCode = error.code === 11000 ? 409 : 500;
+		error.type = error.code === 11000 ? 'conflict' : 'server error';
+		next(error);
+	}
 };
 
 // מעדכן את שם הקטגוריה לפי מזהה.
-export const updateCategory = (req, res, next) => {
-	const category = categories.find((category) => category.id == req.params.id);
-	if (category) {
-		category.name = req.body.name;
-		res.json(category);
-	} else {
-		const error = new Error('category not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+export const updateCategory = async (req, res, next) => {
+	try {
+		const category = await Category.findByIdAndUpdate(
+			req.params.id,
+			{ $set: req.body },
+			{ new: true, runValidators: true }
+		);
+		if (category) {
+			res.status(200).json(category);
+		} else {
+			const error = new Error('category not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : error.code === 11000 ? 409 : 500;
+		error.type = error.code === 11000 ? 'conflict' : 'server error';
+		next(error);
 	}
 };
 
 // מוחק קטגוריה לפי מזהה.
-export const deleteCategory = (req, res, next) => {
-	const index = categories.findIndex((category) => category.id == req.params.id);
-	if (index !== -1) {
-		categories.splice(index, 1);
-		res.status(200).send({ message: 'deleted successfuly' });
-	} else {
-		const error = new Error('category not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+export const deleteCategory = async (req, res, next) => {
+	try {
+		const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+		if (deletedCategory) {
+			res.status(200).json({ message: 'deleted successfully' });
+		} else {
+			const error = new Error('category not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
