@@ -17,8 +17,6 @@ import { connectDB } from './config/db.js';
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
 
-connectDB();
-
 server.use('/public', express.static(path.join(import.meta.dirname, 'public')));
 
 server.get('/favicon.svg', (req, res) => {
@@ -92,7 +90,18 @@ server.use(notFoundHandler);
 // Middleware לטיפול בשגיאות כלליות.
 server.use(errorHandler);
 
-// עד כאן
-server.listen(5000, () => {
-  console.log('Server is running on http://localhost:5000')
-})
+// מפעילים את השרת רק לאחר חיבור מוצלח למסד הנתונים.
+const startServer = async () => {
+  const connected = await connectDB();
+  if (!connected) {
+    console.error('השרת לא הופעל כי החיבור למונגו נכשל');
+    process.exitCode = 1;
+    return;
+  }
+
+  server.listen(5000, () => {
+    console.log('Server is running on http://localhost:5000');
+  });
+};
+
+startServer();
