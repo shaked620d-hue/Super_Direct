@@ -111,7 +111,6 @@ export const createOrder = async (req, res, next) => {
             return next(error);
         }
 
-        const orderItems = [];
         for (const item of req.body.items) {
             const product = await Product.findById(item.productId);
             if (!product) {
@@ -120,6 +119,11 @@ export const createOrder = async (req, res, next) => {
                 error.type = 'not found';
                 return next(error);
             }
+        }
+
+        const orderItems = [];
+        for (const item of req.body.items) {
+            const product = await Product.findById(item.productId);
             product.stock = product.stock - item.qty;
             await product.save();
             orderItems.push({
