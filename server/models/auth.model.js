@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { model, Schema } from 'mongoose';
 
 const authSchema = new Schema({
@@ -8,6 +9,14 @@ const authSchema = new Schema({
 	address: { type: String, required: true, minlength: 2 },
 	paymentMethod: { type: String, match: /^\d{4}$/ },
 	role: { type: String, enum: ['customer', 'admin'], default: 'customer' }
+});
+
+authSchema.pre('save', async function () {
+	if (!this.isModified('password')) {
+		return;
+	}
+
+	this.password = await bcrypt.hash(this.password, 10);
 });
 
 export const Customer = model('Customer', authSchema);

@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 
@@ -24,7 +25,7 @@ export const login = async (req, res, next) => {
 		error.type = 'not found';
 		return next(error);
 	}
-	if (req.body.password === customer.password) {
+	if (await bcrypt.compare(req.body.password, customer.password)) {
 		res.status(200).json(sanitizeCustomer(customer.toObject()));
 	} else {
 		const error = new Error('Wrong password');
