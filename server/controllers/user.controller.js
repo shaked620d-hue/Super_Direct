@@ -1,39 +1,72 @@
-import { customers } from '../tmp.js';
+import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 
 // מחזיר את רשימת הלקוחות.
-export const getUsers = (req, res) => {
-	res.json(customers.map(sanitizeCustomer));
+export const getUsers = async (req, res, next) => {
+	try {
+		const customers = await Customer.find();
+		res.status(200).json(customers.map((customer) => sanitizeCustomer(customer.toObject())));
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
+	}
 };
 
 // מחזיר לקוח אחד לפי מזהה.
-export const getUserById = (req, res, next) => {
-	const customer = customers.find((customer) => customer.id == req.params.id);
-	if (customer) {
-		res.status(200).json(sanitizeCustomer(customer));
-	} else {
-		const error = new Error('customer not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+export const getUserById = async (req, res, next) => {
+	try {
+		const customer = await Customer.findById(req.params.id);
+		if (customer) {
+			res.status(200).json(sanitizeCustomer(customer.toObject()));
+		} else {
+			const error = new Error('customer not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
 
 // מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה.
-export const updateUser = (req, res, next) => {
-	const customer = customers.find((customer) => customer.id == req.params.id);
-	if (customer) {
-		if (req.body.firstName) customer.firstName = req.body.firstName;
-		if (req.body.lastName) customer.lastName = req.body.lastName;
-		if (req.body.email) customer.email = req.body.email;
-		if (req.body.address) customer.address = req.body.address;
-		if (req.body.password) customer.password = req.body.password;
-		if (req.body.paymentMethod) customer.paymentMethod = req.body.paymentMethod;
-		res.status(200).json(sanitizeCustomer(customer));
-	} else {
-		const error = new Error('customer not found');
-		error.statusCode = 404;
-		error.type = 'not found';
-		return next(error);
+export const updateUser = async (req, res, next) => {
+	try {
+		const customer = await Customer.findByIdAndUpdate(
+			req.params.id,
+			{ $set: req.body },
+			{ new: true, runValidators: true }
+		);
+
+		if (customer) {
+			res.status(200).json(sanitizeCustomer(customer.toObject()));
+		} else {
+			const error = new Error('customer not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
+	}
+};
+
+// מוחק לקוח לפי מזהה.
+export const deleteUser = async (req, res, next) => {
+	try {
+		const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);
+		if (deletedCustomer) {
+			res.status(200).json({ message: 'deleted successfully' });
+		} else {
+			const error = new Error('customer not found');
+			error.statusCode = 404;
+			error.type = 'not found';
+			return next(error);
+		}
+	} catch (error) {
+		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		next(error);
 	}
 };
