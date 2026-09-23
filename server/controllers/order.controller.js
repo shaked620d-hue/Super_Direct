@@ -1,5 +1,6 @@
 import { Order } from '../models/order.model.js';
 import { Product } from '../models/product.model.js';
+import { Customer } from '../models/auth.model.js';
 
 
 // מחזיר את כל ההזמנות.
@@ -102,6 +103,14 @@ function calculateExpectedDelivery() {
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
 export const createOrder = async (req, res, next) => {
     try {
+        const customer = await Customer.findById(req.body.customerId);
+        if (!customer) {
+            const error = new Error('Customer not found');
+            error.statusCode = 404;
+            error.type = 'not found';
+            return next(error);
+        }
+
         const orderItems = [];
         for (const item of req.body.items) {
             const product = await Product.findById(item.productId);
