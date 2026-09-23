@@ -58,17 +58,6 @@ export let customers = [
     paymentMethod: "4291",
     role: "customer", 
     email: "abc@gmail.com"
-  }, 
-    {
-    id: 3,
-    firstName: "חיים",
-    lastName: "כהן",
-    address: "הרצל 12, גבעת שמואל",
-    password: "123456",
-    paymentMethod: "4291",
-    role: "customer", 
-     email: "abc@gmail.com"
-
   }
 ];
 
