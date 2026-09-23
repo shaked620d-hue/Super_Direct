@@ -6,7 +6,12 @@ const productSchema = new Schema({
     price: { type: Number, required: true, min: 0 },
     categoryId: { type: Number, required: true },
     stock: { type: Number, min: 0 },
-    image: { type: String }
+    image: { type: String },
+    containsGluten: { type: Boolean, default: false },
+    containsDairy: { type: Boolean, default: false },
+    containsNuts: { type: Boolean, default: false },
+    containsEggs: { type: Boolean, default: false },
+    containsSoy: { type: Boolean, default: false }
 })
 
 export const Product = model('Product', productSchema);

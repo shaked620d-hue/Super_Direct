@@ -1,15 +1,24 @@
-const CART_KEY = 'superDirectCart';
+const getCartStorage = () => {
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    if (currentUser) {
+        return { storage: localStorage, key: `superDirectCart_${currentUser.id}` };
+    }
+    return { storage: sessionStorage, key: 'superDirectCart_guest' };
+};
+
 
 const readCart = () => {
     try {
-        return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const { storage, key } = getCartStorage();
+        return JSON.parse(storage.getItem(key)) || [];
     } catch {
         return [];
     }
 };
 
 const writeCart = (cart) => {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    const { storage, key } = getCartStorage();
+    storage.setItem(key, JSON.stringify(cart));
     updateCartCount(cart);
 };
 
@@ -25,16 +34,20 @@ const addToCart = (card) => {
     const name = card.querySelector('h3')?.textContent.trim();
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
     const image = card.querySelector('.product-image')?.src || '';
+    const productId = card.dataset.id;
+
     if (!name || Number.isNaN(price)) return;
 
     const cart = readCart();
     const existing = cart.find((item) => item.name === name);
     if (existing) existing.quantity += 1;
-    else cart.push({ name, price, image, quantity: 1 });
+else cart.push({ productId, name, price, image, quantity: 1 });
+
     writeCart(cart);
     showToast(`${name} נוסף לסל`);
 };
 
+<<<<<<< HEAD
 const handleAddToCartClick = (event) => {
     // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
@@ -42,6 +55,11 @@ const handleAddToCartClick = (event) => {
     if (!button) return;
     // מוצא את כרטיס המוצר ומעביר אותו לפונקציה שמוסיפה אותו לסל.
     addToCart(button.closest('.product-card'));
+=======
+const handleAddToCart = (event) => {
+    if (!event.target.classList.contains('add-button')) return;
+    addToCart(event.target.closest('.product-card'));
+>>>>>>> b08dab936f2440e887079677f9d5e982f5d4465d
 };
 
 const showToast = (message) => {
@@ -123,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderCart();
 });
+document.addEventListener('click', handleAddToCart);
 
 
  document.addEventListener('DOMContentLoaded', handleCheckout);

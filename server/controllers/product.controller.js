@@ -45,7 +45,12 @@ export const createProduct = async (req, res, next) => {
 			price: req.body.price,
 			categoryId: req.body.categoryId,
 			stock: req.body.stock,
-			image: req.file ? req.file.filename : undefined
+			image: req.file ? req.file.filename : undefined,
+			containsGluten: req.body.containsGluten,
+			containsDairy: req.body.containsDairy,
+			containsNuts: req.body.containsNuts,
+			containsEggs: req.body.containsEggs,
+			containsSoy: req.body.containsSoy
 		});
 		res.status(201).json(newProduct);
 	} catch (error) {
@@ -68,6 +73,11 @@ export const updateProduct = async (req, res, next) => {
 		if (req.body.categoryId) product.categoryId = req.body.categoryId;
 		if (req.body.stock !== undefined) product.stock = req.body.stock;
 		if (req.file) product.image = req.file.filename;
+		if (req.body.containsGluten !== undefined) product.containsGluten = req.body.containsGluten;
+		if (req.body.containsDairy !== undefined) product.containsDairy = req.body.containsDairy;
+		if (req.body.containsNuts !== undefined) product.containsNuts = req.body.containsNuts;
+		if (req.body.containsEggs !== undefined) product.containsEggs = req.body.containsEggs;
+		if (req.body.containsSoy !== undefined) product.containsSoy = req.body.containsSoy;
 
 		await product.save();
 		res.status(200).json(product);

@@ -15,7 +15,9 @@
     <header class="site-header">
         <nav class="nav-wrap" aria-label="ניווט ראשי">
             <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
-            <div class="nav-links"><a href="../index.html#categories">קטגוריות</a><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
+            <img class="kosher-badge-header" src="../images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
+            <div class="nav-links"><div class="nav-dropdown"><a href="../index.html#categories">קטגוריות</a><div class="nav-dropdown-menu"><a href="category.html?cat=fruits">פירות</a><a href="category.html?cat=vegetables">ירקות</a><a href="category.html?cat=dairy">מחלבה</a><a href="category.html?cat=bakery">מאפים</a><a href="category.html?cat=pantry">מזווה</a></div></div><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
+            <div class="header-actions"><a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" href="cart.html" aria-label="פתיחת סל הקניות">🛒<span class="cart-count"></span></a></div>
         </nav>
     </header>
     <main>
@@ -36,11 +38,6 @@
                             <label for="categoryId">קטגוריה</label>
                             <select id="categoryId" name="categoryId" required>
                                 <option value="">בחרו קטגוריה</option>
-                                <option value="1">פירות</option>
-                                <option value="2">ירקות</option>
-                                <option value="3">מחלבה</option>
-                                <option value="4">מאפים</option>
-                                <option value="5">מזווה</option>
                             </select>
                         </div>
                         <div class="form-field">
@@ -53,8 +50,18 @@
                         <textarea id="description" name="description" required></textarea>
                     </div>
                     <div class="form-field">
-                        <label for="image">קישור לתמונה</label>
-                        <input id="image" name="image" type="url" placeholder="https://...">
+                        <label for="image">תמונת מוצר</label>
+                        <input id="image" name="image" type="file" accept="image/*">
+                    </div>
+                    <div class="form-field">
+                        <label>אלרגנים</label>
+                        <div class="tags-checkboxes">
+                            <label><input id="containsGluten" name="containsGluten" type="checkbox"> מכיל גלוטן</label>
+                            <label><input id="containsDairy" name="containsDairy" type="checkbox"> מכיל חלב</label>
+                            <label><input id="containsNuts" name="containsNuts" type="checkbox"> מכיל אגוזים</label>
+                            <label><input id="containsEggs" name="containsEggs" type="checkbox"> מכיל ביצים</label>
+                            <label><input id="containsSoy" name="containsSoy" type="checkbox"> מכיל סויה</label>
+                        </div>
                     </div>
                     <button class="auth-submit" type="submit" id="submitButton">הוספת מוצר</button>
                 </form>
@@ -68,9 +75,11 @@
         </div>
         <p class="footer-copy">© 2026 סופר דיירקט. כל הזכויות שמורות.</p>
     </footer>
-    <script src="../js/product-data.js"></script>
     <script src="../js/cart.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/services/productService.js"></script>
+    <script src="../js/services/categoryService.js"></script>
     <script src="../js/product-form.js"></script>
 </body>
 </html>

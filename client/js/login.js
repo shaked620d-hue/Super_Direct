@@ -14,11 +14,7 @@ const handleLoginSubmit = () => {
 
     try {
       // שולחים את כתובת האימייל והסיסמה לראוטר האימות בשרת.
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+      const response = await  loginRequest(email, password);
 
       // תשובה שאינה 2xx מציינת שהאימייל או הסיסמה אינם תקינים.
       if (!response.ok) {

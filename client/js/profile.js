@@ -22,29 +22,31 @@ const revealSaveButton=()=>{
          profileSaveButton.hidden=false;
 })
 }
-const handleProfileSave= (event)=>{
+const handleProfileSave = async (event) => {
+
     event.preventDefault();
         const currentUser= JSON.parse(localStorage.getItem('superDirectCurrentUser')) || [];
 if(!currentUser){return;}
-    currentUser.firstName = document.getElementById('firstName').value;
-    currentUser.lastName=document.getElementById('lastName').value;
-    currentUser.address=document.getElementById('address').value;
 
-    localStorage.setItem('superDirectCurrentUser', JSON.stringify(currentUser))
-    showToast('הפרטים נשמרו בהצלחה');
+const details={
+    firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        address: document.getElementById('address').value
+}
+try{
+    const response= await updateUserRequest(currentUser.id, details);
+    if(!response.ok)
+    {
+           showToast('שמירת הפרטים נכשלה');
+            return;
+    }
+    const updateUser= await response.json();
+    localStorage.setItem('superDirectCurrentUser', JSON.stringify(updateUser))
 
-        const users= JSON.parse(localStorage.getItem('superDirectUsers')) || [];
-                if(!users){return;}
-
-const user= users.find(u => u.email === currentUser.email)
-        if(!user){return;}
-   user.firstName = document.getElementById('firstName').value;
-    user.lastName=document.getElementById('lastName').value;
-    user.address=document.getElementById('address').value;
-    
-    localStorage.setItem('superDirectUsers', JSON.stringify(users));
-        
-    
+     showToast('הפרטים נשמרו בהצלחה');
+    } catch {
+        showToast('אירעה שגיאה בשמירת הפרטים');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', revealSaveButton);

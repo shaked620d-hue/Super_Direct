@@ -1,6 +1,6 @@
-import 'dotenv/config';
-import express from 'express'
+import './config/env.js';
 import path from 'node:path';
+import express from 'express'
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -29,18 +29,27 @@ server.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
 });
 
-server.get('/', (req, res) => {
-  res.sendFile(path.join(clientDir, 'index.html'));
-});
+// server.get('/', (req, res) => {
+//   res.sendFile(path.join(clientDir, 'index.html'));
+// });
 
 // מפרש JSON שנשלח בבקשות POST/PUT.
 server.use(express.json());
 
 server.use('/api', indexRouter);
 
+// זמני כדי שהתמונות יעלו כשהם עדיין לא בשרת 
 // אבטחה: מוסיף כותרות HTTP
 // שמגנות על השרת מפני התקפות נפוצות.
- server.use(helmet());
+// img-src מורחב כדי לאפשר תמונות מוצר מ-Unsplash (מוק זמני, עד שיהיו תמונות אמיתיות מ-public/).
+ server.use(helmet({
+   contentSecurityPolicy: {
+     directives: {
+       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+       'img-src': ["'self'", 'data:', 'https://images.unsplash.com']
+     }
+   }
+ }));
 
 // אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
  server.use(rateLimit({

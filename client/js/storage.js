@@ -42,7 +42,7 @@ const updateAuthUI = ()=>{
 
         const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
-    if(currentUser)
+          if(currentUser)
     {
         const logoutButton = document.getElementById('logoutButton');
         if (logoutButton) { logoutButton.hidden = false; }
@@ -50,7 +50,18 @@ const updateAuthUI = ()=>{
         authButton.textContent = currentUser.firstName || currentUser.email;
         authButton.href = getBasePath() + 'profile.html';
 
+        if (currentUser.role === 'admin') {
+            const headerActions = document.querySelector('.header-actions');
+            if (headerActions) {
+                const ordersLink = document.createElement('a');
+                ordersLink.href = getBasePath() + 'admin-orders.html';
+                ordersLink.className = 'admin-add-product';
+                ordersLink.textContent = 'ניהול הזמנות';
+                headerActions.append(ordersLink);
+            }
+        }
     }
+
 }
 const handleLogout = ()=>{
     

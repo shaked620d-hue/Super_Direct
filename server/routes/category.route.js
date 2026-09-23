@@ -1,4 +1,6 @@
 import express from 'express';
+import { createValidator } from '../middleware/validate.js';
+import { createCategorySchema, updateCategorySchema } from '../schema/category.schema.js';
 import {
   createCategory,
   deleteCategory,
@@ -11,8 +13,8 @@ const router = express.Router();
 
 router.get('/', getCategories);
 router.get('/:id', getCategoryById);
-router.post('/', createCategory);
-router.put('/:id', updateCategory);
+router.post('/', createValidator(createCategorySchema), createCategory);
+router.put('/:id', createValidator(updateCategorySchema), updateCategory);
 router.delete('/:id', deleteCategory);
 
 export default router;

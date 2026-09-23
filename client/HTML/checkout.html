@@ -15,11 +15,12 @@
     <header class="site-header">
         <div class="nav-wrap">
             <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
-            <nav class="nav-links" aria-label="ניווט ראשי"><a href="../index.html#categories">קטגוריות</a><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></nav>
+            <img class="kosher-badge-header" src="../images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
+            <nav class="nav-links" aria-label="ניווט ראשי"><div class="nav-dropdown"><a href="../index.html#categories">קטגוריות</a><div class="nav-dropdown-menu"><a href="category.html?cat=fruits">פירות</a><a href="category.html?cat=vegetables">ירקות</a><a href="category.html?cat=dairy">מחלבה</a><a href="category.html?cat=bakery">מאפים</a><a href="category.html?cat=pantry">מזווה</a></div></div><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></nav>
             <div class="header-actions">
                 <a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a>
                 <button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button>
-                <a class="icon-button" href="cart.html" aria-label="סל הקניות">🛒</a>
+                <a class="icon-button" href="cart.html" aria-label="סל הקניות">🛒<span class="cart-count"></span></a>
             </div>
         </div>
     </header>
@@ -37,7 +38,28 @@
                 <div><span>משלוח</span><strong id="confirmDelivery">חינם</strong></div>
                 <hr>
                 <div class="summary-total"><span>סה״כ לתשלום</span><strong id="confirmTotal">0.00 ₪</strong></div>
-                <button class="auth-submit" type="button" id="confirmOrderButton">אישור הזמנה סופי</button>
+                <form id="paymentForm" class="payment-form">
+                    <h3>פרטי תשלום</h3>
+                    <div class="form-field">
+                        <label for="cardNumber">מספר כרטיס</label>
+                        <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="cardExpiry">תוקף</label>
+                            <input type="text" id="cardExpiry" name="cardExpiry" inputmode="numeric" maxlength="5" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="cardCvv">CVV</label>
+                            <input type="text" id="cardCvv" name="cardCvv" inputmode="numeric" maxlength="3" placeholder="123" required>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="cardName">שם בעל הכרטיס</label>
+                        <input type="text" id="cardName" name="cardName" placeholder="כפי שמופיע על הכרטיס" required>
+                    </div>
+                    <button class="auth-submit" type="submit" id="confirmOrderButton">אישור הזמנה סופי</button>
+                </form>
                 <small>משלוח חינם בקנייה מעל 250 ₪</small>
             </aside>
         </section>
@@ -51,6 +73,8 @@
     </footer>
     <script src="../js/cart.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/services/orderService.js"></script>
     <script src="../js/checkout.js"></script>
 </body>
 </html>
