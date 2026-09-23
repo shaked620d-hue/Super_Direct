@@ -9,15 +9,17 @@ import {
 } from '../controllers/order.controller.js';
 import { createValidator } from '../middleware/validate.js';
 import { createOrderSchema } from '../schema/order.schema.js';
+import { authenticate } from '../middleware/auth.js';
+import { authorizeRoles } from '../middleware/authorize.js';
 
 
 const router = express.Router();
 
-router.get('/', getOrders);
-router.get('/my', getMyOrders);
-router.get('/:id', getOrderById);
-router.put('/:id/status', updateOrderStatus);
-router.delete('/:id', deleteOrder);
-router.post('/', createValidator(createOrderSchema), createOrder);
+router.get('/', authenticate, authorizeRoles('admin'), getOrders);
+router.get('/my', authenticate, getMyOrders);
+router.get('/:id', authenticate, getOrderById);
+router.put('/:id/status', authenticate, authorizeRoles('admin'), updateOrderStatus);
+router.delete('/:id', authenticate, authorizeRoles('admin'), deleteOrder);
+router.post('/', authenticate, createValidator(createOrderSchema), createOrder);
 
 export default router;

@@ -2,6 +2,8 @@ import express from 'express';
 import { createValidator } from '../middleware/validate.js';
 import { createProductSchema, updateProductSchema } from '../schema/product.schema.js';
 import { upload } from '../middleware/upload.js';
+import { authenticate } from '../middleware/auth.js';
+import { authorizeRoles } from '../middleware/authorize.js';
 
 
 import {
@@ -16,9 +18,9 @@ const router = express.Router();
 
 router.get('/', getProducts);
 router.get('/:id', getProductById);
-router.post('/',upload.single('image'), createValidator(createProductSchema), createProduct);
-router.put('/:id',upload.single('image'), createValidator(updateProductSchema), updateProduct);
-router.delete('/:id', deleteProduct);
+router.post('/', authenticate, authorizeRoles('admin'), upload.single('image'), createValidator(createProductSchema), createProduct);
+router.put('/:id', authenticate, authorizeRoles('admin'), upload.single('image'), createValidator(updateProductSchema), updateProduct);
+router.delete('/:id', authenticate, authorizeRoles('admin'), deleteProduct);
 
 
 
