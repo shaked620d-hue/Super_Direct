@@ -40,5 +40,5 @@ export const login = async (req, res, next) => {
 
 // יחזיר בעתיד את פרטי המשתמש לפי אסימון JWT.
 export const getCurrentUser = (req, res) => {
-	// TODO: להשלים אחרי שיהיה JWT
+	res.status(200).json(sanitizeCustomer(req.user.toObject()));
 };
