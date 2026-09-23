@@ -34,14 +34,14 @@ const details={
         address: document.getElementById('address').value
 }
 try{
-    const response= await updateUserRequest(currentUser.id, details);
+    const response= await updateUserRequest(currentUser._id, details);
     if(!response.ok)
     {
            showToast('שמירת הפרטים נכשלה');
             return;
     }
     const updateUser= await response.json();
-    localStorage.setItem('superDirectCurrentUser', JSON.stringify(updateUser))
+    localStorage.setItem('superDirectCurrentUser', JSON.stringify({ ...updateUser, token: currentUser.token }));
 
      showToast('הפרטים נשמרו בהצלחה');
     } catch {

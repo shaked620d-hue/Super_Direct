@@ -36,6 +36,12 @@ const isAdmin = ()=>{
     return currentUser?.role === 'admin';
 }
 
+// מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
+const getAuthHeaders = () => {
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
+};
+
 const updateAuthUI = ()=>{
     const authButton= document.getElementById('authButton');
     if(!authButton){return;}
