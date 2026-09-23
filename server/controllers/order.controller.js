@@ -18,7 +18,7 @@ export const getOrders = async (req, res, next) => {
 // צריך להתאים את זה 
 export const getMyOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find({ customerId: req.query.customerId });
+        const orders = await Order.find({ customerId: req.user._id });
         res.json(orders);
     } catch (error) {
         error.statusCode = error.name === 'CastError' ? 400 : 500;
@@ -32,6 +32,13 @@ export const getOrderById = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id);
         if (order) {
+            const isOwner = order.customerId.toString() === req.user._id.toString();
+            if (req.user.role !== 'admin' && !isOwner) {
+                const error = new Error('Insufficient permissions');
+                error.statusCode = 403;
+                error.type = 'forbidden';
+                return next(error);
+            }
             res.status(200).json(order);
         } else {
             const error = new Error('order not found');
@@ -103,7 +110,14 @@ function calculateExpectedDelivery() {
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
 export const createOrder = async (req, res, next) => {
     try {
-        const customer = await Customer.findById(req.body.customerId);
+        if (req.body.customerId !== req.user._id.toString()) {
+            const error = new Error('Customer does not match authenticated user');
+            error.statusCode = 403;
+            error.type = 'forbidden';
+            return next(error);
+        }
+
+        const customer = await Customer.findById(req.user._id);
         if (!customer) {
             const error = new Error('Customer not found');
             error.statusCode = 404;
@@ -137,7 +151,7 @@ export const createOrder = async (req, res, next) => {
         const totalPrice = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
         const deliveryFee = totalPrice >= 250 ? 0 : 15;
         const newOrder = await Order.create({
-            customerId: req.body.customerId,
+            customerId: req.user._id,
             expectedDelivery: calculateExpectedDelivery(),
             items: orderItems,
             deliveryFee,

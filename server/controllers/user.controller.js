@@ -15,6 +15,13 @@ export const getUsers = async (req, res, next) => {
 // מחזיר לקוח אחד לפי מזהה.
 export const getUserById = async (req, res, next) => {
 	try {
+		if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
+			const error = new Error('Insufficient permissions');
+			error.statusCode = 403;
+			error.type = 'forbidden';
+			return next(error);
+		}
+
 		const customer = await Customer.findById(req.params.id);
 		if (customer) {
 			res.status(200).json(sanitizeCustomer(customer.toObject()));
@@ -33,6 +40,13 @@ export const getUserById = async (req, res, next) => {
 // מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה.
 export const updateUser = async (req, res, next) => {
 	try {
+		if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
+			const error = new Error('Insufficient permissions');
+			error.statusCode = 403;
+			error.type = 'forbidden';
+			return next(error);
+		}
+
 		const customer = await Customer.findByIdAndUpdate(
 			req.params.id,
 			{ $set: req.body },
