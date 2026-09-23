@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Order } from '../models/order.model.js';
 import { Product } from '../models/product.model.js';
 import { Customer } from '../models/auth.model.js';
@@ -110,7 +111,10 @@ function calculateExpectedDelivery() {
 
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
 export const createOrder = async (req, res, next) => {
+    const session = await mongoose.startSession();
     try {
+    // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
+    await session.startTransaction();
         // מונעים יצירת הזמנה בשם משתמש אחר.
         if (req.body.customerId !== req.user._id.toString()) {
             const error = new Error('Customer does not match authenticated user');
@@ -119,7 +123,7 @@ export const createOrder = async (req, res, next) => {
             return next(error);
         }
 
-        const customer = await Customer.findById(req.user._id);
+        const customer = await Customer.findById(req.user._id).session(session);
         if (!customer) {
             const error = new Error('Customer not found');
             error.statusCode = 404;
@@ -127,21 +131,37 @@ export const createOrder = async (req, res, next) => {
             return next(error);
         }
 
+        const quantitiesByProduct = new Map();
         for (const item of req.body.items) {
-            const product = await Product.findById(item.productId);
+            // איחוד כמויות מונע מצב שבו אותו מוצר נבדק בנפרד כמה פעמים.
+            const currentQuantity = quantitiesByProduct.get(item.productId) || 0;
+            quantitiesByProduct.set(item.productId, currentQuantity + item.qty);
+        }
+
+        const productsById = new Map();
+        for (const [productId, quantity] of quantitiesByProduct) {
+            // מאמתים שכל המוצרים קיימים ושיש מספיק מלאי לפני שמעדכנים משהו.
+            const product = await Product.findById(productId).session(session);
             if (!product) {
                 const error = new Error('Product not found');
                 error.statusCode = 404;
                 error.type = 'not found';
                 return next(error);
             }
+
+            if (!Number.isFinite(product.stock) || product.stock < quantity) {
+                const error = new Error(`Insufficient stock for ${product.name}`);
+                error.statusCode = 409;
+                error.type = 'conflict';
+                return next(error);
+            }
+
+            productsById.set(productId, product);
         }
 
         const orderItems = [];
         for (const item of req.body.items) {
-            const product = await Product.findById(item.productId);
-            product.stock = product.stock - item.qty;
-            await product.save();
+            const product = productsById.get(item.productId);
             orderItems.push({
                 productId: item.productId,
                 name: product.name,
@@ -150,21 +170,45 @@ export const createOrder = async (req, res, next) => {
             });
         }
 
+        for (const [productId, quantity] of quantitiesByProduct) {
+            // תנאי המלאי בתוך העדכון מגן גם מפני שתי הזמנות מקבילות.
+            const stockUpdate = await Product.updateOne(
+                { _id: productId, stock: { $gte: quantity } },
+                { $inc: { stock: -quantity } },
+                { session }
+            );
+            if (stockUpdate.modifiedCount !== 1) {
+                const error = new Error('Insufficient stock');
+                error.statusCode = 409;
+                error.type = 'conflict';
+                return next(error);
+            }
+        }
+
         const totalPrice = orderItems.reduce((sum, item) => sum + item.price * item.qty, 0);
         const deliveryFee = totalPrice >= 250 ? 0 : 15;
-        const newOrder = await Order.create({
+        const [newOrder] = await Order.create([{
             customerId: req.user._id,
             expectedDelivery: calculateExpectedDelivery(),
             items: orderItems,
             deliveryFee,
             totalPrice: totalPrice + deliveryFee,
             status: 'התקבלה'
-        });
+        }], { session });
+
+        // רק לאחר שההזמנה נשמרה בהצלחה מאשרים את כל שינויי המלאי.
+        await session.commitTransaction();
 
         res.status(201).json(newOrder);
     } catch (error) {
-        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        // במקרה של כשל, לא נשאיר עדכון מלאי חלקי במסד הנתונים.
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+        error.statusCode = error.statusCode || (error.name === 'CastError' ? 400 : 500);
         next(error);
+    } finally {
+        await session.endSession();
     }
 };
 
