@@ -1,7 +1,7 @@
 const getCartStorage = () => {
     const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
     if (currentUser) {
-        return { storage: localStorage, key: `superDirectCart_${currentUser.id}` };
+        return { storage: localStorage, key: `superDirectCart_${currentUser._id || currentUser.id}` };
     }
     return { storage: sessionStorage, key: 'superDirectCart_guest' };
 };
@@ -47,7 +47,6 @@ else cart.push({ productId, name, price, image, quantity: 1 });
     showToast(`${name} נוסף לסל`);
 };
 
-<<<<<<< HEAD
 const handleAddToCartClick = (event) => {
     // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
@@ -55,11 +54,6 @@ const handleAddToCartClick = (event) => {
     if (!button) return;
     // מוצא את כרטיס המוצר ומעביר אותו לפונקציה שמוסיפה אותו לסל.
     addToCart(button.closest('.product-card'));
-=======
-const handleAddToCart = (event) => {
-    if (!event.target.classList.contains('add-button')) return;
-    addToCart(event.target.closest('.product-card'));
->>>>>>> b08dab936f2440e887079677f9d5e982f5d4465d
 };
 
 const showToast = (message) => {
@@ -141,9 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderCart();
 });
-document.addEventListener('click', handleAddToCart);
-
-
  document.addEventListener('DOMContentLoaded', handleCheckout);
 document.addEventListener('DOMContentLoaded', initMobileMenu);
 document.addEventListener('click', handleAddToCartClick);

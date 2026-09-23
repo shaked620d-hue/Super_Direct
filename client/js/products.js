@@ -1,5 +1,6 @@
 let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
 let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
+let products = [];
 
 const loadCategoryNames = async () => {
     const response = await getCategories();
@@ -115,45 +116,49 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     return card;
 };
 
-const renderProducts = async () => {
-    try {
-        await loadCategoryNames();
-        const response = await getProducts();
-        const products = await response.json();
-const searchQuery = new URLSearchParams(window.location.search).get('q');
-
-<<<<<<< HEAD
-    document.querySelectorAll('.products[data-featured]').forEach((grid) => {
-        grid.replaceChildren(...products.slice(0, 4).map(createProductCard));
-    });
-
-    document.querySelectorAll('.products[data-all-products]').forEach((container) => {
-        container.replaceChildren(...products.map(createProductCard));
-    });
-};
-
 const normalizeProduct = (product) => ({
+    ...product,
+    _id: product._id || product.id,
     id: product._id || product.id,
     name: product.name,
     categoryId: Number(product.categoryId),
     description: product.description,
     price: Number(product.price),
-    image: product.image?.startsWith('http') ? product.image : product.image ? `/public/${product.image}` : ''
+    image: product.image || ''
 });
 
 const loadProducts = async () => {
-    renderProducts();
-
     try {
-        const response = await fetch('/api/product');
+        await loadCategoryNames();
+        const response = await getProducts();
         if (!response.ok) throw new Error('טעינת המוצרים נכשלה');
-
         const serverProducts = await response.json();
-        products.splice(0, products.length, ...serverProducts.map(normalizeProduct));
+        products = serverProducts.map(normalizeProduct);
         renderProducts();
     } catch {
-        // במקרה שהשרת לא זמין, משאירים את המוצרים המקומיים שכבר הוצגו.
+        showToast('שגיאה בטעינת המוצרים');
     }
+};
+
+const renderProducts = () => {
+    const searchQuery = new URLSearchParams(window.location.search).get('q')?.toLocaleLowerCase('he') || '';
+
+    document.querySelectorAll('.products[data-category]').forEach((grid) => {
+        const categoryId = categoryIdsBySlug[grid.dataset.category];
+        const visibleProducts = products.filter((product) => product.categoryId === categoryId);
+        grid.replaceChildren(...visibleProducts.map(createProductCard));
+    });
+
+    document.querySelectorAll('.products[data-featured]').forEach((grid) => {
+        const featuredProducts = searchQuery
+            ? products.filter((product) => `${product.name} ${product.description}`.toLocaleLowerCase('he').includes(searchQuery))
+            : [...products].sort(() => Math.random() - 0.5).slice(0, 4);
+        grid.replaceChildren(...featuredProducts.map(createProductCard));
+    });
+
+    document.querySelectorAll('.products[data-all-products]').forEach((container) => {
+        container.replaceChildren(...products.map(createProductCard));
+    });
 };
 
 // הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
@@ -203,37 +208,12 @@ const handleSearch = (event) => {
     if (resultsTitle) resultsTitle.textContent = query ? `תוצאות לחיפוש: ${input.value.trim()}` : 'נבחרת טרייה להיום';
     // גולל בצורה חלקה אל אזור התוצאות כדי שהמשתמש יראה אותן מיד.
     document.querySelector('#fresh')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-=======
-      document.querySelectorAll('.products[data-category]').forEach((grid) => {
-    const categoryId = categoryIdsBySlug[grid.dataset.category];
-    const visibleProducts = products.filter((product) => product.categoryId === categoryId);
-    grid.replaceChildren(...visibleProducts.map(createProductCard));
-});
-
-
-        document.querySelectorAll('.products[data-featured]').forEach((grid) => {
-            grid.replaceChildren( 
-            ...(searchQuery ?  products.filter((product) => product.name.includes(searchQuery)) : [...products].sort(() => Math.random() - 0.5).slice(0, 4)).map(createProductCard));
-
-
-        });
-    } catch {
-        showToast('שגיאה בטעינת המוצרים');
-    }
->>>>>>> b08dab936f2440e887079677f9d5e982f5d4465d
 };
 
 const deleteProduct = async  (event) => {
     if (!event.target.classList.contains('delete')) return;
-<<<<<<< HEAD
     const id = event.target.dataset.id;
-    const index = products.findIndex((product) => String(product.id) === String(id));
-    if (index !== -1) products.splice(index, 1);
-    renderProducts();
-=======
-     const id = event.target.dataset.id;
-
-       try {
+    try {
         const response = await deleteProductRequest(id);
         if (!response.ok) {
             showToast('מחיקת המוצר נכשלה');
@@ -243,9 +223,6 @@ const deleteProduct = async  (event) => {
     } catch {
         showToast('אירעה שגיאה במחיקת המוצר');
     }
-
-   
->>>>>>> b08dab936f2440e887079677f9d5e982f5d4465d
 };
 
 
