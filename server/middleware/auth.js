@@ -12,6 +12,7 @@ export const authenticate = async (req, res, next) => {
             return next(error);
         }
 
+        // הלקוח שולח את האסימון בכותרת Authorization בפורמט Bearer.
         const authorization = req.headers.authorization;
         if (!authorization?.startsWith('Bearer ')) {
             const error = new Error('Authentication required');
@@ -21,6 +22,7 @@ export const authenticate = async (req, res, next) => {
         }
 
         const token = authorization.slice(7);
+        // מאמתים את החתימה, ואז טוענים את המשתמש העדכני ממסד הנתונים.
         const payload = jwt.verify(token, JWT_SECRET);
         const customer = await Customer.findById(payload.userId);
         if (!customer) {

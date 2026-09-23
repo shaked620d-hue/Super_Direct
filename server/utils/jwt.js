@@ -2,11 +2,13 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// יוצר אסימון חתום שמזהה את המשתמש בלי לשמור את הסיסמה בתוך האסימון.
 export const createToken = (customer) => {
     if (!JWT_SECRET) {
         throw new Error('JWT_SECRET is not configured');
     }
 
+    // שומרים רק פרטים הדרושים לזיהוי ולהרשאות, והאסימון יפוג אחרי יום.
     return jwt.sign(
         {
             userId: customer._id.toString(),

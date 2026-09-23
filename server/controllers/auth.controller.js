@@ -15,6 +15,7 @@ export const register = async (req, res) => {
 	});
 
 	const safeCustomer = sanitizeCustomer(newCustomer.toObject());
+	// מחזירים את פרטי המשתמש ואת האסימון כדי שהלקוח יוכל לשמור אותו.
 	res.status(201).json({ ...safeCustomer, token: createToken(newCustomer) });
 };
 
@@ -29,6 +30,7 @@ export const login = async (req, res, next) => {
 	}
 	if (await bcrypt.compare(req.body.password, customer.password)) {
 		const safeCustomer = sanitizeCustomer(customer.toObject());
+		// הסיסמה נבדקת מול ה-hash, והאסימון נוצר רק לאחר אימות מוצלח.
 		res.status(200).json({ ...safeCustomer, token: createToken(customer) });
 	} else {
 		const error = new Error('Wrong password');
@@ -40,5 +42,6 @@ export const login = async (req, res, next) => {
 
 // יחזיר בעתיד את פרטי המשתמש לפי אסימון JWT.
 export const getCurrentUser = (req, res) => {
+	// req.user הוזן על ידי middleware האימות לאחר בדיקת ה-JWT.
 	res.status(200).json(sanitizeCustomer(req.user.toObject()));
 };

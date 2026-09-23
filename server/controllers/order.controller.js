@@ -18,6 +18,7 @@ export const getOrders = async (req, res, next) => {
 // צריך להתאים את זה 
 export const getMyOrders = async (req, res, next) => {
     try {
+        // מזהים את הלקוח לפי ה-JWT ולא לפי customerId שהלקוח יכול לזייף.
         const orders = await Order.find({ customerId: req.user._id });
         res.json(orders);
     } catch (error) {
@@ -110,6 +111,7 @@ function calculateExpectedDelivery() {
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
 export const createOrder = async (req, res, next) => {
     try {
+        // מונעים יצירת הזמנה בשם משתמש אחר.
         if (req.body.customerId !== req.user._id.toString()) {
             const error = new Error('Customer does not match authenticated user');
             error.statusCode = 403;

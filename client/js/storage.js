@@ -39,6 +39,7 @@ const isAdmin = ()=>{
 // מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
 const getAuthHeaders = () => {
     const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    // מצרפים את האסימון לכל בקשה מוגנת שנשלחת מהלקוח.
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
 
