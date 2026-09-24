@@ -120,7 +120,7 @@ export const createOrder = async (req, res, next) => {
             const error = new Error('Customer does not match authenticated user');
             error.statusCode = 403;
             error.type = 'forbidden';
-            return next(error);
+            throw error;
         }
 
         const customer = await Customer.findById(req.user._id).session(session);
@@ -128,7 +128,7 @@ export const createOrder = async (req, res, next) => {
             const error = new Error('Customer not found');
             error.statusCode = 404;
             error.type = 'not found';
-            return next(error);
+            throw error;
         }
 
         const quantitiesByProduct = new Map();
@@ -146,14 +146,14 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Product not found');
                 error.statusCode = 404;
                 error.type = 'not found';
-                return next(error);
+                throw error;
             }
 
             if (!Number.isFinite(product.stock) || product.stock < quantity) {
                 const error = new Error(`Insufficient stock for ${product.name}`);
                 error.statusCode = 409;
                 error.type = 'conflict';
-                return next(error);
+                throw error;
             }
 
             productsById.set(productId, product);
@@ -181,7 +181,7 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Insufficient stock');
                 error.statusCode = 409;
                 error.type = 'conflict';
-                return next(error);
+                throw error;
             }
         }
 
