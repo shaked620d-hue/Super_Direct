@@ -6,18 +6,22 @@ const createOrderItemRow = (item) => {
 };
 
 
+// כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
 const createOrderCard = (order) => {
-    const card = document.createElement('article');
+    const card = document.createElement('details');
     card.className = 'order-card';
 
-    const header = document.createElement('div');
+    const header = document.createElement('summary');
     header.className = 'order-card-header';
+    const orderDate = new Date(order.orderDate);
     const date = document.createElement('span');
-    date.textContent = new Date(order.orderDate).toLocaleDateString('he-IL');
+    date.textContent = orderDate.toLocaleDateString('he-IL');
     const status = document.createElement('span');
     status.className = 'order-status';
     status.textContent = order.status;
-    header.append(date, status);
+    const time = document.createElement('span');
+    time.textContent = orderDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    header.append(date, status, time);
 
   const total = document.createElement('div');
 total.className = 'order-total';
@@ -31,6 +35,8 @@ total.append(totalLabel, totalValue);
     card.append(header, ...order.items.map(createOrderItemRow), total);
     return card;
 };
+
+const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
 
 const loadOrders = async () => {
     const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
@@ -48,7 +54,26 @@ const loadOrders = async () => {
             return;
         }
 
-        document.getElementById('ordersList').replaceChildren(...orders.map(createOrderCard));
+        const groups = [];
+        STATUS_ORDER.forEach((status) => {
+            const ordersInStatus = orders
+                .filter((order) => order.status === status)
+                .sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+
+            if (ordersInStatus.length === 0) return;
+
+            const group = document.createElement('details');
+            group.className = 'order-status-group';
+
+            const heading = document.createElement('summary');
+            heading.className = 'order-status-heading';
+            heading.textContent = `${status} (${ordersInStatus.length})`;
+
+            group.append(heading, ...ordersInStatus.map(createOrderCard));
+            groups.push(group);
+        });
+
+        document.getElementById('ordersList').replaceChildren(...groups);
     } catch {
         showToast('שגיאה בטעינת ההזמנות');
     }

@@ -15,7 +15,7 @@ const renderCheckout = () =>{
     
   });
 
-  const delivery=   totalP>250? 0 : 20;
+  const delivery=   totalP>=250? 0 : 15;
   const confirmTotal= document.getElementById('confirmTotal');
   const confirmDelivery= document.getElementById('confirmDelivery');
   const confirmSubtotal= document.getElementById('confirmSubtotal');

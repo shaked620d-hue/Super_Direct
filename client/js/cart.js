@@ -97,7 +97,7 @@ const renderCart = () => {
     });
 
     const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    const delivery = subtotal === 0 || subtotal >= 250 ? 0 : 20;
+    const delivery = subtotal === 0 || subtotal >= 250 ? 0 : 15;
     document.querySelector('#subtotal').textContent = `${subtotal.toFixed(2)} ₪`;
     document.querySelector('#delivery').textContent = delivery === 0 ? 'חינם' : `${delivery.toFixed(2)} ₪`;
     document.querySelector('#total').textContent = `${(subtotal + delivery).toFixed(2)} ₪`;
