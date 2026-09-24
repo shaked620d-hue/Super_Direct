@@ -32,7 +32,10 @@ export const getCategoryById = async (req, res, next) => {
 // יוצר קטגוריה חדשה.
 export const createCategory = async (req, res, next) => {
 	try {
-		const newCategory = await Category.create(req.body);
+		// מקצה מזהה מספרי אוטומטית - הבא אחרי המזהה הגבוה ביותר הקיים.
+		const lastCategory = await Category.findOne().sort({ id: -1 });
+		const nextId = lastCategory ? lastCategory.id + 1 : 1;
+		const newCategory = await Category.create({ ...req.body, id: nextId });
 		res.status(201).json(newCategory);
 	} catch (error) {
 		error.statusCode = error.code === 11000 ? 409 : 500;
