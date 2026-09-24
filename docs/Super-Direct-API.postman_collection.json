@@ -1,0 +1,302 @@
+{
+  "info": {
+    "name": "Super Direct API",
+    "description": "כל ה-endpoints של שרת Super Direct, מסודרים לפי תחום. להריץ קודם את בקשת ההתחברות (Auth > Login) ולהעתיק את ה-token מהתגובה למשתנה {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "orderId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"בדיקה\",\n  \"lastName\": \"בדיקה\",\n  \"email\": \"test@example.com\",\n  \"address\": \"רחוב הדוגמה 1\",\n  \"password\": \"123456\",\n  \"paymentMethod\": \"1234\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/register", "host": ["{{baseUrl}}"], "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@superdirect.co.il\",\n  \"password\": \"123456789\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Get current user (me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Get all categories",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/category", "host": ["{{baseUrl}}"], "path": ["api", "category"] }
+          }
+        },
+        {
+          "name": "Get category by id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/category/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "category", "{{categoryId}}"] }
+          }
+        },
+        {
+          "name": "Create category (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"קטגוריה חדשה\",\n  \"slug\": \"new-category\",\n  \"description\": \"תיאור הקטגוריה\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/category", "host": ["{{baseUrl}}"], "path": ["api", "category"] }
+          }
+        },
+        {
+          "name": "Update category (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"תיאור מעודכן\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/category/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "category", "{{categoryId}}"] }
+          }
+        },
+        {
+          "name": "Delete category (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/category/{{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "category", "{{categoryId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "item": [
+        {
+          "name": "Get all products",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/product", "host": ["{{baseUrl}}"], "path": ["api", "product"] }
+          }
+        },
+        {
+          "name": "Get products by category",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/product?category={{categoryId}}", "host": ["{{baseUrl}}"], "path": ["api", "product"], "query": [{ "key": "category", "value": "{{categoryId}}" }] }
+          }
+        },
+        {
+          "name": "Get product by id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/product/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "product", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Create product (admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "מוצר בדיקה", "type": "text" },
+                { "key": "description", "value": "תיאור מוצר", "type": "text" },
+                { "key": "price", "value": "10.9", "type": "text" },
+                { "key": "stock", "value": "20", "type": "text" },
+                { "key": "categoryId", "value": "1", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/product", "host": ["{{baseUrl}}"], "path": ["api", "product"] }
+          }
+        },
+        {
+          "name": "Update product (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "price", "value": "12.9", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/product/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "product", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Delete product (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/product/{{productId}}", "host": ["{{baseUrl}}"], "path": ["api", "product", "{{productId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get all users (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/user", "host": ["{{baseUrl}}"], "path": ["api", "user"] }
+          }
+        },
+        {
+          "name": "Get user by id (self/admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api", "user", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Update user (self/admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"address\": \"כתובת מעודכנת\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api", "user", "{{userId}}"] }
+          }
+        },
+        {
+          "name": "Delete user (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api", "user", "{{userId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Get all orders (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/order", "host": ["{{baseUrl}}"], "path": ["api", "order"] }
+          }
+        },
+        {
+          "name": "Get my orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/order/my", "host": ["{{baseUrl}}"], "path": ["api", "order", "my"] }
+          }
+        },
+        {
+          "name": "Get order by id (owner/admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "order", "{{orderId}}"] }
+          }
+        },
+        {
+          "name": "Create order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{userId}}\",\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"qty\": 1 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/order", "host": ["{{baseUrl}}"], "path": ["api", "order"] }
+          }
+        },
+        {
+          "name": "Update order status (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"בהכנה\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/order/{{orderId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "order", "{{orderId}}", "status"] }
+          }
+        },
+        {
+          "name": "Delete order (admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/order/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "order", "{{orderId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Message",
+      "item": [
+        {
+          "name": "Create message (contact form)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "בדיקה", "type": "text" },
+                { "key": "email", "value": "test@example.com", "type": "text" },
+                { "key": "subject", "value": "נושא הפנייה", "type": "text" },
+                { "key": "message", "value": "תוכן ההודעה", "type": "text" },
+                { "key": "attachment", "type": "file", "src": "" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/message", "host": ["{{baseUrl}}"], "path": ["api", "message"] }
+          }
+        }
+      ]
+    }
+  ]
+}
