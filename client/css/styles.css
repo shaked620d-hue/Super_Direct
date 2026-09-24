@@ -12,7 +12,7 @@ button { cursor:pointer; }
 .brand-mark { width:38px; height:38px; display:grid; place-items:center; background:var(--lime) url('../../favicon.svg') center/100% no-repeat; border-radius:12px; font-size:0; }
 .nav-links { display:flex; gap:24px; margin-left:auto; }
 .menu-toggle { display:none; border:1px solid var(--line); background:var(--white); border-radius:10px; width:42px; height:42px; font-size:1.3rem; cursor:pointer; margin-left:auto; }
-.nav-links a { color:var(--muted); text-decoration:none; font-weight:600; }
+.nav-links a { color:var(--muted); text-decoration:none; font-weight:600; white-space:nowrap; }
 .nav-links a:hover { color:var(--green); }
 .nav-dropdown { position:relative; }
 .nav-dropdown-menu { position:absolute; top:100%; right:0; background:var(--white); border:1px solid var(--line); border-radius:12px; box-shadow:0 14px 30px #173f2c22; padding:8px; display:flex; flex-direction:column; min-width:140px; opacity:0; visibility:hidden; transform:translateY(-6px); transition:.15s; z-index:20; }
@@ -41,6 +41,11 @@ h1 { font-size:clamp(2.7rem,5vw,5.3rem); max-width:610px; letter-spacing:-.04em;
 .kosher-seal { position:absolute; top:20px; left:20px; width:130px; background:var(--white); border-radius:14px; box-shadow:0 10px 25px #173f2c2b; padding:8px 10px; }
 .kosher-seal img { display:block; width:100%; height:auto; }
 .kosher-badge-header { height:34px; width:auto; }
+.kosher-badge-wrap { position:relative; display:inline-flex; align-items:center; }
+.kosher-badge-tooltip { position:absolute; top:100%; right:50%; transform:translateX(50%); margin-top:10px; background:var(--white); border:1px solid var(--line); border-radius:14px; padding:14px 18px; box-shadow:0 12px 30px #264b3910; display:flex; flex-direction:column; align-items:center; gap:8px; white-space:nowrap; opacity:0; visibility:hidden; transition:.2s; z-index:20; }
+.kosher-badge-wrap:hover .kosher-badge-tooltip { opacity:1; visibility:visible; }
+.kosher-badge-tooltip img { width:44px; height:auto; }
+.kosher-badge-tooltip span { font-weight:700; font-size:.85rem; color:var(--ink); }
 main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 #fresh { scroll-margin-top:100px; }
 #categories { scroll-margin-top:100px; }
@@ -49,6 +54,12 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .section-heading a { color:var(--green); font-weight:700; text-decoration:none; }
 .category-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; }
 .category { border:1px solid var(--line); background:var(--white); border-radius:16px; padding:20px 10px; text-align:center; color:var(--ink); font-weight:700; text-decoration:none; transition:.2s; }
+.category-carousel { display:flex; align-items:center; gap:10px; }
+.category-carousel .category-list { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px; scrollbar-width:none; flex:1; min-width:0; padding:8px 4px; }
+.category-carousel .category-list::-webkit-scrollbar { display:none; }
+.category-carousel .category { flex:0 0 140px; scroll-snap-align:start; }
+.carousel-arrow { flex:0 0 auto; width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:var(--white); color:var(--ink); font-size:1.1rem; cursor:pointer; display:grid; place-items:center; }
+.carousel-arrow:hover { background:var(--cream); }
 .category:hover { transform:translateY(-3px); border-color:var(--green); }
 .category-icon { display:block; font-size:2.4rem; margin-bottom:7px; }
 .products { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
@@ -70,6 +81,9 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .admin-btn.delete:hover { background:#eec3ba; }
 .admin-add-product { display:inline-block; margin-bottom:14px; border:0; background:var(--green); color:white; padding:11px 18px; border-radius:10px; font-weight:800; text-decoration:none; }
 .admin-add-product:hover { background:#175a49; }
+.header-admin-link { display:inline-flex; align-items:center; border:0; background:var(--green); padding:8px 14px; border-radius:999px; font-weight:700; font-size:.85rem; text-decoration:none; white-space:nowrap; }
+.nav-links a.header-admin-link { color:white; }
+.nav-links a.header-admin-link:hover { background:#175a49; color:white; }
 .benefits { margin-top:60px; background:var(--ink); color:white; border-radius:22px; padding:27px 32px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .benefit { display:flex; gap:14px; align-items:center; }
 .benefit-icon { font-size:1.7rem; }

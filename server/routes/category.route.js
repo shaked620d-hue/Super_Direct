@@ -10,13 +10,14 @@ import {
 } from '../controllers/category.controller.js';
 import { authenticate } from '../middleware/auth.js';
 import { authorizeRoles } from '../middleware/authorize.js';
+import { upload } from '../middleware/upload.js';
 
 const router = express.Router();
 
 router.get('/', getCategories);
 router.get('/:id', getCategoryById);
-router.post('/', authenticate, authorizeRoles('admin'), createValidator(createCategorySchema), createCategory);
-router.put('/:id', authenticate, authorizeRoles('admin'), createValidator(updateCategorySchema), updateCategory);
+router.post('/', authenticate, authorizeRoles('admin'), upload.single('image'), createValidator(createCategorySchema), createCategory);
+router.put('/:id', authenticate, authorizeRoles('admin'), upload.single('image'), createValidator(updateCategorySchema), updateCategory);
 router.delete('/:id', authenticate, authorizeRoles('admin'), deleteCategory);
 
 export default router;

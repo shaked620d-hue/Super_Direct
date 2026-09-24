@@ -7,7 +7,8 @@ export const createCategorySchema = Joi.object({
     eyebrow: Joi.string().allow(''),
     intro: Joi.string().allow(''),
     bannerAlt: Joi.string().allow(''),
-    productsTitle: Joi.string().allow('')
+    productsTitle: Joi.string().allow(''),
+    icon: Joi.string().allow('')
 });
 
 export const updateCategorySchema = Joi.object({
@@ -17,5 +18,6 @@ export const updateCategorySchema = Joi.object({
     eyebrow: Joi.string().allow(''),
     intro: Joi.string().allow(''),
     bannerAlt: Joi.string().allow(''),
-    productsTitle: Joi.string().allow('')
+    productsTitle: Joi.string().allow(''),
+    icon: Joi.string().allow('')
 });

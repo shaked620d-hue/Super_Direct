@@ -36,31 +36,49 @@
                         <input id="name" name="name" type="text" required>
                     </div>
                     <div class="form-field">
-                        <label for="slug">Slug (לכתובת ה-URL, באנגלית)</label>
-                        <input id="slug" name="slug" type="text" required>
+                        <label for="slug">Slug</label>
+                        <input id="slug" name="slug" type="text" required placeholder="לכתובת ה-URL, באנגלית — למשל: fresh-fruits">
                     </div>
                     <div class="form-field">
                         <label for="description">תיאור</label>
                         <textarea id="description" name="description" required></textarea>
                     </div>
                     <div class="form-field">
-                        <label for="eyebrow">כותרת משנה (אופציונלי)</label>
-                        <input id="eyebrow" name="eyebrow" type="text">
+                        <label for="icon">אימוג'י לקטגוריה</label>
+                        <input id="icon" name="icon" type="text" placeholder="אופציונלי — אם ריק יתמלא 🛒. למשל: 🍎" maxlength="4">
                     </div>
                     <div class="form-field">
-                        <label for="intro">טקסט פתיחה (אופציונלי)</label>
-                        <textarea id="intro" name="intro"></textarea>
+                        <label for="eyebrow">כותרת משנה</label>
+                        <input id="eyebrow" name="eyebrow" type="text" placeholder="אופציונלי — אם ריק יתמלא אוטומטית. למשל: טרי מהשדה">
                     </div>
                     <div class="form-field">
-                        <label for="bannerAlt">תיאור תמונת הבאנר (אופציונלי)</label>
-                        <input id="bannerAlt" name="bannerAlt" type="text">
+                        <label for="intro">טקסט פתיחה</label>
+                        <textarea id="intro" name="intro" placeholder="אופציונלי — אם ריק ישתמש בתיאור שמילאתם למעלה"></textarea>
                     </div>
                     <div class="form-field">
-                        <label for="productsTitle">כותרת אזור המוצרים (אופציונלי)</label>
-                        <input id="productsTitle" name="productsTitle" type="text">
+                        <label for="image">תמונת באנר (אופציונלי)</label>
+                        <input id="image" name="image" type="file" accept="image/*">
+                    </div>
+                    <div class="form-field">
+                        <label for="bannerAlt">תיאור תמונת הבאנר</label>
+                        <input id="bannerAlt" name="bannerAlt" type="text" placeholder="אופציונלי — אם ריק ישתמש בשם הקטגוריה. למשל: פירות טריים">
+                    </div>
+                    <div class="form-field">
+                        <label for="productsTitle">כותרת אזור המוצרים</label>
+                        <input id="productsTitle" name="productsTitle" type="text" placeholder='אופציונלי — אם ריק יתמלא "כל ה...". למשל: כל הפירות'>
                     </div>
                     <button class="auth-submit" type="submit" id="submitButton">הוספת קטגוריה</button>
                 </form>
+            </div>
+        </section>
+        <section aria-label="מחיקת קטגוריה">
+            <div class="auth-card contact-card">
+                <h2>מחיקת קטגוריה</h2>
+                <div class="form-field">
+                    <label for="deleteCategorySelect">בחרו קטגוריה למחיקה</label>
+                    <select id="deleteCategorySelect"></select>
+                </div>
+                <button class="admin-btn delete" type="button" id="deleteCategoryButton" style="margin-top:16px">מחיקת קטגוריה</button>
             </div>
         </section>
     </main>

@@ -8,7 +8,9 @@ const categorySchema = new Schema({
     eyebrow: { type: String },
     intro: { type: String },
     bannerAlt: { type: String },
-    productsTitle: { type: String }
+    productsTitle: { type: String },
+    icon: { type: String },
+    image: { type: String }
 }, { timestamps: true });
 
 export const Category = model('Category', categorySchema);

@@ -16,7 +16,10 @@ const loadCategoryText = async () => {
         document.getElementById('categoryEyebrow').textContent = category.eyebrow;
         document.getElementById('categoryTitle').textContent = category.name;
         document.getElementById('categoryIntro').textContent = category.intro;
-        document.getElementById('categoryBanner').setAttribute('aria-label', category.bannerAlt);
+        const banner = document.getElementById('categoryBanner');
+        banner.setAttribute('aria-label', category.bannerAlt);
+        // אם הועלתה תמונה אמיתית לקטגוריה, היא מחליפה את התמונה הקבועה שמוגדרת ב-CSS.
+        if (category.image) banner.style.backgroundImage = `url(/public/${category.image})`;
         document.getElementById('products-title').textContent = category.productsTitle;
     } catch {
         showToast('שגיאה בטעינת פרטי הקטגוריה');

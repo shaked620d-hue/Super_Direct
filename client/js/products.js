@@ -222,21 +222,7 @@ const deleteProduct = async  (event) => {
 
 
 
-const addNewProductButton = () => {
-    if (!isAdmin()) return;
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions) return;
-
-    const button = document.createElement('a');
-    button.href =   getBasePath() + 'product-form.html';
-  
-    button.className = 'admin-add-product';
-    button.textContent = 'הוספת מוצר חדש +';
-    headerActions.append(button);
-}
-
 document.addEventListener('DOMContentLoaded', loadProducts);
-document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#searchForm')?.addEventListener('submit', handleSearch);
