@@ -36,12 +36,7 @@ server.use(cors());
    }
  }));
 
- // אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
- server.use(rateLimit({
-   windowMs: 15 * 60 * 1000,
-   max: 200,
-  message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
-}));
+ 
 
 
 // רושם לכל בקשה את השיטה, הנתיב והזמן.
@@ -79,8 +74,11 @@ server.get('/favicon.ico', (req, res) => {
 });
 
 
-server.use('/api', indexRouter);
-
+server.use('/api', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
+}), indexRouter);
 
 
 // Middleware לטיפול בנתיבים שלא קיימים.

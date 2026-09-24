@@ -96,31 +96,31 @@ export const deleteOrder = async (req, res, next) => {
 
 // מחשבת את מועד המשלוח לפי שעת ביצוע ההזמנה.
 function calculateExpectedDelivery() {
-    const now = new Date();
-    const delivery = new Date();
+	const now = new Date();
+	const delivery = new Date();
 
-    if (now.getHours() < 14) {
-        delivery.setHours(18, 0, 0, 0);
-    } else {
-        delivery.setDate(delivery.getDate() + 1);
-        delivery.setHours(18, 0, 0, 0);
-    }
+	if (now.getHours() < 14) {
+		delivery.setHours(18, 0, 0, 0);
+	} else {
+		delivery.setDate(delivery.getDate() + 1);
+		delivery.setHours(18, 0, 0, 0);
+	}
 
-    return delivery;
+	return delivery;
 }
 
 // יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
 export const createOrder = async (req, res, next) => {
     const session = await mongoose.startSession();
     try {
-        // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
-        await session.startTransaction();
+    // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
+    await session.startTransaction();
         // מונעים יצירת הזמנה בשם משתמש אחר.
         if (req.body.customerId !== req.user._id.toString()) {
             const error = new Error('Customer does not match authenticated user');
             error.statusCode = 403;
             error.type = 'forbidden';
-            throw error;
+            return next(error);
         }
 
         const customer = await Customer.findById(req.user._id).session(session);
@@ -128,7 +128,7 @@ export const createOrder = async (req, res, next) => {
             const error = new Error('Customer not found');
             error.statusCode = 404;
             error.type = 'not found';
-            throw error;
+            return next(error);
         }
 
         const quantitiesByProduct = new Map();
@@ -146,14 +146,14 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Product not found');
                 error.statusCode = 404;
                 error.type = 'not found';
-                throw error;
+                return next(error);
             }
 
             if (!Number.isFinite(product.stock) || product.stock < quantity) {
                 const error = new Error(`Insufficient stock for ${product.name}`);
                 error.statusCode = 409;
                 error.type = 'conflict';
-                throw error;
+                return next(error);
             }
 
             productsById.set(productId, product);
@@ -181,7 +181,7 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Insufficient stock');
                 error.statusCode = 409;
                 error.type = 'conflict';
-                throw error;
+                return next(error);
             }
         }
 
