@@ -40,7 +40,7 @@ const loadOrders = async () => {
     }
 
     try {
-        const response = await getMyOrdersRequest(currentUser.id);
+        const response = await getMyOrdersRequest(currentUser._id || currentUser.id);
         const orders = await response.json();
 
         if (orders.length === 0) {
