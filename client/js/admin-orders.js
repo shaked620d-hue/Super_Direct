@@ -65,6 +65,8 @@ const handleStatusChange = async (event) => {
     }
 };
 
+const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
+
 const loadOrders = async () => {
     try {
         const response = await getOrdersRequest();
@@ -75,8 +77,22 @@ const loadOrders = async () => {
             return;
         }
 
-        const sortedOrders = [...orders].sort((a, b) => (a.status === 'נמסרה') - (b.status === 'נמסרה'));
-        document.getElementById('ordersList').replaceChildren(...sortedOrders.map(createOrderCard));
+       const elements = [];
+STATUS_ORDER.forEach((status) => {
+    const ordersInStatus = orders
+        .filter((order) => order.status === status)
+        .sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+
+    if (ordersInStatus.length === 0) return;
+
+    const heading = document.createElement('h2');
+    heading.className = 'order-status-heading';
+    heading.textContent = status;
+    elements.push(heading, ...ordersInStatus.map(createOrderCard));
+});
+
+document.getElementById('ordersList').replaceChildren(...elements);
+
     } catch {
         showToast('שגיאה בטעינת ההזמנות');
     }
