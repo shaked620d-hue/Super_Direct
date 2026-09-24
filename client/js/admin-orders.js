@@ -23,7 +23,7 @@ const createOrderCard = (order) => {
 
     const customer = document.createElement('p');
     customer.className = 'order-customer';
-    customer.textContent = `לקוח: ${order.customerId}`;
+    customer.textContent = `לקוח: ${order.customerId.firstName} ${order.customerId.lastName}`;
 
         const statusOptions = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
     const select = document.createElement('select');

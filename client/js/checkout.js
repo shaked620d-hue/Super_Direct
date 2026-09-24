@@ -62,7 +62,7 @@ const items = cart.map((item) => ({ productId: item.productId, qty: item.quantit
 const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
 try {
-    const response = await createOrderRequest({ items, customerId: currentUser.id });
+    const response = await createOrderRequest({ items, customerId: currentUser._id || currentUser.id });
     if (!response.ok) {
         showToast('שליחת ההזמנה נכשלה');
         return;

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { env } from '../config/env.js';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = env.JWT_SECRET;
 
 // יוצר אסימון חתום שמזהה את המשתמש בלי לשמור את הסיסמה בתוך האסימון.
 export const createToken = (customer) => {

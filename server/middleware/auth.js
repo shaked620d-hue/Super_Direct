@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { Customer } from '../models/auth.model.js';
+import { env } from '../config/env.js';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = env.JWT_SECRET;
 
 // מאמת את האסימון וטוען את המשתמש למסמך הבקשה.
 export const authenticate = async (req, res, next) => {
