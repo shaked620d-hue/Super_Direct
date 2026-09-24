@@ -65,6 +65,12 @@ const updateAuthUI = ()=>{
                 ordersLink.className = 'admin-add-product';
                 ordersLink.textContent = 'ניהול הזמנות';
                 headerActions.append(ordersLink);
+
+                const categoryLink = document.createElement('a');
+                categoryLink.href = getBasePath() + 'category-form.html';
+                categoryLink.className = 'admin-add-product';
+                categoryLink.textContent = 'הוספת קטגוריה';
+                headerActions.append(categoryLink);
             }
         }
     }
