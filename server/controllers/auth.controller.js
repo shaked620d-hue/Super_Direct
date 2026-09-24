@@ -4,7 +4,8 @@ import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 import { createToken } from '../utils/jwt.js';
 
 // יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
-export const register = async (req, res) => {
+export const register = async (req, res,next) => {
+	try {
 	const newCustomer = await Customer.create({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -17,10 +18,16 @@ export const register = async (req, res) => {
 	const safeCustomer = sanitizeCustomer(newCustomer.toObject());
 	// מחזירים את פרטי המשתמש ואת האסימון כדי שהלקוח יוכל לשמור אותו.
 	res.status(201).json({ ...safeCustomer, token: createToken(newCustomer) });
-};
+}
+catch (error) {
+        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        next(error);
+    }
+	};
 
 // מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
 export const login = async (req, res, next) => {
+	try {
 	const customer = await Customer.findOne({ email: req.body.email }).exec();
 	if (!customer) {
 		const error = new Error('User not found');
@@ -38,8 +45,11 @@ export const login = async (req, res, next) => {
 		error.type = 'unauthorized';
 		return next(error);
 	}
+} catch (error) {
+        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        next(error);
+    }
 };
-
 // יחזיר בעתיד את פרטי המשתמש לפי אסימון JWT.
 export const getCurrentUser = (req, res) => {
 	// req.user הוזן על ידי middleware האימות לאחר בדיקת ה-JWT.
