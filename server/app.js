@@ -19,25 +19,10 @@ const clientDir = path.join(import.meta.dirname, '..', 'client');
 
 connectDB();
 
-server.use('/public', express.static(path.join(import.meta.dirname, 'public')));
-
-server.get('/favicon.svg', (req, res) => {
-  res.sendFile(path.join(clientDir, '..', 'favicon.svg'));
-});
-
-server.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
-});
-
-// server.get('/', (req, res) => {
-//   res.sendFile(path.join(clientDir, 'index.html'));
-// });
-
 // מפרש JSON שנשלח בבקשות POST/PUT.
 server.use(express.json());
-
-server.use('/api', indexRouter);
-
+// מאפשר לבקשות מהדפדפן להגיע לשרת גם אם המקור שונה.
+server.use(cors());
 // זמני כדי שהתמונות יעלו כשהם עדיין לא בשרת 
 // אבטחה: מוסיף כותרות HTTP
 // שמגנות על השרת מפני התקפות נפוצות.
@@ -51,15 +36,13 @@ server.use('/api', indexRouter);
    }
  }));
 
-// אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
+ // אבטחה ויציבות: מגביל את מספר הבקשות מאותו IP.
  server.use(rateLimit({
    windowMs: 15 * 60 * 1000,
    max: 200,
   message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
 }));
 
-// מאפשר לבקשות מהדפדפן להגיע לשרת גם אם המקור שונה.
-server.use(cors());
 
 // רושם לכל בקשה את השיטה, הנתיב והזמן.
 server.use(requestLogger);
@@ -76,15 +59,29 @@ server.use(createTimeBlocker({
   message: 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
 }));
 
+
 // רושם לכל בקשת HTTP לקונסולה. )
 server.use(morgan('dev'));
 
 
-
+server.use('/public', express.static(path.join(import.meta.dirname, 'public')));
 // משרת קבצים סטטיים מהתיקיית client.
 server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
 server.use('/js', express.static(path.join(clientDir, 'js')));
+
+server.get('/favicon.svg', (req, res) => {
+  res.sendFile(path.join(clientDir, '..', 'favicon.svg'));
+});
+
+server.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
+});
+
+
+server.use('/api', indexRouter);
+
+
 
 // Middleware לטיפול בנתיבים שלא קיימים.
 server.use(notFoundHandler);

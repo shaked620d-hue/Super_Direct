@@ -22,6 +22,8 @@ export const getProductById = async(req, res, next) => {
 
 // מחזיר את כל המוצרים, עם אפשרות לסינון לפי קטגוריה.
 export const getProducts = async (req, res, next) => {
+	console.log("--> פונקציית getProducts הופעלה!"); // הוספי את זהconsole.log("--> פונקציית getProducts הופעלה!"); // הוספי את זה
+
 	try {
 		if (req.query.category) {
 			const productsWithSameCategory = await Product.find({ categoryId: req.query.category });
