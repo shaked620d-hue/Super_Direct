@@ -1,10 +1,10 @@
-import '../config/env.js';
 import mongoose from 'mongoose';
 import { connectDB } from '../config/db.js';
 import { Customer } from '../models/auth.model.js';
+import { env } from '../config/env.js';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_EMAIL = env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = env.ADMIN_PASSWORD;
 
 if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
     console.error('ADMIN_EMAIL / ADMIN_PASSWORD are not set in .env');
