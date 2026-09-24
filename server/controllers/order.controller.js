@@ -7,7 +7,7 @@ import { Customer } from '../models/auth.model.js';
 // מחזיר את כל ההזמנות.
 export const getOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find();
+        const orders = await Order.find().populate('customerId', 'firstName lastName');
         res.json(orders);
     } catch (error) {
         error.statusCode = 500;
