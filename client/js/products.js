@@ -141,8 +141,6 @@ const loadProducts = async () => {
 };
 
 const renderProducts = () => {
-    const searchQuery = new URLSearchParams(window.location.search).get('q')?.toLocaleLowerCase('he') || '';
-
     document.querySelectorAll('.products[data-category]').forEach((grid) => {
         const categoryId = categoryIdsBySlug[grid.dataset.category];
         const visibleProducts = products.filter((product) => product.categoryId === categoryId);
@@ -150,10 +148,7 @@ const renderProducts = () => {
     });
 
     document.querySelectorAll('.products[data-featured]').forEach((grid) => {
-        const featuredProducts = searchQuery
-            ? products.filter((product) => `${product.name} ${product.description}`.toLocaleLowerCase('he').includes(searchQuery))
-            : [...products].sort(() => Math.random() - 0.5).slice(0, 4);
-        grid.replaceChildren(...featuredProducts.map(createProductCard));
+        grid.replaceChildren(...[...products].sort(() => Math.random() - 0.5).slice(0, 4).map(createProductCard));
     });
 
     document.querySelectorAll('.products[data-all-products]').forEach((container) => {
@@ -171,8 +166,8 @@ const renderSearchResults = (query) => {
     const visibleProducts = query
         // מחברים את שם המוצר והתיאור למחרוזת אחת ובודקים אם היא מכילה את החיפוש.
         ? products.filter((product) => `${product.name} ${product.description}`.includes(query))
-        // אם החיפוש ריק, מציגים מחדש רק את ארבעת המוצרים המובילים.
-        : products.slice(0, 4);
+        // אם החיפוש ריק, מציגים ארבעה מוצרים אקראיים כמו בדף הבית.
+        : [...products].sort(() => Math.random() - 0.5).slice(0, 4);
 
     // בודקים אם הסינון לא מצא אף מוצר.
     if (visibleProducts.length === 0) {
@@ -245,4 +240,11 @@ document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#searchForm')?.addEventListener('submit', handleSearch);
+    document.querySelector('#searchInput')?.addEventListener('input', (event) => {
+        if (!event.target.value.trim()) {
+            renderSearchResults('');
+            const resultsTitle = document.querySelector('#fresh-title');
+            if (resultsTitle) resultsTitle.textContent = 'נבחרת טרייה להיום';
+        }
+    });
 });
