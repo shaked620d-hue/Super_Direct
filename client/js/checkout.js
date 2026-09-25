@@ -31,12 +31,20 @@ const handleConfirmOrder = ()=>{
   {
     return;
   }
+
+  const cardNumberInput = document.getElementById('cardNumber');
+cardNumberInput.addEventListener('input', (event) => {
+    const digits = event.target.value.replace(/\s/g, '').slice(0, 16);
+    event.target.value = digits.replace(/(.{4})/g, '$1 ').trim();
+});
+
+
   paymentForm.addEventListener('submit', async (event)=>{
 
     event.preventDefault();
 
     const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');//לוקח מחרוזת ומסיר ממנה את כל הרווחים
-    if (cardNumber.length !== 16) {
+    if (!/^\d{16}$/.test(cardNumber)) {
    showToast('מספר כרטיס לא תקין');
   return;
 }
@@ -44,7 +52,7 @@ const handleConfirmOrder = ()=>{
 const lastFourDigits = cardNumber.slice(-4);
 
 const cardCvv = document.getElementById('cardCvv').value;
-if (cardCvv.length !== 3) {
+if (!/^\d{3}$/.test(cardCvv)) {
   showToast('CVV לא תקין');
   return;
 }
