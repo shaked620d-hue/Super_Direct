@@ -94,8 +94,10 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .auth-main { max-width:460px; margin:56px auto 100px; padding:0 24px; }
 .orders-main { max-width:1100px; margin:56px auto 100px; padding:0 24px; }
 .orders-main .auth-card { max-width:none; }
-#ordersList { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px; margin-top:20px; align-items:start; }
-#ordersList .order-card { margin-bottom:0; }
+#ordersList, #messagesList { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px; margin-top:20px; align-items:start; }
+#ordersList .order-card, #messagesList .order-card { margin-bottom:0; }
+.message-handled-row { display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-weight:600; font-size:.9rem; }
+.message-body { color:var(--muted); line-height:1.6; margin:0 0 8px; white-space:pre-wrap; }
 .auth-back { display:inline-block; margin-bottom:18px; color:var(--muted); text-decoration:none; font-weight:600; font-size:.88rem; }
 .auth-back:hover { color:var(--green); }
 .auth-card { background:var(--white); border:1px solid var(--line); border-radius:22px; padding:38px 34px; box-shadow:0 12px 30px #264b3910; }

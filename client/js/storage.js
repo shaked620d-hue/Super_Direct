@@ -77,6 +77,12 @@ const updateAuthUI = ()=>{
                 categoryLink.className = 'header-admin-link';
                 categoryLink.textContent = 'ניהול קטגוריות';
                 navLinks.append(categoryLink);
+
+                const messagesLink = document.createElement('a');
+                messagesLink.href = getBasePath() + 'admin-messages.html';
+                messagesLink.className = 'header-admin-link';
+                messagesLink.textContent = 'ניהול הודעות';
+                navLinks.append(messagesLink);
             }
         }
     }
