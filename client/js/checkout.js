@@ -1,4 +1,4 @@
-
+const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
 const renderCheckout = () =>{
   const cart=  readCart();
@@ -31,6 +31,12 @@ const handleConfirmOrder = ()=>{
   {
     return;
   }
+
+  if (!currentUser) {
+    showToast('צריך להתחבר כדי להשלים הזמנה');
+    window.location.href = 'login.html';
+    return;
+}
 
   const cardNumberInput = document.getElementById('cardNumber');
 cardNumberInput.addEventListener('input', (event) => {
@@ -67,7 +73,6 @@ if (!month || !year || expiryDate < new Date()) {
 
 const cart = readCart();
 const items = cart.map((item) => ({ productId: item.productId, qty: item.quantity }));
-const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
 try {
     const response = await createOrderRequest({ items, customerId: currentUser._id || currentUser.id });

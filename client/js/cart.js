@@ -22,6 +22,25 @@ const writeCart = (cart) => {
     updateCartCount(cart);
 };
 
+const mergeGuestCartIntoUserCart = () => {
+    const guestCart = JSON.parse(sessionStorage.getItem('superDirectCart_guest')) || [];
+    if (guestCart.length === 0) return;
+
+    const userCart = readCart();
+    guestCart.forEach((guestItem) => {
+        const existing = userCart.find((item) => item.name === guestItem.name);
+        if (existing) {
+            existing.quantity += guestItem.quantity;
+        } else {
+            userCart.push(guestItem);
+        }
+    });
+
+    writeCart(userCart);
+    sessionStorage.removeItem('superDirectCart_guest');
+};
+
+
 const updateCartCount = (cart = readCart()) => {
     const count = cart.reduce((total, item) => total + item.quantity, 0);
     document.querySelectorAll('.cart-count').forEach((badge) => {

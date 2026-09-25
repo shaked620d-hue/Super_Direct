@@ -30,6 +30,7 @@ const handleRegisterSubmit = () => {
 
             const user = await response.json();
             localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+            mergeGuestCartIntoUserCart();
             showToast('נרשמת בהצלחה');
             window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
         }
