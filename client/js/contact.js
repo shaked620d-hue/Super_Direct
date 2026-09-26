@@ -44,6 +44,7 @@ document.getElementById('attachmentPreviewWrap').hidden = true;
                 return;
             }
             showToast('ההודעה נשלחה בהצלחה');
+            window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
         } catch {
             showToast('אירעה שגיאה בשליחת ההודעה');
         }

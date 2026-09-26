@@ -30,16 +30,26 @@ const createMessageCard = (message) => {
 
     const body = document.createElement('p');
     body.className = 'message-body';
-    body.textContent = message.message;
+    body.textContent = `תוכן ההודעה: ${message.message}`;
 
-    const handledRow = document.createElement('label');
-    handledRow.className = 'message-handled-row';
+    const handledLabel = document.createElement('label');
+    handledLabel.className = 'message-handled-label';
     const handledCheckbox = document.createElement('input');
     handledCheckbox.type = 'checkbox';
     handledCheckbox.checked = message.handled;
     handledCheckbox.dataset.messageId = message._id;
     handledCheckbox.addEventListener('change', handleStatusChange);
-    handledRow.append(handledCheckbox, 'טופלה');
+    handledLabel.append(handledCheckbox, 'טופלה');
+
+    // פותח את תוכנת המייל של מי שלוחץ (לא תלוי בשרת), עם כתובת הלקוח כבר ממולאת.
+    const replyLink = document.createElement('a');
+    replyLink.className = 'admin-btn edit';
+    replyLink.href = `mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`;
+    replyLink.textContent = 'מענה';
+
+    const handledRow = document.createElement('div');
+    handledRow.className = 'message-handled-row';
+    handledRow.append(handledLabel, replyLink);
 
     const children = [summary, subject, email, body];
 
@@ -47,7 +57,11 @@ const createMessageCard = (message) => {
         const attachmentLink = document.createElement('a');
         attachmentLink.href = `${API_BASE_URL}/public/${message.attachment}`;
         attachmentLink.target = '_blank';
-        attachmentLink.textContent = 'צפייה בקובץ המצורף';
+        const attachmentImage = document.createElement('img');
+        attachmentImage.src = `${API_BASE_URL}/public/${message.attachment}`;
+        attachmentImage.alt = 'קובץ מצורף להודעה';
+        attachmentImage.className = 'attachment-preview';
+        attachmentLink.append(attachmentImage);
         children.push(attachmentLink);
     }
 
@@ -88,7 +102,7 @@ const loadMessages = async () => {
         HANDLED_ORDER.forEach((handled) => {
             const messagesInGroup = messages
                 .filter((message) => message.handled === handled)
-                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
             if (messagesInGroup.length === 0) return;
 
