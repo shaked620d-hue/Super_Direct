@@ -40,7 +40,7 @@ export const createMessage = async (req, res, next) => {
             email: req.body.email,
             subject: req.body.subject,
             message: req.body.message,
-            attachment: req.file ? req.file.filename : undefined
+            attachment: req.file ? `messages/${req.file.filename}` : undefined
         });
         res.status(201).json(newMessage);
     } catch (error) {

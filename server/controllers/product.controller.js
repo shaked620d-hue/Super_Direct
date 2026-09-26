@@ -47,7 +47,7 @@ export const createProduct = async (req, res, next) => {
 			price: req.body.price,
 			categoryId: req.body.categoryId,
 			stock: req.body.stock,
-			image: req.file ? req.file.filename : undefined,
+			image: req.file ? `products/${req.file.filename}` : undefined,
 			containsGluten: req.body.containsGluten,
 			containsDairy: req.body.containsDairy,
 			containsNuts: req.body.containsNuts,
@@ -74,7 +74,7 @@ export const updateProduct = async (req, res, next) => {
 		if (req.body.price) product.price = req.body.price;
 		if (req.body.categoryId) product.categoryId = req.body.categoryId;
 		if (req.body.stock !== undefined) product.stock = req.body.stock;
-		if (req.file) product.image = req.file.filename;
+		if (req.file) product.image = `products/${req.file.filename}`;
 		if (req.body.containsGluten !== undefined) product.containsGluten = req.body.containsGluten;
 		if (req.body.containsDairy !== undefined) product.containsDairy = req.body.containsDairy;
 		if (req.body.containsNuts !== undefined) product.containsNuts = req.body.containsNuts;

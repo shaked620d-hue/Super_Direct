@@ -45,7 +45,7 @@ export const createCategory = async (req, res, next) => {
 			bannerAlt: req.body.bannerAlt || req.body.name,
 			productsTitle: req.body.productsTitle || `כל ה${req.body.name}`,
 			icon: req.body.icon || '🛒',
-			image: req.file ? req.file.filename : undefined
+			image: req.file ? `categories/${req.file.filename}` : undefined
 		});
 		res.status(201).json(newCategory);
 	} catch (error) {
@@ -59,7 +59,7 @@ export const createCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
 	try {
 		const updates = { ...req.body };
-		if (req.file) updates.image = req.file.filename;
+		if (req.file) updates.image = `categories/${req.file.filename}`;
 		const category = await Category.findByIdAndUpdate(
 			req.params.id,
 			{ $set: updates },
