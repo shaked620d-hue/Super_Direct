@@ -58,7 +58,7 @@ const loadOrders = async () => {
         STATUS_ORDER.forEach((status) => {
             const ordersInStatus = orders
                 .filter((order) => order.status === status)
-                .sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+                .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
             if (ordersInStatus.length === 0) return;
 

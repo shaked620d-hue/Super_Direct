@@ -189,6 +189,7 @@ export const createOrder = async (req, res, next) => {
         const deliveryFee = totalPrice >= 250 ? 0 : 15;
         const [newOrder] = await Order.create([{
             customerId: req.user._id,
+            phone: req.body.phone,
             expectedDelivery: calculateExpectedDelivery(),
             items: orderItems,
             deliveryFee,

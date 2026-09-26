@@ -29,6 +29,10 @@ const createOrderCard = (order) => {
     customer.className = 'order-customer';
     customer.textContent = `לקוח: ${order.customerId.firstName} ${order.customerId.lastName}`;
 
+    const phone = document.createElement('p');
+    phone.className = 'order-customer';
+    phone.textContent = `טלפון: ${order.phone}`;
+
         const statusOptions = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
     const select = document.createElement('select');
     select.className = 'order-status-select';
@@ -51,7 +55,7 @@ const createOrderCard = (order) => {
     totalValue.textContent = `${order.totalPrice.toFixed(2)} ₪`;
     total.append(totalLabel, totalValue);
 
-    card.append(summary, customer, ...order.items.map(createOrderItemRow), select, total);
+    card.append(summary, customer, phone, ...order.items.map(createOrderItemRow), select, total);
     return card;
 };
 const handleStatusChange = async (event) => {
@@ -85,7 +89,7 @@ const loadOrders = async () => {
 STATUS_ORDER.forEach((status) => {
     const ordersInStatus = orders
         .filter((order) => order.status === status)
-        .sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+        .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
     if (ordersInStatus.length === 0) return;
 
