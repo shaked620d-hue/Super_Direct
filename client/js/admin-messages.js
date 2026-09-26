@@ -37,19 +37,25 @@ const createMessageCard = (message) => {
     const handledCheckbox = document.createElement('input');
     handledCheckbox.type = 'checkbox';
     handledCheckbox.checked = message.handled;
+    // ברגע שהודעה מסומנת כטופלה זה חד-כיווני - הקובץ המצורף כבר נמחק בשרת, אז אין טעם לאפשר לבטל את הסימון.
+    handledCheckbox.disabled = message.handled;
     handledCheckbox.dataset.messageId = message._id;
     handledCheckbox.addEventListener('change', handleStatusChange);
     handledLabel.append(handledCheckbox, 'טופלה');
 
-    // פותח את תוכנת המייל של מי שלוחץ (לא תלוי בשרת), עם כתובת הלקוח כבר ממולאת.
-    const replyLink = document.createElement('a');
-    replyLink.className = 'admin-btn edit';
-    replyLink.href = `mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`;
-    replyLink.textContent = 'מענה';
-
     const handledRow = document.createElement('div');
     handledRow.className = 'message-handled-row';
-    handledRow.append(handledLabel, replyLink);
+    handledRow.append(handledLabel);
+
+    // כפתור מענה מיותר להודעה שכבר טופלה.
+    if (!message.handled) {
+        // פותח את תוכנת המייל של מי שלוחץ (לא תלוי בשרת), עם כתובת הלקוח כבר ממולאת.
+        const replyLink = document.createElement('a');
+        replyLink.className = 'admin-btn edit';
+        replyLink.href = `mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`;
+        replyLink.textContent = 'מענה';
+        handledRow.append(replyLink);
+    }
 
     const children = [summary, subject, email, body];
 
