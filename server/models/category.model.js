@@ -10,7 +10,8 @@ const categorySchema = new Schema({
     bannerAlt: { type: String },
     productsTitle: { type: String },
     icon: { type: String },
-    image: { type: String }
+    image: { type: String },
+    soldByWeight: { type: Boolean, default: false }
 }, { timestamps: true });
 
 export const Category = model('Category', categorySchema);

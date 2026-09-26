@@ -14,6 +14,7 @@ const handleCategorySubmit = () => {
         formData.append('intro', document.getElementById('intro').value);
         formData.append('bannerAlt', document.getElementById('bannerAlt').value);
         formData.append('productsTitle', document.getElementById('productsTitle').value);
+        formData.append('soldByWeight', document.getElementById('soldByWeight').checked);
 
         const imageFile = document.getElementById('image').files[0];
         if (imageFile) {

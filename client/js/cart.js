@@ -54,13 +54,15 @@ const addToCart = (card) => {
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
     const image = card.querySelector('.product-image')?.src || '';
     const productId = card.dataset.id;
+const unit = card.dataset.unit || 'ליח׳';
 
     if (!name || Number.isNaN(price)) return;
 
     const cart = readCart();
     const existing = cart.find((item) => item.name === name);
     if (existing) existing.quantity += 1;
-else cart.push({ productId, name, price, image, quantity: 1 });
+else cart.push({ productId, name, price, image, quantity: 1, unit });
+
 
     writeCart(cart);
     showToast(`${name} נוסף לסל`);
@@ -102,7 +104,57 @@ const renderCart = () => {
     cart.forEach((item, index) => {
         const row = document.createElement('article');
         row.className = 'cart-item';
-        row.innerHTML = `<img src="${item.image}" alt="${item.name}"><div class="cart-item-info"><span class="product-tag">מוצר טרי</span><h2>${item.name}</h2><strong>${item.price.toFixed(2)} ₪</strong></div><div class="quantity-control" aria-label="כמות ${item.name}"><button type="button" data-action="increase" aria-label="הוספת יחידה">+</button><span>${item.quantity}</span><button type="button" data-action="decrease" aria-label="הפחתת יחידה">−</button></div><strong class="cart-item-total">${(item.price * item.quantity).toFixed(2)} ₪</strong><button class="remove-button" type="button" data-action="remove" aria-label="הסרת ${item.name}">×</button>`;
+
+        const img = document.createElement('img');
+        img.src = item.image;
+        img.alt = item.name;
+
+        const info = document.createElement('div');
+        info.className = 'cart-item-info';
+        const tag = document.createElement('span');
+        tag.className = 'product-tag';
+        tag.textContent = 'מוצר טרי';
+        const title = document.createElement('h2');
+        title.textContent = item.name;
+        const priceLine = document.createElement('strong');
+        priceLine.textContent = `${item.price.toFixed(2)} ₪ `;
+        const priceUnit = document.createElement('span');
+        priceUnit.className = 'price-unit';
+        priceUnit.textContent = `/ ${item.unit}`;
+        priceLine.append(priceUnit);
+
+        info.append(tag, title, priceLine);
+
+        const quantityControl = document.createElement('div');
+        quantityControl.className = 'quantity-control';
+        quantityControl.setAttribute('aria-label', `כמות ${item.name}`);
+        const increaseButton = document.createElement('button');
+        increaseButton.type = 'button';
+        increaseButton.dataset.action = 'increase';
+        increaseButton.setAttribute('aria-label', 'הוספת יחידה');
+        increaseButton.textContent = '+';
+        const quantityValue = document.createElement('span');
+        quantityValue.textContent = `${item.quantity} ${item.unit}`;
+        const decreaseButton = document.createElement('button');
+        decreaseButton.type = 'button';
+        decreaseButton.dataset.action = 'decrease';
+        decreaseButton.setAttribute('aria-label', 'הפחתת יחידה');
+        decreaseButton.textContent = '−';
+        quantityControl.append(increaseButton, quantityValue, decreaseButton);
+
+        const total = document.createElement('strong');
+        total.className = 'cart-item-total';
+        total.textContent = `${(item.price * item.quantity).toFixed(2)} ₪`;
+
+        const removeButton = document.createElement('button');
+        removeButton.className = 'remove-button';
+        removeButton.type = 'button';
+        removeButton.dataset.action = 'remove';
+        removeButton.setAttribute('aria-label', `הסרת ${item.name}`);
+        removeButton.textContent = '×';
+
+        row.append(img, info, quantityControl, total, removeButton);
+
         row.addEventListener('click', (event) => {
             const action = event.target.dataset.action;
             if (!action) return;

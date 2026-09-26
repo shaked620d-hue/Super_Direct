@@ -1,5 +1,6 @@
 let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
 let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
+let categorySoldByWeight = {};
 let products = [];
 
 const loadCategoryNames = async () => {
@@ -8,6 +9,8 @@ const loadCategoryNames = async () => {
     categories.forEach((category) => {
         categoryNames[category.id] = category.name;
         categoryIdsBySlug[category.slug] = category.id;
+        categorySoldByWeight[category.id] = category.soldByWeight;
+
     });
 };
 
@@ -73,10 +76,14 @@ const createProductCard = (product) => {
     description.className = 'product-description';
     description.textContent = product.description;
 
+const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
     const price = document.createElement('span');
     price.className = 'price';
     price.textContent = `${product.price.toFixed(2)} ₪`;
-
+    const unitSpan = document.createElement('span');
+    unitSpan.className = 'price-unit';
+    unitSpan.textContent = `/ ${unit}`;
+    price.append(unitSpan);
     const addButton = document.createElement('button');
     addButton.className = 'add-button';
     addButton.type = 'button';
@@ -112,6 +119,8 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     const card = document.createElement('article');
     card.className = 'product-card';
     card.dataset.id = product._id;
+    card.dataset.unit = unit;
+
     card.append(img, info);
     return card;
 };

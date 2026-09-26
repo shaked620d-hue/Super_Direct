@@ -6,7 +6,7 @@ const renderCheckout = () =>{
   let totalP=0;
   cart.forEach(element => {
    const el= document.createElement('p');
-  el.textContent = `${element.name} - כמות ${element.quantity} - ${element.price} ₪`;
+  el.textContent = `${element.name} - כמות ${element.quantity} ${element.unit} - ${element.price} ₪`;
 
     totalP+= element.price* element.quantity;
    
