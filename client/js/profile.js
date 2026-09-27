@@ -1,13 +1,13 @@
 
 const guardLoggedIn =()=>{
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
 
    if (!currentUser) {
     window.location.href = 'login.html';
 }
 }
 const fillProfileForm =()=>{
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
 
     document.getElementById('firstName').value = currentUser.firstName || '';// ה או זה בשביל המנהל כי לו אין פרטים
     document.getElementById('lastName').value = currentUser.lastName || '';
@@ -25,7 +25,7 @@ const revealSaveButton=()=>{
 const handleProfileSave = async (event) => {
 
     event.preventDefault();
-        const currentUser= JSON.parse(localStorage.getItem('superDirectCurrentUser')) || [];
+        const currentUser= getCurrentUser() || [];
 if(!currentUser){return;}
 
 const details={

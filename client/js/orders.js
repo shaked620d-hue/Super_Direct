@@ -29,7 +29,7 @@ total.append(totalLabel, totalValue);
 };
 
 const loadOrders = async () => {
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     if (!currentUser) {
         window.location.href = 'login.html';
         return;

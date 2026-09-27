@@ -1,5 +1,5 @@
 const getCartStorage = () => {
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     if (currentUser) {
         return { storage: localStorage, key: `superDirectCart_${currentUser._id || currentUser.id}` };
     }
@@ -111,7 +111,7 @@ const renderCart = () => {
     const summary = document.querySelector('#cartSummary');
     if (!list || !empty || !summary) return;
 
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     if (currentUser?.role === 'admin') {
         showToast('חשבון מנהל אינו יכול להשתמש בעגלה');
         window.location.href = '../index.html';

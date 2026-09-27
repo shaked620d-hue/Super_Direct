@@ -1,4 +1,4 @@
-const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+const currentUser = getCurrentUser();
 
 const renderCheckout = () =>{
   const cart=  readCart();

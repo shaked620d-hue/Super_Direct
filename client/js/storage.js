@@ -1,7 +1,10 @@
 const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
+// מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
+const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+
 const isAdmin = ()=>{
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     return currentUser?.role === 'admin';
 }
 
@@ -13,7 +16,7 @@ const guardAdminOnly = () => {
 
 // מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
 const getAuthHeaders = () => {
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     // מצרפים את האסימון לכל בקשה מוגנת שנשלחת מהלקוח.
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
@@ -22,7 +25,7 @@ const updateAuthUI = ()=>{
     const authButton= document.getElementById('authButton');
     if(!authButton){return;}
 
-        const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+        const currentUser = getCurrentUser();
 
           if(currentUser)
     {
