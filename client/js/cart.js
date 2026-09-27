@@ -96,6 +96,13 @@ const renderCart = () => {
     const summary = document.querySelector('#cartSummary');
     if (!list || !empty || !summary) return;
 
+    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    if (currentUser?.role === 'admin') {
+        showToast('חשבון מנהל אינו יכול להשתמש בעגלה');
+        window.location.href = '../index.html';
+        return;
+    }
+
     const cart = readCart();
     list.replaceChildren();
     empty.hidden = cart.length > 0;

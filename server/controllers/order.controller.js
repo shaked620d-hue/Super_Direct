@@ -113,6 +113,14 @@ function calculateExpectedDelivery() {
 export const createOrder = async (req, res, next) => {
     const session = await mongoose.startSession();
     try {
+        // חשבון אדמין הוא לניהול בלבד - לא מיועד לביצוע הזמנות אישיות.
+        if (req.user.role === 'admin') {
+            const error = new Error('Admin accounts cannot place orders');
+            error.statusCode = 403;
+            error.type = 'forbidden';
+            throw error;
+        }
+
     // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
     await session.startTransaction();
         // מונעים יצירת הזמנה בשם משתמש אחר.

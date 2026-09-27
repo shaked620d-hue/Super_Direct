@@ -58,6 +58,15 @@ const updateAuthUI = ()=>{
         authButton.href = getBasePath() + 'profile.html';
 
         if (currentUser.role === 'admin') {
+            // חשבון מנהל הוא לניהול בלבד - אין לו עגלת קניות, הזמנות אישיות, או צורך ליצור קשר עם עצמו.
+            document.querySelectorAll('[aria-label="פתיחת סל הקניות"], [aria-label="סל הקניות"]').forEach((cartLink) => {
+                cartLink.hidden = true;
+            });
+            document.getElementById('myOrdersLink')?.remove();
+            document.querySelectorAll('.footer-links a[href$="contact.html"]').forEach((link) => {
+                link.remove();
+            });
+
             const navLinks = document.querySelector('.nav-links');
             if (navLinks) {
                 const productLink = document.createElement('a');

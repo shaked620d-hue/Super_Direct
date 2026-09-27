@@ -45,6 +45,11 @@ const loadOrders = async () => {
         return;
     }
 
+    if (currentUser.role === 'admin') {
+        window.location.href = '../index.html';
+        return;
+    }
+
     try {
         const response = await getMyOrdersRequest(currentUser._id || currentUser.id);
         const orders = await response.json();

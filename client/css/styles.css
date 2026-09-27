@@ -21,6 +21,7 @@ button { cursor:pointer; }
 .nav-dropdown-menu a:hover { background:var(--cream); }
 .header-actions { display:flex; align-items:center; gap:10px; }
 .icon-button { width:42px; height:42px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); position:relative; display:grid; place-items:center; text-decoration:none; }
+.icon-button[hidden] { display:none; }
 #authButton { width:auto; min-width:42px; max-width:200px; padding:0 14px; border-radius:999px; font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; unicode-bidi:plain-text; }
 .logout-btn { width:22px; height:22px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); opacity:0.6; display:grid; place-items:center; font-size:0.7rem; line-height:1; cursor:pointer; padding:0; }
 .logout-btn:hover { opacity:1; border-color:#c0392b; color:#c0392b; }
@@ -35,7 +36,7 @@ h1 { font-size:clamp(2.7rem,5vw,5.3rem); max-width:610px; letter-spacing:-.04em;
 .search-label { grid-column:1 / -1; color:var(--green); font-size:.78rem; font-weight:800; padding:1px 13px 0; }
 .search input { border:0; outline:0; flex:1; min-width:0; padding:10px 13px; color:var(--ink); }
 .search button { border:0; background:var(--green); color:white; padding:11px 20px; border-radius:10px; font-weight:700; }
-.hero-image { min-height:360px; border-radius:28px; background:linear-gradient(130deg,#fff5d933,#2f6b4830), url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=85') center/cover; position:relative; overflow:hidden; }
+.hero-image { min-height:360px; border-radius:28px; background:linear-gradient(130deg,#fff5d933,#2f6b4830), url('../images/hero-vegetables.jpg') center/cover; position:relative; overflow:hidden; }
 .delivery-note { position:absolute; bottom:20px; right:20px; background:var(--white); border-radius:15px; padding:14px 18px; box-shadow:0 10px 25px #173f2c2b; font-weight:700; }
 .delivery-note small { display:block; color:var(--muted); font-weight:500; }
 .kosher-seal { position:absolute; top:20px; left:20px; width:130px; background:var(--white); border-radius:14px; box-shadow:0 10px 25px #173f2c2b; padding:8px 10px; }

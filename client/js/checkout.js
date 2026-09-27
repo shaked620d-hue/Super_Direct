@@ -38,6 +38,12 @@ const handleConfirmOrder = ()=>{
     return;
 }
 
+  if (currentUser.role === 'admin') {
+    showToast('חשבון מנהל אינו יכול לבצע הזמנות');
+    window.location.href = '../index.html';
+    return;
+}
+
   const cardNumberInput = document.getElementById('cardNumber');
 cardNumberInput.addEventListener('input', (event) => {
     const input = event.target;

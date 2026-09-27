@@ -84,14 +84,17 @@ const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
     unitSpan.className = 'price-unit';
     unitSpan.textContent = `/ ${unit}`;
     price.append(unitSpan);
-    const addButton = document.createElement('button');
-    addButton.className = 'add-button';
-    addButton.type = 'button';
-    addButton.textContent = 'הוסף לסל +';
-
     const bottom = document.createElement('div');
     bottom.className = 'product-bottom';
-    bottom.append(price, addButton);
+    bottom.append(price);
+
+    if (!isAdmin()) {
+        const addButton = document.createElement('button');
+        addButton.className = 'add-button';
+        addButton.type = 'button';
+        addButton.textContent = 'הוסף לסל +';
+        bottom.append(addButton);
+    }
 
     const info = document.createElement('div');
     info.className = 'product-info';
