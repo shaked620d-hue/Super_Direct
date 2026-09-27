@@ -70,7 +70,7 @@ const unit = card.dataset.unit || 'ליח׳';
     }
 
     if (existing) existing.quantity += 1;
-else cart.push({ productId, name, price, image, quantity: 1, unit });
+else cart.push({ productId, name, price, image, quantity: 1, unit, stock });
 
 
     writeCart(cart);
@@ -180,7 +180,13 @@ const renderCart = () => {
         row.addEventListener('click', (event) => {
             const action = event.target.dataset.action;
             if (!action) return;
-            if (action === 'increase') cart[index].quantity += 1;
+            if (action === 'increase') {
+                if (cart[index].quantity >= cart[index].stock) {
+                    showToast(`אין יותר מ-${cart[index].stock} יחידות מ${cart[index].name} במלאי`);
+                    return;
+                }
+                cart[index].quantity += 1;
+            }
             if (action === 'decrease') cart[index].quantity -= 1;
             if (action === 'remove' || cart[index].quantity < 1) cart.splice(index, 1);
             writeCart(cart);
