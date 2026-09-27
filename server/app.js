@@ -74,9 +74,16 @@ server.get('/favicon.ico', (req, res) => {
 });
 
 
+// הגבלה מחמירה במיוחד על התחברות/הרשמה - זה המקום שבו תוקף באמת ינסה לנחש סיסמאות.
+server.use('/api/auth', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: 'יותר מדי ניסיונות התחברות/הרשמה, נסה שוב מאוחר יותר.'
+}));
+
 server.use('/api', rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 1000,
   message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
 }), indexRouter);
 
