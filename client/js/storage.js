@@ -36,6 +36,12 @@ const isAdmin = ()=>{
     return currentUser?.role === 'admin';
 }
 
+const guardAdminOnly = () => {
+    if (!isAdmin()) {
+        window.location.href = '../index.html';
+    }
+};
+
 // מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
 const getAuthHeaders = () => {
     const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
@@ -69,29 +75,36 @@ const updateAuthUI = ()=>{
 
             const navLinks = document.querySelector('.nav-links');
             if (navLinks) {
-                const productLink = document.createElement('a');
-                productLink.href = getBasePath() + 'product-form.html';
-                productLink.className = 'header-admin-link';
-                productLink.textContent = 'הוספת מוצר חדש';
-                navLinks.append(productLink);
+                // כל קישורי הניהול מאוחדים לתפריט נפתח אחד, בדיוק כמו "קטגוריות" - כדי שתוספת עמוד ניהול נוסף בעתיד לא תדחוף שוב את שאר הכפתורים בכותרת.
+                const adminDropdown = document.createElement('div');
+                adminDropdown.className = 'nav-dropdown';
 
-                const ordersLink = document.createElement('a');
-                ordersLink.href = getBasePath() + 'admin-orders.html';
-                ordersLink.className = 'header-admin-link';
-                ordersLink.textContent = 'ניהול הזמנות';
-                navLinks.append(ordersLink);
+                const adminTrigger = document.createElement('a');
+                adminTrigger.href = '#';
+                adminTrigger.className = 'header-admin-link';
+                adminTrigger.textContent = 'ניהול';
+                adminTrigger.addEventListener('click', (event) => event.preventDefault());
 
-                const categoryLink = document.createElement('a');
-                categoryLink.href = getBasePath() + 'category-form.html';
-                categoryLink.className = 'header-admin-link';
-                categoryLink.textContent = 'ניהול קטגוריות';
-                navLinks.append(categoryLink);
+                const adminMenu = document.createElement('div');
+                adminMenu.className = 'nav-dropdown-menu';
 
-                const messagesLink = document.createElement('a');
-                messagesLink.href = getBasePath() + 'admin-messages.html';
-                messagesLink.className = 'header-admin-link';
-                messagesLink.textContent = 'ניהול הודעות';
-                navLinks.append(messagesLink);
+                const adminPages = [
+                    { href: 'product-form.html', text: 'הוספת מוצר חדש' },
+                    { href: 'admin-orders.html', text: 'ניהול הזמנות' },
+                    { href: 'category-form.html', text: 'ניהול קטגוריות' },
+                    { href: 'admin-messages.html', text: 'ניהול הודעות' },
+                    { href: 'restock.html', text: 'מה צריך לחדש' }
+                ];
+
+                adminPages.forEach(({ href, text }) => {
+                    const link = document.createElement('a');
+                    link.href = getBasePath() + href;
+                    link.textContent = text;
+                    adminMenu.append(link);
+                });
+
+                adminDropdown.append(adminTrigger, adminMenu);
+                navLinks.append(adminDropdown);
             }
         }
     }
@@ -181,6 +194,40 @@ const populateCategoryCarousel = async () => {
     } catch {
         showToast('שגיאה בטעינת הקטגוריות');
     }
+};
+
+// שורת פריט אחת בתוך כרטיס הזמנה - זהה ללקוח ולמנהל.
+const createOrderItemRow = (item) => {
+    const row = document.createElement('div');
+    row.className = 'order-item-line';
+    row.textContent = `${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(2)} ₪`;
+    return row;
+};
+
+const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
+
+// מקבצת הזמנות לפי סטטוס ומציגה אותן ב-ordersList - זהה ללקוח ולמנהל, רק כרטיס ההזמנה עצמו (createCard) שונה בין השניים.
+const renderOrdersGroupedByStatus = (orders, createCard) => {
+    const groups = [];
+    STATUS_ORDER.forEach((status) => {
+        const ordersInStatus = orders
+            .filter((order) => order.status === status)
+            .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+        if (ordersInStatus.length === 0) return;
+
+        const group = document.createElement('details');
+        group.className = 'order-status-group';
+
+        const heading = document.createElement('summary');
+        heading.className = 'order-status-heading';
+        heading.textContent = `${status} (${ordersInStatus.length})`;
+
+        group.append(heading, ...ordersInStatus.map(createCard));
+        groups.push(group);
+    });
+
+    document.getElementById('ordersList').replaceChildren(...groups);
 };
 
 // מחברת את חצי הגלילה של הקרוסלה.

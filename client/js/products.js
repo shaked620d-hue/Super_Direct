@@ -123,6 +123,7 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     card.className = 'product-card';
     card.dataset.id = product._id;
     card.dataset.unit = unit;
+    card.dataset.stock = product.stock;
 
     card.append(img, info);
     return card;

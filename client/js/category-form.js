@@ -128,6 +128,7 @@ const handleLoadCategoryForEdit = async () =>{
    })
 }
 
+document.addEventListener('DOMContentLoaded', guardAdminOnly);
 document.addEventListener('DOMContentLoaded', handleCategorySubmit);
 document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('deleteCategorySelect', 'בחרו קטגוריה למחיקה'));
 document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('editCategorySelect', 'בחרו קטגוריה לעריכה'));

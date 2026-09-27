@@ -55,11 +55,20 @@ const addToCart = (card) => {
     const image = card.querySelector('.product-image')?.src || '';
     const productId = card.dataset.id;
 const unit = card.dataset.unit || 'ליח׳';
+    const stock = Number(card.dataset.stock);
 
     if (!name || Number.isNaN(price)) return;
 
     const cart = readCart();
     const existing = cart.find((item) => item.name === name);
+    const currentQuantity = existing ? existing.quantity : 0;
+
+    // אי אפשר להוסיף יותר ממה שבאמת יש במלאי.
+    if (currentQuantity >= stock) {
+        showToast(`אין יותר מ-${stock} יחידות מ${name} במלאי`);
+        return;
+    }
+
     if (existing) existing.quantity += 1;
 else cart.push({ productId, name, price, image, quantity: 1, unit });
 
@@ -73,8 +82,14 @@ const handleAddToCartClick = (event) => {
     const button = event.target.closest('.add-button');
     // אם הלחיצה לא הייתה על כפתור הוספה, לא מבצעים פעולה.
     if (!button) return;
+    const card = button.closest('.product-card');
+    // מוצר עם כמות 0 אזל מהמלאי - לא מוסיפים אותו לסל.
+    if (card?.dataset.stock === '0') {
+        showToast('מצטערים, המוצר אזל מהמלאי');
+        return;
+    }
     // מוצא את כרטיס המוצר ומעביר אותו לפונקציה שמוסיפה אותו לסל.
-    addToCart(button.closest('.product-card'));
+    addToCart(card);
 };
 
 const showToast = (message) => {

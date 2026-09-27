@@ -1,16 +1,3 @@
-const guardAdminOnly = () => {
-    if (!isAdmin()) {
-        window.location.href = '../index.html';
-    }
-};
-
-const createOrderItemRow = (item) => {
-    const row = document.createElement('div');
-    row.className = 'order-item-line';
-    row.textContent = `${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(2)} ₪`;
-    return row;
-};
-
 // כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
 const createOrderCard = (order) => {
     const card = document.createElement('details');
@@ -73,8 +60,6 @@ const handleStatusChange = async (event) => {
     }
 };
 
-const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
-
 const loadOrders = async () => {
     try {
         const response = await getOrdersRequest();
@@ -85,27 +70,7 @@ const loadOrders = async () => {
             return;
         }
 
-       const groups = [];
-STATUS_ORDER.forEach((status) => {
-    const ordersInStatus = orders
-        .filter((order) => order.status === status)
-        .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-
-    if (ordersInStatus.length === 0) return;
-
-    const group = document.createElement('details');
-    group.className = 'order-status-group';
-
-    const heading = document.createElement('summary');
-    heading.className = 'order-status-heading';
-    heading.textContent = `${status} (${ordersInStatus.length})`;
-
-    group.append(heading, ...ordersInStatus.map(createOrderCard));
-    groups.push(group);
-});
-
-document.getElementById('ordersList').replaceChildren(...groups);
-
+        renderOrdersGroupedByStatus(orders, createOrderCard);
     } catch {
         showToast('שגיאה בטעינת ההזמנות');
     }

@@ -1,9 +1,3 @@
-const guardAdminOnly = () => {
-    if (!isAdmin()) {
-        window.location.href = '../index.html';
-    }
-};
-
 // כרטיס הודעה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, כמו בהזמנות.
 const createMessageCard = (message) => {
     const card = document.createElement('details');
