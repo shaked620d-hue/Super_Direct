@@ -24,9 +24,18 @@
     </header>
     <main>
         <section class="page-header" aria-labelledby="form-title">
-            <p class="eyebrow">ניהול קטגוריות</p>
-            <h1 id="form-title">הוספת קטגוריה חדשה</h1>
+            <h1 id="form-title">ניהול קטגוריה</h1>
             <p class="page-copy">מלאו את פרטי הקטגוריה ושמרו.</p>
+        </section>
+        <section aria-label="עריכת קטגוריה קיימת">
+            <div class="auth-card contact-card">
+                <h2>עריכת קטגוריה קיימת</h2>
+                <div class="form-field">
+                    <label for="editCategorySelect">בחרו קטגוריה לעריכה</label>
+                    <select id="editCategorySelect"></select>
+                </div>
+                <button class="admin-btn edit" type="button" id="loadCategoryForEditButton" style="margin-top:16px">טעינה לעריכה</button>
+            </div>
         </section>
         <section aria-label="טופס קטגוריה">
             <div class="auth-card contact-card">

@@ -15,3 +15,18 @@ const deleteCategoryRequest = async (id) => {
         headers: getAuthHeaders()
     });
 };
+
+const getCategoryById = async (id) => {
+    return fetch(`${API_BASE_URL}/api/category/${id}`);
+};
+
+
+
+const updateCategoryRequest = async (id, formData) => {
+    return fetch(`${API_BASE_URL}/api/category/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: formData
+    });
+};
+
