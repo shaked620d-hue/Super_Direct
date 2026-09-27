@@ -29,38 +29,16 @@ const createProductCard = (product) => {
         const badges = document.createElement('div');
     badges.className = 'product-badges';
 
-    if (product.containsGluten) {
+    
+    const allergens = [['containsGluten', 'גלוטן'], ['containsDairy', 'חלב'], ['containsNuts', 'אגוזים'], ['containsEggs', 'ביצים'], ['containsSoy', 'סויה']];
+    allergens.forEach(([key, word]) => {
+        if (product[key]) {
         const badge = document.createElement('span');
         badge.className = 'product-badge';
-        badge.textContent = 'מכיל גלוטן';
+        badge.textContent = `מכיל ${word}`;
         badges.append(badge);
     }
-
-        if (product.containsDairy) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל חלב';
-        badges.append(badge);
-    }
-    if (product.containsNuts) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל אגוזים';
-        badges.append(badge);
-    }
-    if (product.containsEggs) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל ביצים';
-        badges.append(badge);
-    }
-    if (product.containsSoy) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל סויה';
-        badges.append(badge);
-    }
-
+    });
         if (badges.children.length === 0) {
         const badge = document.createElement('span');
         badge.className = 'product-badge';
