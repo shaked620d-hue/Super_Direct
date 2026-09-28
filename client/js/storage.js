@@ -168,6 +168,31 @@ const populateCategoryCarousel = async () => {
     }
 };
 
+// ממלאת תיבת בחירת קטגוריה מהשרת. valueField קובע איזה מזהה משתמשים בו כ-value:
+// '_id' (מונגו) כשבוחרים קטגוריה כדי לערוך/למחוק אותה, 'id' (המספר הרגיל) כשבוחרים קטגוריה של מוצר.
+const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '_id') => {
+    const select = document.getElementById(selectId)
+    if (!select) return;
+
+    try {
+        const response = await getCategories();
+        const categories = await response.json();
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = placeholderText
+        placeholder.selected = true;
+        placeholder.disabled = true;
+        select.replaceChildren(placeholder, ...categories.map((category) => {
+            const option = document.createElement('option');
+            option.value = category[valueField];
+            option.textContent = category.name;
+            return option;
+        }));
+    } catch {
+        showToast('שגיאה בטעינת רשימת הקטגוריות');
+    }
+};
+
 // שורת פריט אחת בתוך כרטיס הזמנה - זהה ללקוח ולמנהל.
 const createOrderItemRow = (item) => {
     const row = document.createElement('div');

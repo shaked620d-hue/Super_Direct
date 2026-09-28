@@ -205,7 +205,8 @@ const deleteProduct = async  (event) => {
             showToast('מחיקת המוצר נכשלה');
             return;
         }
-        renderProducts();
+        // שולפים מחדש מהשרת ולא רק מרנדרים שוב - אחרת המוצר שנמחק ממשיך להופיע מהרשימה הישנה שכבר בזיכרון.
+        loadProducts();
     } catch {
         showToast('אירעה שגיאה במחיקת המוצר');
     }

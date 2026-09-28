@@ -39,29 +39,6 @@ const handleCategorySubmit = () => {
     });
 };
 
-const loadCategoryOptionsInto = async (selectId, placeholderText) => {
-    const select = document.getElementById(selectId)
-    if (!select) return;
-
-    try {
-        const response = await getCategories();
-        const categories = await response.json();
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = placeholderText
-        placeholder.selected = true;
-        placeholder.disabled = true;
-        select.replaceChildren(placeholder, ...categories.map((category) => {
-            const option = document.createElement('option');
-            option.value = category._id;
-            option.textContent = category.name;
-            return option;
-        }));
-    } catch {
-        showToast('שגיאה בטעינת רשימת הקטגוריות');
-    }
-};
-
 const handleDeleteCategory = () => {
     const deleteButton = document.getElementById('deleteCategoryButton');
     if (!deleteButton) return;

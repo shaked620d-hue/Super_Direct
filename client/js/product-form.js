@@ -2,7 +2,7 @@ let id;
 
 const takeData = async ()=>{
     try {
-        await loadCategoryOptions();
+        await loadCategoryOptionsInto('categoryId', 'בחרו קטגוריה', 'id');
 
         const data = new URLSearchParams(window.location.search);
         id = data.get('id');
@@ -68,21 +68,6 @@ try {
 }
 
 }
-
-
-
-// בשביל לשלוף את כל הקטגוריות במקום שיהיה רשימה
-const loadCategoryOptions = async () => {
-    const response = await getCategories();
-    const categories = await response.json();
-    const select = document.getElementById('categoryId');
-    categories.forEach((category) => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.name;
-        select.append(option);
-    });
-};
 
 
 
