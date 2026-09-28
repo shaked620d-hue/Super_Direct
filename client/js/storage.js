@@ -21,6 +21,21 @@ const getAuthHeaders = () => {
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
 
+// פונקציית fetch משותפת לכל קבצי ה-services. body יכול להיות FormData (תמונה) או אובייקט רגיל (הופך ל-JSON אוטומטית).
+// auth:true מצרף את כותרת ההרשאה, לבקשות שדורשות משתמש מחובר.
+const apiRequest = (path, { method = 'GET', body, auth = false } = {}) => {
+    const isFormData = body instanceof FormData;
+    const headers = {
+        ...(auth ? getAuthHeaders() : {}),
+        ...(body && !isFormData ? { 'Content-Type': 'application/json' } : {})
+    };
+    return fetch(`${API_BASE_URL}${path}`, {
+        method,
+        headers,
+        body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
+    });
+};
+
 const updateAuthUI = ()=>{
     const authButton= document.getElementById('authButton');
     if(!authButton){return;}

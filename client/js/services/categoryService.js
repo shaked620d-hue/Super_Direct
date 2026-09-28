@@ -1,32 +1,9 @@
-const getCategories = async () => {
-    return fetch(`${API_BASE_URL}/api/category`);
-};
-const createCategoryRequest = async (formData) => {
-    return fetch(`${API_BASE_URL}/api/category`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData
-    });
-};
+const getCategories = async () => apiRequest('/api/category');
 
-const deleteCategoryRequest = async (id) => {
-    return fetch(`${API_BASE_URL}/api/category/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-    });
-};
+const createCategoryRequest = async (formData) => apiRequest('/api/category', { method: 'POST', body: formData, auth: true });
 
-const getCategoryById = async (id) => {
-    return fetch(`${API_BASE_URL}/api/category/${id}`);
-};
+const deleteCategoryRequest = async (id) => apiRequest(`/api/category/${id}`, { method: 'DELETE', auth: true });
 
+const getCategoryById = async (id) => apiRequest(`/api/category/${id}`);
 
-
-const updateCategoryRequest = async (id, formData) => {
-    return fetch(`${API_BASE_URL}/api/category/${id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: formData
-    });
-};
-
+const updateCategoryRequest = async (id, formData) => apiRequest(`/api/category/${id}`, { method: 'PUT', body: formData, auth: true });

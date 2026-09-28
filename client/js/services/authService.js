@@ -1,18 +1,3 @@
-const loginRequest = async (email, password) => {
-    return fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    });
-};
+const loginRequest = async (email, password) => apiRequest('/api/auth/login', { method: 'POST', body: { email, password } });
 
-const registerRequest = async (details)=>{
-
-return fetch(`${API_BASE_URL}/api/auth/register`, {
-
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(details)
-            });
-
-}
+const registerRequest = async (details) => apiRequest('/api/auth/register', { method: 'POST', body: details });

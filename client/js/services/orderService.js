@@ -1,23 +1,7 @@
-const createOrderRequest = async (details) => {
-    return fetch(`${API_BASE_URL}/api/order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-        body: JSON.stringify(details)
-    });
-};
+const createOrderRequest = async (details) => apiRequest('/api/order', { method: 'POST', body: details, auth: true });
 
-const getMyOrdersRequest = async (customerId) => {
-    return fetch(`${API_BASE_URL}/api/order/my?customerId=${customerId}`, { headers: getAuthHeaders() });
-};
+const getMyOrdersRequest = async (customerId) => apiRequest(`/api/order/my?customerId=${customerId}`, { auth: true });
 
-const getOrdersRequest = async () => {
-    return fetch(`${API_BASE_URL}/api/order`, { headers: getAuthHeaders() });
-};
+const getOrdersRequest = async () => apiRequest('/api/order', { auth: true });
 
-const updateOrderStatusRequest = async (id, status) => {
-    return fetch(`${API_BASE_URL}/api/order/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-        body: JSON.stringify({ status })
-    });
-};
+const updateOrderStatusRequest = async (id, status) => apiRequest(`/api/order/${id}/status`, { method: 'PUT', body: { status }, auth: true });
