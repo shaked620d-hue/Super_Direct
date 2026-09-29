@@ -10,37 +10,10 @@ fs.mkdirSync(messagesDir, { recursive: true });
 fs.mkdirSync(productsDir, { recursive: true });
 fs.mkdirSync(categoriesDir, { recursive: true });
 
-const storage = multer.diskStorage({
+// בונה הגדרת אחסון של multer שכותבת לתיקייה נתונה, עם שם קובץ ייחודי לפי חותמת זמן.
+const makeStorage = (dir) => multer.diskStorage({
   destination: (req, file, cb) => {
-  cb(null, publicDir);
-},
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-}
-});
-
-// צירופי הודעות מלקוחות נשמרים בתיקיית משנה נפרדת, לא ביחד עם תמונות המוצרים/הקטגוריות של המנהל
-const messageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, messagesDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
-
-const productStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, productsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
-
-const categoryStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, categoriesDir);
+    cb(null, dir);
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
@@ -59,26 +32,20 @@ const fileFilter = (req, file, cb) => {
 };
 
 
-export const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
-});
-
 export const uploadMessageAttachment = multer({
-  storage: messageStorage,
+  storage: makeStorage(messagesDir),
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
 });
 
 export const uploadProductImage = multer({
-  storage: productStorage,
+  storage: makeStorage(productsDir),
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
 });
 
 export const uploadCategoryImage = multer({
-  storage: categoryStorage,
+  storage: makeStorage(categoriesDir),
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
 });
