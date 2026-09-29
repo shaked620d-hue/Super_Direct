@@ -1,4 +1,4 @@
-import './config/env.js';
+import { env } from './config/env.js';
 import path from 'node:path';
 import express from 'express'
 import cors from 'cors';
@@ -95,6 +95,6 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
-server.listen(5000, () => {
+server.listen(env.PORT, () => {
   console.log('Server is running on http://localhost:5000')
 })
