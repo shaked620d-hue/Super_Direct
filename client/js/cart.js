@@ -1,3 +1,27 @@
+const getCartItemKey = (item) => {
+    if (item?.productId) return `product:${item.productId}`;
+    if (item?.name) return `name:${item.name}`;
+    return `index:${Math.random()}`;
+};
+
+const mergeCartItems = (targetCart = [], incomingCart = []) => {
+    const merged = [...targetCart];
+
+    incomingCart.forEach((incomingItem) => {
+        const existingIndex = merged.findIndex((item) => getCartItemKey(item) === getCartItemKey(incomingItem));
+
+        if (existingIndex >= 0) {
+            merged[existingIndex].quantity = Number(merged[existingIndex].quantity || 0) + Number(incomingItem.quantity || 0);
+            merged[existingIndex].stock = merged[existingIndex].stock || incomingItem.stock || 0;
+            return;
+        }
+
+        merged.push({ ...incomingItem, quantity: Number(incomingItem.quantity || 0) });
+    });
+
+    return merged;
+};
+
 const getCartStorage = () => {
     const currentUser = getCurrentUser();
     if (currentUser) {
@@ -27,16 +51,9 @@ const mergeGuestCartIntoUserCart = () => {
     if (guestCart.length === 0) return;
 
     const userCart = readCart();
-    guestCart.forEach((guestItem) => {
-        const existing = userCart.find((item) => item.name === guestItem.name);
-        if (existing) {
-            existing.quantity += guestItem.quantity;
-        } else {
-            userCart.push(guestItem);
-        }
-    });
+    const mergedCart = mergeCartItems(userCart, guestCart);
 
-    writeCart(userCart);
+    writeCart(mergedCart);
     sessionStorage.removeItem('superDirectCart_guest');
 };
 
@@ -54,24 +71,28 @@ const addToCart = (card) => {
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
     const image = card.querySelector('.product-image')?.src || '';
     const productId = card.dataset.id;
-const unit = card.dataset.unit || 'ליח׳';
+    const unit = card.dataset.unit || 'ליח׳';
     const stock = Number(card.dataset.stock);
 
     if (!name || Number.isNaN(price)) return;
 
     const cart = readCart();
-    const existing = cart.find((item) => item.name === name);
+    const existing = cart.find((item) => {
+        if (productId && item.productId) return item.productId === productId;
+        return item.name === name;
+    });
     const currentQuantity = existing ? existing.quantity : 0;
 
-    // אי אפשר להוסיף יותר ממה שבאמת יש במלאי.
     if (currentQuantity >= stock) {
         showToast(`אין יותר מ-${stock} יחידות מ${name} במלאי`);
         return;
     }
 
-    if (existing) existing.quantity += 1;
-else cart.push({ productId, name, price, image, quantity: 1, unit, stock });
-
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({ productId, name, price, image, quantity: 1, unit, stock });
+    }
 
     writeCart(cart);
     showToast(`${name} נוסף לסל`);
