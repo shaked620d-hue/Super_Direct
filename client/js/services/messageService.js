@@ -1,7 +1,5 @@
+const createMessage = async (formData) => apiRequest('/api/message', { method: 'POST', body: formData });
 
-const createMessage= async (formData) => {
-    return fetch(`${API_BASE_URL}/api/message`, {
-        method: 'POST',
-        body: formData // כך אפשר גם להכניס תמונה ולא רק טקסט
-    });
-};
+const getMessagesRequest = async () => apiRequest('/api/message', { auth: true });
+
+const updateMessageStatusRequest = async (id, handled) => apiRequest(`/api/message/${id}/status`, { method: 'PUT', body: { handled }, auth: true });

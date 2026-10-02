@@ -5,7 +5,8 @@ const messageSchema = new Schema({
     email: { type: String, required: true },
     subject: { type: String, required: true },
     message: { type: String, required: true },
-    attachment: { type: String }
-})
+    attachment: { type: String },
+    handled: { type: Boolean, default: false }
+}, { timestamps: true })
 
 export const Message = model('Message', messageSchema);

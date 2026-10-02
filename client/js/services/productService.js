@@ -1,29 +1,9 @@
-const getProducts = async () => {
-    return fetch(`${API_BASE_URL}/api/product`);
-};
-const getProductById = async (id) => {
-    return fetch(`${API_BASE_URL}/api/product/${id}`);
-};
+const getProducts = async () => apiRequest('/api/product');
 
-const createProduct = async (formData) => {
-    return fetch(`${API_BASE_URL}/api/product`, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: formData // כך אפשר גם להכניס תמונה ולא רק טקסט
-    });
-};
+const getProductById = async (id) => apiRequest(`/api/product/${id}`);
 
-const updateProduct = async (id, formData) => {
-    return fetch(`${API_BASE_URL}/api/product/${id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: formData
-    });
-};
+const createProduct = async (formData) => apiRequest('/api/product', { method: 'POST', body: formData, auth: true });
 
-const deleteProductRequest = async (id) => {
-    return fetch(`${API_BASE_URL}/api/product/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-    });
-};
+const updateProduct = async (id, formData) => apiRequest(`/api/product/${id}`, { method: 'PUT', body: formData, auth: true });
+
+const deleteProductRequest = async (id) => apiRequest(`/api/product/${id}`, { method: 'DELETE', auth: true });

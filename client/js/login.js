@@ -25,6 +25,7 @@ const handleLoginSubmit = () => {
       // שומרים את המשתמש שהשרת החזיר כדי לזהות אותו בדפים הבאים.
       const user = await response.json();
       localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+      mergeGuestCartIntoUserCart();
       showToast('התחברת בהצלחה');
       window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
     } catch {

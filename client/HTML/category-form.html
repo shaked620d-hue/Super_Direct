@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="הוספת קטגוריה חדשה בסופר דיירקט.">
+    <title>ניהול קטגוריה | סופר דיירקט</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+    <aside class="announcement" aria-label="מבצע השבוע">משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית</aside>
+    <header class="site-header">
+        <nav class="nav-wrap" aria-label="ניווט ראשי">
+            <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <img class="kosher-badge-header" src="../images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
+            <div class="nav-links"><div class="nav-dropdown"><a href="../index.html#categories">קטגוריות</a><div class="nav-dropdown-menu"><a href="category.html?cat=fruits">פירות</a><a href="category.html?cat=vegetables">ירקות</a><a href="category.html?cat=dairy">מחלבה</a><a href="category.html?cat=bakery">מאפים</a><a href="category.html?cat=pantry">מזווה</a></div></div><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
+            <div class="header-actions"><a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" href="cart.html" aria-label="פתיחת סל הקניות">🛒<span class="cart-count"></span></a></div>
+        </nav>
+    </header>
+    <main>
+        <section class="page-header" aria-labelledby="form-title">
+            <h1 id="form-title">ניהול קטגוריה</h1>
+            <p class="page-copy">מלאו את פרטי הקטגוריה ושמרו.</p>
+        </section>
+        <section aria-label="עריכת קטגוריה קיימת">
+            <div class="auth-card contact-card">
+                <h2>עריכת קטגוריה קיימת</h2>
+                <div class="form-field">
+                    <label for="editCategorySelect">בחרו קטגוריה לעריכה</label>
+                    <select id="editCategorySelect"></select>
+                </div>
+                <button class="admin-btn edit" type="button" id="loadCategoryForEditButton" style="margin-top:16px">טעינה לעריכה</button>
+            </div>
+        </section>
+        <section aria-label="טופס קטגוריה">
+            <div class="auth-card contact-card">
+                <form class="auth-form" id="categoryForm" method="post" action="#">
+                    <div class="form-field">
+                        <label for="name">שם הקטגוריה</label>
+                        <input id="name" name="name" type="text" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="slug">Slug</label>
+                        <input id="slug" name="slug" type="text" required placeholder="לכתובת ה-URL, באנגלית — למשל: fresh-fruits">
+                    </div>
+                    <div class="form-field">
+                        <label for="description">תיאור</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label><input id="soldByWeight" name="soldByWeight" type="checkbox"> נמכר לפי משקל (ק"ג) ולא ליחידה</label>
+                    </div>
+                    <div class="form-field">
+                        <label for="icon">אימוג'י לקטגוריה</label>
+                        <input id="icon" name="icon" type="text" placeholder="אופציונלי — אם ריק יתמלא 🛒. למשל: 🍎" maxlength="4">
+                    </div>
+                    <div class="form-field">
+                        <label for="eyebrow">כותרת משנה</label>
+                        <input id="eyebrow" name="eyebrow" type="text" placeholder="אופציונלי — אם ריק יתמלא אוטומטית. למשל: טרי מהשדה">
+                    </div>
+                    <div class="form-field">
+                        <label for="intro">טקסט פתיחה</label>
+                        <textarea id="intro" name="intro" placeholder="אופציונלי — אם ריק ישתמש בתיאור שמילאתם למעלה"></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label for="image">תמונת באנר (אופציונלי)</label>
+                        <input id="image" name="image" type="file" accept="image/*">
+                    </div>
+                    <div class="form-field">
+                        <label for="bannerAlt">תיאור תמונת הבאנר</label>
+                        <input id="bannerAlt" name="bannerAlt" type="text" placeholder="אופציונלי — אם ריק ישתמש בשם הקטגוריה. למשל: פירות טריים">
+                    </div>
+                    <div class="form-field">
+                        <label for="productsTitle">כותרת אזור המוצרים</label>
+                        <input id="productsTitle" name="productsTitle" type="text" placeholder='אופציונלי — אם ריק יתמלא "כל ה...". למשל: כל הפירות'>
+                    </div>
+                    <button class="auth-submit" type="submit" id="submitButton">הוספת קטגוריה</button>
+                </form>
+            </div>
+        </section>
+        <section aria-label="מחיקת קטגוריה">
+            <div class="auth-card contact-card">
+                <h2>מחיקת קטגוריה</h2>
+                <div class="form-field">
+                    <label for="deleteCategorySelect">בחרו קטגוריה למחיקה</label>
+                    <select id="deleteCategorySelect"></select>
+                </div>
+                <button class="admin-btn delete" type="button" id="deleteCategoryButton" style="margin-top:16px">מחיקת קטגוריה</button>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <nav class="footer-links" aria-label="ניווט תחתון"><a href="about.html">אודות</a><a href="contact.html">צור קשר</a><a href="faq.html">שאלות נפוצות</a><a href="terms.html">תנאי שימוש ופרטיות</a></nav>
+        </div>
+        <p class="footer-copy">© 2026 סופר דיירקט. כל הזכויות שמורות.</p>
+    </footer>
+    <script src="../js/cart.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/services/categoryService.js"></script>
+    <script src="../js/category-form.js"></script>
+</body>
+</html>

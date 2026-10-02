@@ -42,21 +42,25 @@
                     <h3>פרטי תשלום</h3>
                     <div class="form-field">
                         <label for="cardNumber">מספר כרטיס</label>
-                        <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" required>
+                        <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" dir="ltr" required>
                     </div>
                     <div class="form-row">
                         <div class="form-field">
                             <label for="cardExpiry">תוקף</label>
-                            <input type="text" id="cardExpiry" name="cardExpiry" inputmode="numeric" maxlength="5" placeholder="MM/YY" required>
+                            <input type="text" id="cardExpiry" name="cardExpiry" inputmode="numeric" maxlength="5" placeholder="MM/YY" dir="ltr" required>
                         </div>
                         <div class="form-field">
                             <label for="cardCvv">CVV</label>
-                            <input type="text" id="cardCvv" name="cardCvv" inputmode="numeric" maxlength="3" placeholder="123" required>
+                            <input type="text" id="cardCvv" name="cardCvv" inputmode="numeric" maxlength="3" placeholder="123" dir="ltr" required>
                         </div>
                     </div>
                     <div class="form-field">
                         <label for="cardName">שם בעל הכרטיס</label>
                         <input type="text" id="cardName" name="cardName" placeholder="כפי שמופיע על הכרטיס" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="phone">טלפון ליצירת קשר בעת המשלוח</label>
+                        <input type="tel" id="phone" name="phone" inputmode="numeric" placeholder="050-0000000" dir="ltr" required>
                     </div>
                     <button class="auth-submit" type="submit" id="confirmOrderButton">אישור הזמנה סופי</button>
                 </form>
@@ -75,6 +79,7 @@
     <script src="../js/storage.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/services/orderService.js"></script>
+    <script src="../js/services/categoryService.js"></script>
     <script src="../js/checkout.js"></script>
 </body>
 </html>

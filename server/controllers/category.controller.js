@@ -1,4 +1,5 @@
 import { Category } from '../models/category.model.js';
+import { Product } from '../models/product.model.js';
 
 // מחזיר את כל הקטגוריות.
 export const getCategories = async (req, res, next) => {
@@ -32,7 +33,20 @@ export const getCategoryById = async (req, res, next) => {
 // יוצר קטגוריה חדשה.
 export const createCategory = async (req, res, next) => {
 	try {
-		const newCategory = await Category.create(req.body);
+		// מקצה מזהה מספרי אוטומטית - הבא אחרי המזהה הגבוה ביותר הקיים.
+		const lastCategory = await Category.findOne().sort({ id: -1 });
+		const nextId = lastCategory ? lastCategory.id + 1 : 1;
+		// שדות שיווקיים שלא מולאו מקבלים ברירת מחדל הגיונית, כדי שדף הקטגוריה לא ייראה ריק.
+		const newCategory = await Category.create({
+			...req.body,
+			id: nextId,
+			eyebrow: req.body.eyebrow || 'המדור שלנו',
+			intro: req.body.intro || req.body.description,
+			bannerAlt: req.body.bannerAlt || req.body.name,
+			productsTitle: req.body.productsTitle || `כל ה${req.body.name}`,
+			icon: req.body.icon || '🛒',
+			image: req.file ? `categories/${req.file.filename}` : undefined
+		});
 		res.status(201).json(newCategory);
 	} catch (error) {
 		error.statusCode = error.code === 11000 ? 409 : 500;
@@ -44,9 +58,11 @@ export const createCategory = async (req, res, next) => {
 // מעדכן את שם הקטגוריה לפי מזהה.
 export const updateCategory = async (req, res, next) => {
 	try {
+		const updates = { ...req.body };
+		if (req.file) updates.image = `categories/${req.file.filename}`;
 		const category = await Category.findByIdAndUpdate(
 			req.params.id,
-			{ $set: req.body },
+			{ $set: updates },
 			{ new: true, runValidators: true }
 		);
 		if (category) {
@@ -64,11 +80,12 @@ export const updateCategory = async (req, res, next) => {
 	}
 };
 
-// מוחק קטגוריה לפי מזהה.
+// מוחק קטגוריה לפי מזהה, וגם את כל המוצרים ששייכים אליה.
 export const deleteCategory = async (req, res, next) => {
 	try {
 		const deletedCategory = await Category.findByIdAndDelete(req.params.id);
 		if (deletedCategory) {
+			await Product.deleteMany({ categoryId: deletedCategory.id });
 			res.status(200).json({ message: 'deleted successfully' });
 		} else {
 			const error = new Error('category not found');

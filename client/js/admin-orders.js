@@ -1,29 +1,24 @@
-const guardAdminOnly = () => {
-    if (!isAdmin()) {
-        window.location.href = '../index.html';
-    }
-};
-
-const createOrderItemRow = (item) => {
-    const row = document.createElement('div');
-    row.className = 'order-item-line';
-    row.textContent = `${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(2)} ₪`;
-    return row;
-};
-
+// כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
 const createOrderCard = (order) => {
-    const card = document.createElement('article');
+    const card = document.createElement('details');
     card.className = 'order-card';
 
-    const header = document.createElement('div');
-    header.className = 'order-card-header';
+    const summary = document.createElement('summary');
+    summary.className = 'order-card-header';
+    const orderDate = new Date(order.orderDate);
     const date = document.createElement('span');
-    date.textContent = new Date(order.orderDate).toLocaleDateString('he-IL');
-    header.append(date);
+    date.textContent = orderDate.toLocaleDateString('he-IL');
+    const time = document.createElement('span');
+    time.textContent = orderDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    summary.append(date, time);
 
     const customer = document.createElement('p');
     customer.className = 'order-customer';
     customer.textContent = `לקוח: ${order.customerId.firstName} ${order.customerId.lastName}`;
+
+    const phone = document.createElement('p');
+    phone.className = 'order-customer';
+    phone.textContent = `טלפון: ${order.phone}`;
 
         const statusOptions = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
     const select = document.createElement('select');
@@ -47,7 +42,7 @@ const createOrderCard = (order) => {
     totalValue.textContent = `${order.totalPrice.toFixed(2)} ₪`;
     total.append(totalLabel, totalValue);
 
-    card.append(header, customer, ...order.items.map(createOrderItemRow), select, total);
+    card.append(summary, customer, phone, ...order.items.map(createOrderItemRow), select, total);
     return card;
 };
 const handleStatusChange = async (event) => {
@@ -75,8 +70,7 @@ const loadOrders = async () => {
             return;
         }
 
-        const sortedOrders = [...orders].sort((a, b) => (a.status === 'נמסרה') - (b.status === 'נמסרה'));
-        document.getElementById('ordersList').replaceChildren(...sortedOrders.map(createOrderCard));
+        renderOrdersGroupedByStatus(orders, createOrderCard);
     } catch {
         showToast('שגיאה בטעינת ההזמנות');
     }

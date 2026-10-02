@@ -17,11 +17,7 @@ export const loginSchema = Joi.object({
     password: Joi.string().required()
 })
 
-export const updateUserSchema = Joi.object({
-    firstName: Joi.string().min(2),
-    lastName: Joi.string().min(2),
-    email: Joi.string().email(),
-    address: Joi.string().min(2),
-    password: Joi.string().min(6),
-    paymentMethod: Joi.string().pattern(/^\d{4}$/)
-})
+export const updateUserSchema = registerSchema.fork(
+    ['firstName', 'lastName', 'address','email','password' ], 
+    (schema) => schema.optional()
+)

@@ -1,23 +1,19 @@
-const createOrderItemRow = (item) => {
-    const row = document.createElement('div');
-    row.className = 'order-item-line';
-    row.textContent = `${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(2)} ₪`;
-    return row;
-};
-
-
+// כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
 const createOrderCard = (order) => {
-    const card = document.createElement('article');
+    const card = document.createElement('details');
     card.className = 'order-card';
 
-    const header = document.createElement('div');
+    const header = document.createElement('summary');
     header.className = 'order-card-header';
+    const orderDate = new Date(order.orderDate);
     const date = document.createElement('span');
-    date.textContent = new Date(order.orderDate).toLocaleDateString('he-IL');
+    date.textContent = orderDate.toLocaleDateString('he-IL');
     const status = document.createElement('span');
     status.className = 'order-status';
     status.textContent = order.status;
-    header.append(date, status);
+    const time = document.createElement('span');
+    time.textContent = orderDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+    header.append(date, status, time);
 
   const total = document.createElement('div');
 total.className = 'order-total';
@@ -33,14 +29,19 @@ total.append(totalLabel, totalValue);
 };
 
 const loadOrders = async () => {
-    const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+    const currentUser = getCurrentUser();
     if (!currentUser) {
         window.location.href = 'login.html';
         return;
     }
 
+    if (currentUser.role === 'admin') {
+        window.location.href = '../index.html';
+        return;
+    }
+
     try {
-        const response = await getMyOrdersRequest(currentUser.id);
+        const response = await getMyOrdersRequest(currentUser._id || currentUser.id);
         const orders = await response.json();
 
         if (orders.length === 0) {
@@ -48,7 +49,7 @@ const loadOrders = async () => {
             return;
         }
 
-        document.getElementById('ordersList').replaceChildren(...orders.map(createOrderCard));
+        renderOrdersGroupedByStatus(orders, createOrderCard);
     } catch {
         showToast('שגיאה בטעינת ההזמנות');
     }

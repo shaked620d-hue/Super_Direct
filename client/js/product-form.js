@@ -2,7 +2,7 @@ let id;
 
 const takeData = async ()=>{
     try {
-        await loadCategoryOptions();
+        await loadCategoryOptionsInto('categoryId', 'בחרו קטגוריה', 'id');
 
         const data = new URLSearchParams(window.location.search);
         id = data.get('id');
@@ -13,6 +13,7 @@ const takeData = async ()=>{
             document.getElementById('name').value = product.name;
             document.getElementById('categoryId').value = product.categoryId;
             document.getElementById('price').value = product.price;
+            document.getElementById('stock').value = product.stock;
             document.getElementById('description').value = product.description;
             document.getElementById('formTitle').textContent = 'עריכת מוצר';
             document.getElementById('submitButton').textContent = 'שמירת שינויים';
@@ -36,6 +37,7 @@ const formData = new FormData();
 formData.append('name', document.getElementById('name').value);
 formData.append('categoryId', document.getElementById('categoryId').value);
 formData.append('price', document.getElementById('price').value);
+formData.append('stock', document.getElementById('stock').value);
 formData.append('description', document.getElementById('description').value);
 formData.append('containsGluten', document.getElementById('containsGluten').checked);
 
@@ -66,27 +68,6 @@ try {
 }
 
 }
-
-
-const guardAdminOnly = () => {
-    if (!isAdmin()) {
-        window.location.href = '../index.html';
-
-    }
-}
-
-// בשביל לשלוף את כל הקטגוריות במקום שיהיה רשימה
-const loadCategoryOptions = async () => {
-    const response = await getCategories();
-    const categories = await response.json();
-    const select = document.getElementById('categoryId');
-    categories.forEach((category) => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.name;
-        select.append(option);
-    });
-};
 
 
 

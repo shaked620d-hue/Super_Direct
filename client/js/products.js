@@ -1,5 +1,6 @@
 let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
 let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
+let categorySoldByWeight = {};
 let products = [];
 
 const loadCategoryNames = async () => {
@@ -8,6 +9,8 @@ const loadCategoryNames = async () => {
     categories.forEach((category) => {
         categoryNames[category.id] = category.name;
         categoryIdsBySlug[category.slug] = category.id;
+        categorySoldByWeight[category.id] = category.soldByWeight;
+
     });
 };
 
@@ -26,38 +29,16 @@ const createProductCard = (product) => {
         const badges = document.createElement('div');
     badges.className = 'product-badges';
 
-    if (product.containsGluten) {
+    
+    const allergens = [['containsGluten', 'גלוטן'], ['containsDairy', 'חלב'], ['containsNuts', 'אגוזים'], ['containsEggs', 'ביצים'], ['containsSoy', 'סויה']];
+    allergens.forEach(([key, word]) => {
+        if (product[key]) {
         const badge = document.createElement('span');
         badge.className = 'product-badge';
-        badge.textContent = 'מכיל גלוטן';
+        badge.textContent = `מכיל ${word}`;
         badges.append(badge);
     }
-
-        if (product.containsDairy) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל חלב';
-        badges.append(badge);
-    }
-    if (product.containsNuts) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל אגוזים';
-        badges.append(badge);
-    }
-    if (product.containsEggs) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל ביצים';
-        badges.append(badge);
-    }
-    if (product.containsSoy) {
-        const badge = document.createElement('span');
-        badge.className = 'product-badge';
-        badge.textContent = 'מכיל סויה';
-        badges.append(badge);
-    }
-
+    });
         if (badges.children.length === 0) {
         const badge = document.createElement('span');
         badge.className = 'product-badge';
@@ -73,18 +54,25 @@ const createProductCard = (product) => {
     description.className = 'product-description';
     description.textContent = product.description;
 
+const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
     const price = document.createElement('span');
     price.className = 'price';
     price.textContent = `${product.price.toFixed(2)} ₪`;
-
-    const addButton = document.createElement('button');
-    addButton.className = 'add-button';
-    addButton.type = 'button';
-    addButton.textContent = 'הוסף לסל +';
-
+    const unitSpan = document.createElement('span');
+    unitSpan.className = 'price-unit';
+    unitSpan.textContent = `/ ${unit}`;
+    price.append(unitSpan);
     const bottom = document.createElement('div');
     bottom.className = 'product-bottom';
-    bottom.append(price, addButton);
+    bottom.append(price);
+
+    if (!isAdmin()) {
+        const addButton = document.createElement('button');
+        addButton.className = 'add-button';
+        addButton.type = 'button';
+        addButton.textContent = 'הוסף לסל +';
+        bottom.append(addButton);
+    }
 
     const info = document.createElement('div');
     info.className = 'product-info';
@@ -112,6 +100,9 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     const card = document.createElement('article');
     card.className = 'product-card';
     card.dataset.id = product._id;
+    card.dataset.unit = unit;
+    card.dataset.stock = product.stock;
+
     card.append(img, info);
     return card;
 };
@@ -214,7 +205,8 @@ const deleteProduct = async  (event) => {
             showToast('מחיקת המוצר נכשלה');
             return;
         }
-        renderProducts();
+        // שולפים מחדש מהשרת ולא רק מרנדרים שוב - אחרת המוצר שנמחק ממשיך להופיע מהרשימה הישנה שכבר בזיכרון.
+        loadProducts();
     } catch {
         showToast('אירעה שגיאה במחיקת המוצר');
     }
@@ -222,21 +214,7 @@ const deleteProduct = async  (event) => {
 
 
 
-const addNewProductButton = () => {
-    if (!isAdmin()) return;
-    const headerActions = document.querySelector('.header-actions');
-    if (!headerActions) return;
-
-    const button = document.createElement('a');
-    button.href =   getBasePath() + 'product-form.html';
-  
-    button.className = 'admin-add-product';
-    button.textContent = 'הוספת מוצר חדש +';
-    headerActions.append(button);
-}
-
 document.addEventListener('DOMContentLoaded', loadProducts);
-document.addEventListener('DOMContentLoaded', addNewProductButton);
 document.addEventListener('click', deleteProduct);
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#searchForm')?.addEventListener('submit', handleSearch);

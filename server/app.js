@@ -1,4 +1,4 @@
-import './config/env.js';
+import { env } from './config/env.js';
 import path from 'node:path';
 import express from 'express'
 import cors from 'cors';
@@ -31,7 +31,7 @@ server.use(cors());
    contentSecurityPolicy: {
      directives: {
        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-       'img-src': ["'self'", 'data:', 'https://images.unsplash.com']
+       'img-src': ["'self'", 'data:', 'blob:', 'https://images.unsplash.com']
      }
    }
  }));
@@ -74,9 +74,16 @@ server.get('/favicon.ico', (req, res) => {
 });
 
 
+// הגבלה מחמירה במיוחד על התחברות/הרשמה - זה המקום שבו תוקף באמת ינסה לנחש סיסמאות.
+server.use('/api/auth', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: 'יותר מדי ניסיונות התחברות/הרשמה, נסה שוב מאוחר יותר.'
+}));
+
 server.use('/api', rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 200,
+  max: 1000,
   message: 'יותר מדי בקשות מהכתובת הזו, נסה שוב מאוחר יותר.'
 }), indexRouter);
 
@@ -88,6 +95,6 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
-server.listen(5000, () => {
+server.listen(env.PORT, () => {
   console.log('Server is running on http://localhost:5000')
 })

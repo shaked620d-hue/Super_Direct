@@ -113,6 +113,14 @@ function calculateExpectedDelivery() {
 export const createOrder = async (req, res, next) => {
     const session = await mongoose.startSession();
     try {
+        // חשבון אדמין הוא לניהול בלבד - לא מיועד לביצוע הזמנות אישיות.
+        if (req.user.role === 'admin') {
+            const error = new Error('Admin accounts cannot place orders');
+            error.statusCode = 403;
+            error.type = 'forbidden';
+            throw error;
+        }
+
     // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
     await session.startTransaction();
         // מונעים יצירת הזמנה בשם משתמש אחר.
@@ -120,7 +128,7 @@ export const createOrder = async (req, res, next) => {
             const error = new Error('Customer does not match authenticated user');
             error.statusCode = 403;
             error.type = 'forbidden';
-            return next(error);
+            throw error;
         }
 
         const customer = await Customer.findById(req.user._id).session(session);
@@ -128,7 +136,7 @@ export const createOrder = async (req, res, next) => {
             const error = new Error('Customer not found');
             error.statusCode = 404;
             error.type = 'not found';
-            return next(error);
+            throw error;
         }
 
         const quantitiesByProduct = new Map();
@@ -146,14 +154,14 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Product not found');
                 error.statusCode = 404;
                 error.type = 'not found';
-                return next(error);
+                throw error;
             }
 
             if (!Number.isFinite(product.stock) || product.stock < quantity) {
                 const error = new Error(`Insufficient stock for ${product.name}`);
                 error.statusCode = 409;
                 error.type = 'conflict';
-                return next(error);
+                throw error;
             }
 
             productsById.set(productId, product);
@@ -181,7 +189,7 @@ export const createOrder = async (req, res, next) => {
                 const error = new Error('Insufficient stock');
                 error.statusCode = 409;
                 error.type = 'conflict';
-                return next(error);
+                throw error;
             }
         }
 
@@ -189,6 +197,7 @@ export const createOrder = async (req, res, next) => {
         const deliveryFee = totalPrice >= 250 ? 0 : 15;
         const [newOrder] = await Order.create([{
             customerId: req.user._id,
+            phone: req.body.phone,
             expectedDelivery: calculateExpectedDelivery(),
             items: orderItems,
             deliveryFee,

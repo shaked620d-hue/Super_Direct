@@ -15,16 +15,7 @@ categoryId: Joi.number().integer().positive(),
 })
 
 
-export const updateProductSchema = Joi.object({
-  name: Joi.string().min(2),
-  description: Joi.string(),
-   price: Joi.number().positive(),
-  stock: Joi.number().integer().min(0),
-categoryId: Joi.number().integer().positive(),
-  image: Joi.string(),
-  containsGluten: Joi.boolean(),
-  containsDairy: Joi.boolean(),
-  containsNuts: Joi.boolean(),
-  containsEggs: Joi.boolean(),
-  containsSoy: Joi.boolean()
-});
+export const updateProductSchema = createProductSchema.fork(
+    ['name', 'description', 'price'],
+    (schema) => schema.optional()
+);

@@ -22,15 +22,13 @@
             <div class="header-actions"><a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" href="cart.html" aria-label="פתיחת סל הקניות">🛒<span class="cart-count"></span></a></div>
         </nav>
     </header>
-    <main class="auth-main">
+    <main class="orders-main">
         <a class="auth-back" href="profile.html">→ חזרה לפרטים שלי</a>
-        <div class="auth-card">
-            <p class="auth-eyebrow">החשבון שלי</p>
-            <h1>ההזמנות שלי</h1>
-            <p class="auth-subtitle">כאן אפשר לראות את היסטוריית ההזמנות שלכם.</p>
-            <div id="ordersList"></div>
-            <p id="noOrders" class="page-copy" hidden>עדיין אין לכם הזמנות.</p>
-        </div>
+        <p class="auth-eyebrow">החשבון שלי</p>
+        <h1>ההזמנות שלי</h1>
+        <p class="auth-subtitle">כאן אפשר לראות את היסטוריית ההזמנות שלכם.</p>
+        <div id="ordersList"></div>
+        <p id="noOrders" class="page-copy" hidden>עדיין אין לכם הזמנות.</p>
     </main>
     <footer class="site-footer">
         <div class="footer-wrap">
@@ -44,5 +42,6 @@
     <script src="../js/storage.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/services/orderService.js"></script>
+    <script src="../js/services/categoryService.js"></script>
     <script src="../js/orders.js"></script>
 </html>
