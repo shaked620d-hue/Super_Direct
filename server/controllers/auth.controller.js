@@ -55,3 +55,21 @@ export const getCurrentUser = (req, res) => {
 	// req.user הוזן על ידי middleware האימות לאחר בדיקת ה-JWT.
 	res.status(200).json(sanitizeCustomer(req.user.toObject()));
 };
+
+export const changePassword = async (req, res, next) => {
+	try {
+		if (!(await bcrypt.compare(req.body.currentPassword, req.user.password))) {
+			const error = new Error('Current password is incorrect');
+			error.statusCode = 401;
+			error.type = 'unauthorized';
+			return next(error);
+		}
+
+		req.user.password = req.body.newPassword;
+		await req.user.save();
+		res.status(200).json({ message: 'Password updated successfully' });
+	} catch (error) {
+		error.statusCode = error.statusCode || 500;
+		next(error);
+	}
+};
