@@ -57,6 +57,9 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .section-heading a.product-search-link:hover { background:#175a49; transform:translateY(-1px); }
 .section-heading a.product-search-link:focus-visible { outline:3px solid var(--lime); outline-offset:3px; }
 .catalog-controls { display:grid; grid-template-columns:minmax(220px, 1.5fr) repeat(3, minmax(150px, .8fr)); gap:14px; align-items:end; margin:0 0 14px; padding:14px 0; border-block:1px solid var(--line); }
+.catalog-loading { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:58px; padding:10px 0; color:var(--muted); }
+.catalog-loading p { margin:0; }
+.catalog-loading[hidden] { display:none; }
 .catalog-result-count { margin:0 0 14px; color:var(--muted); font-size:.9rem; }
 .catalog-empty { padding:32px 0; color:var(--muted); text-align:center; }
 .catalog-empty p { margin:0 0 14px; }

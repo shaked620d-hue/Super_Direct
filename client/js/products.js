@@ -2,6 +2,7 @@ let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2:
 let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
 let categorySoldByWeight = {};
 let products = [];
+let productsLoaded = false;
 
 const loadCategoryNames = async () => {
     const response = await getCategories();
@@ -133,14 +134,29 @@ const normalizeProduct = (product) => ({
 });
 
 const loadProducts = async () => {
+    const loadingState = document.getElementById('catalogLoadingState');
+    const loadingMessage = document.getElementById('catalogLoadingMessage');
+    const retryButton = document.getElementById('catalogRetry');
+    if (!productsLoaded && loadingState) {
+        loadingState.hidden = false;
+        loadingMessage.textContent = 'טוענים מוצרים...';
+        retryButton.hidden = true;
+    }
+
     try {
         await loadCategoryNames();
         const response = await getProducts();
         if (!response.ok) throw new Error('טעינת המוצרים נכשלה');
         const serverProducts = await response.json();
         products = serverProducts.map(normalizeProduct);
+        productsLoaded = true;
+        if (loadingState) loadingState.hidden = true;
         renderProducts();
     } catch {
+        if (!productsLoaded && loadingState) {
+            loadingMessage.textContent = 'לא הצלחנו לטעון את המוצרים.';
+            retryButton.hidden = false;
+        }
         showToast('שגיאה בטעינת המוצרים');
     }
 };
@@ -162,6 +178,8 @@ const renderProducts = () => {
 };
 
 const renderAllProducts = (container) => {
+    if (!productsLoaded) return;
+
     const searchTerm = document.getElementById('catalogSearch')?.value.trim().toLocaleLowerCase('he') || '';
     const selectedCategory = document.getElementById('catalogCategory')?.value || 'all';
     const availability = document.getElementById('catalogAvailability')?.value || 'all';
@@ -287,4 +305,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(id)?.addEventListener('change', () => renderAllProducts(document.getElementById('allProductsGrid')));
     });
     document.getElementById('clearCatalogFilters')?.addEventListener('click', clearCatalogFilters);
+    document.getElementById('catalogRetry')?.addEventListener('click', loadProducts);
 });
