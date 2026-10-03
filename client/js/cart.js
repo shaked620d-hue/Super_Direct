@@ -186,7 +186,13 @@ const renderCart = () => {
         info.className = 'cart-item-info';
         const tag = document.createElement('span');
         tag.className = 'product-tag';
-        tag.textContent = 'מוצר טרי';
+        const availableStock = Number(item.stock);
+        if (Number.isFinite(availableStock) && item.quantity > availableStock) {
+            tag.classList.add('cart-stock-warning');
+            tag.textContent = availableStock === 0 ? 'אזל מהמלאי' : `זמינות מעודכנת: ${availableStock} יחידות`;
+        } else {
+            tag.textContent = 'מוצר טרי';
+        }
         const title = document.createElement('h2');
         title.textContent = item.name;
         const priceLine = document.createElement('strong');

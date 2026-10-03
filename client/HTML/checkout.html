@@ -30,6 +30,10 @@
             <h1 id="checkout-title">בדיקה אחרונה לפני שליחה</h1>
             <p class="page-copy">ודאו שהכל נכון, ולחצו על אישור כדי לשלוח את ההזמנה.</p>
         </section>
+        <div id="checkoutStockConflict" class="checkout-stock-conflict" role="alert" tabindex="-1" hidden>
+            <p id="checkoutStockConflictMessage"></p>
+            <a class="auth-submit" href="cart.html">חזרה לסל לעדכון הכמויות</a>
+        </div>
         <section class="cart-layout" aria-label="סיכום הזמנה">
             <div id="confirmItems" class="cart-items"></div>
             <aside id="confirmSummary" class="cart-summary">
@@ -78,6 +82,7 @@
     <script src="../js/cart.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/config.js"></script>
+    <script src="../js/services/productService.js"></script>
     <script src="../js/services/orderService.js"></script>
     <script src="../js/services/categoryService.js"></script>
     <script src="../js/checkout.js"></script>

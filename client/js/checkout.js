@@ -1,5 +1,23 @@
 const currentUser = getCurrentUser();
 
+const refreshCartStock = async () => {
+  try {
+    const response = await getProducts();
+    if (!response.ok) return;
+
+    const products = await response.json();
+    const stockByProductId = new Map(products.map((product) => [String(product._id), Number(product.stock) || 0]));
+    const cart = readCart();
+    cart.forEach((item) => {
+      const currentStock = stockByProductId.get(String(item.productId));
+      if (currentStock !== undefined) item.stock = currentStock;
+    });
+    writeCart(cart);
+  } catch {
+    // אפשר לחזור לסל גם אם רענון המלאי נכשל.
+  }
+};
+
 const renderCheckout = () =>{
   const cart=  readCart();
    const confirmItems=  document.getElementById('confirmItems');
@@ -132,6 +150,25 @@ try {
 const response = await createOrderRequest({ items, customerId: currentUser._id || currentUser.id, phone });
 
     if (!response.ok) {
+      if (response.status === 409) {
+        const payload = await response.json().catch(() => null);
+        const serverMessage = payload?.error?.message || '';
+        const stockMessagePrefix = 'Insufficient stock for ';
+        const productName = serverMessage.startsWith(stockMessagePrefix)
+          ? serverMessage.slice(stockMessagePrefix.length)
+          : '';
+
+        await refreshCartStock();
+
+        document.getElementById('checkoutStockConflictMessage').textContent = productName
+          ? `המלאי של ${productName} השתנה ואינו מספיק להזמנה. עדכנו את הכמות בסל ונסו שוב.`
+          : 'המלאי של אחד המוצרים השתנה ואינו מספיק להזמנה. עדכנו את הסל ונסו שוב.';
+        const conflictNotice = document.getElementById('checkoutStockConflict');
+        conflictNotice.hidden = false;
+        conflictNotice.focus();
+        return;
+      }
+
         showToast('שליחת ההזמנה נכשלה');
         return;
     }
