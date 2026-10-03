@@ -1,4 +1,36 @@
 let id;
+let imagePreviewObjectUrl;
+
+// מציגה תמונה קיימת בעריכה, או מסתירה את התצוגה כשאין למוצר תמונה.
+const setImagePreview = (source) => {
+    const preview = document.getElementById('imagePreview');
+    if (imagePreviewObjectUrl) {
+        // משחררים כתובת blob קודמת כדי למנוע שימוש מיותר בזיכרון.
+        URL.revokeObjectURL(imagePreviewObjectUrl);
+        imagePreviewObjectUrl = null;
+    }
+
+    if (!source) {
+        preview.hidden = true;
+        preview.removeAttribute('src');
+        return;
+    }
+
+    preview.src = source.startsWith('/public/') ? source : `/public/${source}`;
+    preview.hidden = false;
+};
+
+// מציגה את הקובץ שנבחר מיד, לפני שליחת הטופס לשרת.
+const handleImagePreview = () => {
+    const imageFile = document.getElementById('image').files[0];
+    if (!imageFile) return;
+
+    if (imagePreviewObjectUrl) URL.revokeObjectURL(imagePreviewObjectUrl);
+    imagePreviewObjectUrl = URL.createObjectURL(imageFile);
+    const preview = document.getElementById('imagePreview');
+    preview.src = imagePreviewObjectUrl;
+    preview.hidden = false;
+};
 
 const takeData = async ()=>{
     try {
@@ -9,6 +41,7 @@ const takeData = async ()=>{
         if (id) {
             const response = await getProductById(id);
             const product = await response.json();
+            setImagePreview(product.image);
 
             document.getElementById('name').value = product.name;
             document.getElementById('categoryId').value = product.categoryId;
@@ -75,6 +108,7 @@ document.addEventListener('DOMContentLoaded', guardAdminOnly);
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('productForm').addEventListener('submit', addOrUpdateProduct);
+    document.getElementById('image').addEventListener('change', handleImagePreview);
 });
 
 document.addEventListener('DOMContentLoaded', takeData);

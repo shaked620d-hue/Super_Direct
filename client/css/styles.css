@@ -121,6 +121,10 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .password-visibility-toggle:focus-visible { outline:2px solid var(--green); outline-offset:1px; }
 .form-field label:has(input[type="checkbox"]) { display:flex; align-items:center; gap:8px; font-weight:500; }
 .form-field input:focus, .form-field select:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
+.image-preview { display:block; max-width:100%; border:1px solid var(--line); border-radius:8px; background:var(--cream); object-fit:cover; }
+.image-preview[hidden] { display:none; }
+.product-image-preview { width:min(100%, 320px); aspect-ratio:1.25; }
+.category-banner-preview { width:min(100%, 560px); aspect-ratio:16 / 7; }
 .auth-submit { border:0; background:var(--green); color:white; padding:13px 20px; border-radius:10px; font-weight:800; font-size:1rem; margin-top:8px; text-decoration:none; text-align:center; }
 .auth-submit:not([hidden]) { display:inline-block; }
 .auth-submit:hover { background:#175a49; }

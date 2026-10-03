@@ -1,4 +1,37 @@
 let id;
+let imagePreviewObjectUrl;
+
+// מציגה באנר שכבר נשמר, או מסתירה את התצוגה אם לקטגוריה אין תמונה.
+const setImagePreview = (source) => {
+    const preview = document.getElementById('imagePreview');
+    if (imagePreviewObjectUrl) {
+        // משחררים כתובת blob קודמת כדי למנוע שימוש מיותר בזיכרון.
+        URL.revokeObjectURL(imagePreviewObjectUrl);
+        imagePreviewObjectUrl = null;
+    }
+
+    if (!source) {
+        preview.hidden = true;
+        preview.removeAttribute('src');
+        return;
+    }
+
+    preview.src = source.startsWith('/public/') ? source : `/public/${source}`;
+    preview.hidden = false;
+};
+
+// מציגה את קובץ הבאנר שנבחר לפני שליחת הטופס לשרת.
+const handleImagePreview = () => {
+    const imageFile = document.getElementById('image').files[0];
+    if (!imageFile) return;
+
+    if (imagePreviewObjectUrl) URL.revokeObjectURL(imagePreviewObjectUrl);
+    imagePreviewObjectUrl = URL.createObjectURL(imageFile);
+    const preview = document.getElementById('imagePreview');
+    preview.src = imagePreviewObjectUrl;
+    preview.hidden = false;
+};
+
 const handleCategorySubmit = () => {
     const categoryForm = document.getElementById('categoryForm');
     if (!categoryForm) return;
@@ -84,6 +117,7 @@ const handleLoadCategoryForEdit = async () =>{
     return;
 }
             const category = await response.json();
+            setImagePreview(category.image);
             
              document.getElementById('name').value = category.name;
             document.getElementById('slug').value = category.slug;
@@ -107,6 +141,9 @@ const handleLoadCategoryForEdit = async () =>{
 }
 
 document.addEventListener('DOMContentLoaded', guardAdminOnly);
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('image').addEventListener('change', handleImagePreview);
+});
 document.addEventListener('DOMContentLoaded', handleCategorySubmit);
 document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('deleteCategorySelect', 'בחרו קטגוריה למחיקה'));
 document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('editCategorySelect', 'בחרו קטגוריה לעריכה'));
