@@ -83,6 +83,11 @@ const addToCart = (card) => {
     });
     const currentQuantity = existing ? existing.quantity : 0;
 
+    if (!Number.isFinite(stock) || stock <= 0) {
+        showToast(`${name} אזל מהמלאי`);
+        return;
+    }
+
     if (currentQuantity >= stock) {
         showToast(`אין יותר מ-${stock} יחידות מ${name} במלאי`);
         return;
@@ -98,19 +103,44 @@ const addToCart = (card) => {
     showToast(`${name} נוסף לסל`);
 };
 
-const handleAddToCartClick = (event) => {
+const handleAddToCartClick = async (event) => {
     // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
     // אם הלחיצה לא הייתה על כפתור הוספה, לא מבצעים פעולה.
     if (!button) return;
     const card = button.closest('.product-card');
-    // מוצר עם כמות 0 אזל מהמלאי - לא מוסיפים אותו לסל.
-    if (card?.dataset.stock === '0') {
-        showToast('מצטערים, המוצר אזל מהמלאי');
+    if (!card || button.disabled) return;
+
+    const displayedStock = Number(card.dataset.stock);
+    if (Number.isFinite(displayedStock) && displayedStock <= 0) {
+        showToast(`${card.querySelector('h3')?.textContent.trim() || 'המוצר'} אזל מהמלאי`);
         return;
     }
-    // מוצא את כרטיס המוצר ומעביר אותו לפונקציה שמוסיפה אותו לסל.
-    addToCart(card);
+
+    button.disabled = true;
+    try {
+        const response = await getProductById(card.dataset.id);
+        if (!response.ok) {
+            showToast('לא ניתן לבדוק את זמינות המוצר כרגע');
+            return;
+        }
+
+        const product = await response.json();
+        const currentStock = Number(product.stock);
+        card.dataset.stock = String(Number.isFinite(currentStock) ? currentStock : 0);
+
+        if (!Number.isFinite(currentStock) || currentStock <= 0) {
+            showToast(`${product.name || 'המוצר'} אזל מהמלאי`);
+            return;
+        }
+
+        // מוסיף לסל רק לאחר בדיקת מלאי עדכנית מול השרת.
+        addToCart(card);
+    } catch {
+        showToast('לא ניתן לבדוק את זמינות המוצר כרגע');
+    } finally {
+        button.disabled = false;
+    }
 };
 
 const showToast = (message) => {
