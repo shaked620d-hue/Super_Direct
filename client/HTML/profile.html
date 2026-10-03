@@ -49,6 +49,27 @@
                 </div>
                 <button class="auth-submit" type="submit" id="profileSaveButton" hidden>שמירת שינויים</button>
             </form>
+            <section aria-label="שינוי סיסמה">
+                <button id="changePasswordToggle" class="auth-submit" type="button" aria-expanded="false" aria-controls="passwordForm">שינוי סיסמה</button>
+                <form id="passwordForm" class="auth-form" method="post" action="#" hidden>
+                    <div class="form-field">
+                        <label for="currentPassword">סיסמה נוכחית</label>
+                        <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="newPassword">סיסמה חדשה</label>
+                        <div class="password-input-wrap">
+                            <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" minlength="6" required>
+                            <button id="newPasswordVisibility" class="password-visibility-toggle" type="button" aria-label="הצגת הסיסמה החדשה" title="הצגת הסיסמה החדשה">&#128065;</button>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="confirmNewPassword">אימות סיסמה חדשה</label>
+                        <input id="confirmNewPassword" name="confirmNewPassword" type="password" autocomplete="new-password" minlength="6" required>
+                    </div>
+                    <button class="auth-submit" type="submit">עדכון סיסמה</button>
+                </form>
+            </section>
         </div>
     </main>
     <footer class="site-footer">
@@ -63,6 +84,7 @@
     <script src="../js/storage.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/services/userService.js"></script>
+    <script src="../js/services/authService.js"></script>
     <script src="../js/services/categoryService.js"></script>
     <script src="../js/profile.js"></script>
 </html>

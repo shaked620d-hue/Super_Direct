@@ -108,10 +108,16 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .auth-card h1 { font-size:1.9rem; margin-bottom:8px; }
 .auth-subtitle { color:var(--muted); margin:0 0 26px; line-height:1.6; }
 .auth-form { display:flex; flex-direction:column; gap:16px; }
+.auth-form[hidden] { display:none; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .form-field { display:flex; flex-direction:column; gap:6px; min-width:0; }
 .form-field label { font-weight:700; font-size:.88rem; }
 .form-field input:not([type="checkbox"]), .form-field select { width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px; color:var(--ink); background:var(--cream); }
+.password-input-wrap { position:relative; }
+.form-field .password-input-wrap input { padding-inline-end:48px; }
+.password-visibility-toggle { position:absolute; inset-inline-end:5px; top:50%; display:grid; place-items:center; width:40px; height:40px; padding:0; transform:translateY(-50%); border:0; border-radius:6px; background:transparent; color:var(--muted); font-size:1.2rem; cursor:pointer; }
+.password-visibility-toggle:hover, .password-visibility-toggle:focus-visible { color:var(--green); background:var(--white); }
+.password-visibility-toggle:focus-visible { outline:2px solid var(--green); outline-offset:1px; }
 .form-field label:has(input[type="checkbox"]) { display:flex; align-items:center; gap:8px; font-weight:500; }
 .form-field input:focus, .form-field select:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
 .auth-submit { border:0; background:var(--green); color:white; padding:13px 20px; border-radius:10px; font-weight:800; font-size:1rem; margin-top:8px; text-decoration:none; text-align:center; }
