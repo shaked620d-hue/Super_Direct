@@ -42,9 +42,15 @@
                     <option value="available">מלאי תקין</option>
                 </select>
             </div>
+            <div class="form-field">
+                <label for="inventoryCategoryFilter">סינון לפי קטגוריה</label>
+                <select id="inventoryCategoryFilter">
+                    <option value="all">כל הקטגוריות</option>
+                </select>
+            </div>
         </div>
         <div class="inventory-heading" aria-hidden="true">
-            <span>מוצר</span><span>כמות נוכחית</span><span>מצב</span><span>עדכון כמות</span>
+            <span>מוצר</span><span>קטגוריה</span><span>כמות נוכחית</span><span>מצב</span><span>עדכון כמות</span>
         </div>
         <div id="inventoryList" class="inventory-list" aria-live="polite"></div>
         <p id="inventoryEmpty" class="page-copy" hidden>לא נמצאו מוצרים התואמים לחיפוש או לסינון.</p>
@@ -60,6 +66,7 @@
     <script src="../js/storage.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/services/productService.js"></script>
+    <script src="../js/services/categoryService.js"></script>
     <script src="../js/inventory.js"></script>
 </body>
 </html>

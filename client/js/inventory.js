@@ -1,4 +1,5 @@
 let inventoryProducts = [];
+let inventoryCategories = [];
 
 const getInventoryStatus = (stock) => {
     if (stock === 0) return { key: 'out', label: 'אזל מהמלאי' };
@@ -13,6 +14,11 @@ const createInventoryRow = (product) => {
     const name = document.createElement('strong');
     name.className = 'inventory-product-name';
     name.textContent = product.name;
+
+    const category = document.createElement('div');
+    category.className = 'inventory-category';
+    category.dataset.label = 'קטגוריה';
+    category.textContent = inventoryCategories.find((item) => item.id === Number(product.categoryId))?.name || 'ללא קטגוריה';
 
     const quantity = document.createElement('div');
     quantity.className = 'inventory-current';
@@ -66,19 +72,21 @@ const createInventoryRow = (product) => {
         }
     });
 
-    row.append(name, quantity, statusLabel, form);
+    row.append(name, category, quantity, statusLabel, form);
     return row;
 };
 
 const renderInventory = () => {
     const searchTerm = document.getElementById('inventorySearch').value.trim().toLocaleLowerCase('he');
     const selectedStatus = document.getElementById('inventoryFilter').value;
+    const selectedCategory = document.getElementById('inventoryCategoryFilter').value;
     const products = [...inventoryProducts].sort((first, second) => first.name.localeCompare(second.name, 'he'));
     const visibleProducts = products.filter((product) => {
         const stock = Number(product.stock) || 0;
         const matchesSearch = product.name.toLocaleLowerCase('he').includes(searchTerm);
         const matchesStatus = selectedStatus === 'all' || getInventoryStatus(stock).key === selectedStatus;
-        return matchesSearch && matchesStatus;
+        const matchesCategory = selectedCategory === 'all' || String(product.categoryId) === selectedCategory;
+        return matchesSearch && matchesStatus && matchesCategory;
     });
 
     const outOfStock = products.filter((product) => (Number(product.stock) || 0) === 0).length;
@@ -112,9 +120,12 @@ const renderInventory = () => {
 
 const loadInventory = async () => {
     try {
-        const response = await getProducts();
-        if (!response.ok) throw new Error('Could not load products');
-        inventoryProducts = await response.json();
+        const [productsResponse, categoriesResponse] = await Promise.all([getProducts(), getCategories()]);
+        if (!productsResponse.ok || !categoriesResponse.ok) throw new Error('Could not load inventory data');
+        [inventoryProducts, inventoryCategories] = await Promise.all([productsResponse.json(), categoriesResponse.json()]);
+        const categoryFilter = document.getElementById('inventoryCategoryFilter');
+        categoryFilter.replaceChildren(new Option('כל הקטגוריות', 'all'));
+        inventoryCategories.forEach((category) => categoryFilter.add(new Option(category.name, String(category.id))));
         renderInventory();
     } catch {
         showToast('שגיאה בטעינת המלאי');
@@ -128,5 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById('inventorySearch').addEventListener('input', renderInventory);
     document.getElementById('inventoryFilter').addEventListener('change', renderInventory);
+    document.getElementById('inventoryCategoryFilter').addEventListener('change', renderInventory);
     loadInventory();
 });
