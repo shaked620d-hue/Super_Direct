@@ -46,6 +46,7 @@ server.use(requestLogger);
 server.use(requestDate);
 
 // חוסם גישה בימי שישי ושבת בתקופה האסורה.
+// האתר נסגר בשישי ב-17:00 ונפתח בשבת ב-19:00.
 server.use(createTimeBlocker({
   blockedDays: [5, 6],
   startHour: 17,
