@@ -164,6 +164,34 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .order-total { display:flex; justify-content:space-between; font-weight:800; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
 .order-status-select { margin-top:10px; padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--cream); font-weight:600; }
 .restock-list { display:flex; flex-direction:column; gap:0; }
+.inventory-main { max-width:1180px; }
+.inventory-summary { display:flex; flex-wrap:wrap; gap:10px 28px; padding:14px 0; margin:0 0 20px; border-block:1px solid var(--line); color:var(--muted); }
+.inventory-summary strong { color:var(--ink); font-size:1.05rem; }
+.inventory-controls { display:grid; grid-template-columns:minmax(220px, 1fr) minmax(190px, .55fr); gap:16px; margin-bottom:20px; }
+.inventory-heading, .inventory-row { display:grid; grid-template-columns:minmax(180px, 1.5fr) minmax(110px, .7fr) minmax(130px, .8fr) minmax(210px, 1.2fr); gap:16px; align-items:center; }
+.inventory-heading { padding:0 14px 10px; color:var(--muted); font-size:.82rem; font-weight:700; }
+.inventory-list { border-top:1px solid var(--line); }
+.inventory-row { min-height:68px; padding:12px 14px; border-bottom:1px solid var(--line); background:var(--white); }
+.inventory-product-name { overflow-wrap:anywhere; }
+.inventory-current { font-variant-numeric:tabular-nums; font-weight:700; }
+.inventory-status { justify-self:start; border-radius:999px; padding:5px 10px; font-size:.82rem; font-weight:700; white-space:nowrap; }
+.inventory-status.out { background:#f3d9d3; color:#a13a2a; }
+.inventory-status.low { background:#f8edc9; color:#765b13; }
+.inventory-status.available { background:#dcebe1; color:#226148; }
+.inventory-update-form { display:flex; align-items:center; gap:8px; }
+.inventory-update-form input { width:92px; min-height:36px; padding:6px 9px; border:1px solid var(--line); border-radius:8px; background:var(--cream); color:var(--ink); }
+.inventory-update-form input:focus { outline:2px solid var(--green); outline-offset:1px; background:var(--white); }
+.inventory-update-form button:disabled { opacity:.6; cursor:wait; }
+.inventory-label { display:none; }
+@media (max-width:760px) {
+	.inventory-controls { grid-template-columns:1fr; gap:12px; }
+	.inventory-heading { display:none; }
+	.inventory-row { grid-template-columns:1fr 1fr; gap:10px 14px; padding:14px 10px; }
+	.inventory-product-name, .inventory-update-form { grid-column:1 / -1; }
+	.inventory-current, .inventory-status { display:flex; flex-direction:column; gap:4px; }
+	.inventory-current::before, .inventory-status::before { content:attr(data-label); color:var(--muted); font-size:.76rem; font-weight:500; }
+	.inventory-status { justify-self:stretch; align-items:flex-start; }
+}
 .restock-item { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
 .order-status-group { grid-column:1 / -1; margin-top:26px; }
 .order-status-group:first-child { margin-top:0; }
