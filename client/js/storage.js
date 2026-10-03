@@ -81,8 +81,7 @@ const updateAuthUI = ()=>{
                     { href: 'admin-orders.html', text: 'ניהול הזמנות' },
                     { href: 'category-form.html', text: 'ניהול קטגוריות' },
                     { href: 'admin-messages.html', text: 'ניהול הודעות' },
-                    { href: 'inventory.html', text: 'ניהול מלאי' },
-                    { href: 'restock.html', text: 'מה צריך לחדש' }
+                    { href: 'inventory.html', text: 'ניהול מלאי' }
                 ];
 
                 adminPages.forEach(({ href, text }) => {
