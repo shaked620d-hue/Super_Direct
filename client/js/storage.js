@@ -60,6 +60,18 @@ const updateAuthUI = ()=>{
         authButton.textContent = currentUser.firstName || currentUser.email;
         authButton.href = getBasePath() + 'profile.html';
 
+        if (currentUser.role !== 'admin') {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks && !document.getElementById('headerOrdersLink')) {
+                const ordersLink = document.createElement('a');
+                ordersLink.id = 'headerOrdersLink';
+                ordersLink.className = 'header-orders-link';
+                ordersLink.href = getBasePath() + 'orders.html';
+                ordersLink.textContent = 'ההזמנות שלי';
+                navLinks.append(ordersLink);
+            }
+        }
+
         if (currentUser.role === 'admin') {
             // חשבון מנהל הוא לניהול בלבד - אין לו עגלת קניות, הזמנות אישיות, או צורך ליצור קשר עם עצמו.
             document.querySelectorAll('[aria-label="פתיחת סל הקניות"], [aria-label="סל הקניות"]').forEach((cartLink) => {

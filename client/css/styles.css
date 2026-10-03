@@ -19,6 +19,9 @@ button { cursor:pointer; }
 .nav-dropdown:hover .nav-dropdown-menu { opacity:1; visibility:visible; transform:translateY(4px); }
 .nav-dropdown-menu a { padding:8px 10px; border-radius:8px; white-space:nowrap; color:var(--ink); }
 .nav-dropdown-menu a:hover { background:var(--cream); }
+.header-orders-link { display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:8px 14px; border-radius:999px; background:var(--lime); color:var(--ink)!important; font-size:.85rem; font-weight:800!important; }
+.header-orders-link:hover { background:#c7e052; color:var(--ink)!important; }
+.header-orders-link:focus-visible { outline:2px solid var(--green); outline-offset:3px; }
 .header-actions { display:flex; align-items:center; gap:10px; }
 .icon-button { width:42px; height:42px; border:1px solid var(--line); background:var(--white); border-radius:50%; color:var(--ink); position:relative; display:grid; place-items:center; text-decoration:none; }
 .icon-button[hidden] { display:none; }
