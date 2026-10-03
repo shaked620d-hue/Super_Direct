@@ -95,6 +95,7 @@ const handleLoadCategoryForEdit = async () =>{
             document.getElementById('productsTitle').value = category.productsTitle;
             document.getElementById('soldByWeight').checked = category.soldByWeight;
 
+              document.getElementById('categoryFormHeading').textContent = 'עריכת קטגוריה קיימת';
               document.getElementById('submitButton').textContent = 'שמירת שינויים';
             id = selectedId;
         }
