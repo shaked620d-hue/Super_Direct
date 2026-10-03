@@ -9,7 +9,6 @@ const categoryDocuments = [
   { id: 3, name: "מחלבה", slug: "dairy", description: "מוצרי מחלבה טריים בסופר דיירקט.", eyebrow: "טרי כל בוקר", intro: "מוצרי חלב איכותיים וטריים לארוחת הבוקר, לאפייה ולכל רגע ביום.", bannerAlt: "מוצרי מחלבה", productsTitle: "כל מוצרי המחלבה", icon: "🥛" },
   { id: 4, name: "מאפים", slug: "bakery", description: "מאפים טריים בסופר דיירקט.", eyebrow: "נאפה באהבה", intro: "לחמים, לחמניות ומאפים שנאפים מדי יום ומגיעים אליכם ריחניים וטריים.", bannerAlt: "מאפים טריים", productsTitle: "כל המאפים", icon: "🥖" },
   { id: 5, name: "מזווה", slug: "pantry", description: "מוצרי מזווה בסופר דיירקט.", eyebrow: "הבסיס לכל ארוחה", intro: "כל המוצרים שתמיד טוב שיהיו בבית, לבישול קל, מהיר וטעים.", bannerAlt: "מוצרי מזווה", productsTitle: "כל מוצרי המזווה", icon: "🫙" },
-    { id: 5, name: "מזווה", slug: "pantry", description: "מוצרי מזווה בסופר דיירקט.", eyebrow: "הבסיס לכל ארוחה", intro: "כל המוצרים שתמיד טוב שיהיו בבית, לבישול קל, מהיר וטעים.", bannerAlt: "מוצרי מזווה", productsTitle: "כל מוצרי המזווה", icon: "🫙" },
     { id: 6, name: "מתוקים", slug: "sweets", description: "ממתקים וחטיפים מתוקים בסופר דיירקט.", eyebrow: "משהו מתוק", intro: "מבחר ממתקים וחטיפים מתוקים לכל רגע ביום.", bannerAlt: "ממתקים וחטיפים מתוקים", productsTitle: "כל המתוקים", icon: "🍬" }
 ];
 
