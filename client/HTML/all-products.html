@@ -76,7 +76,10 @@
           </div>
         </div>
         <p id="catalogResultCount" class="catalog-result-count" role="status" aria-live="polite"></p>
-        <p id="catalogEmpty" class="catalog-empty" hidden>לא נמצאו מוצרים מתאימים.</p>
+        <div id="catalogEmpty" class="catalog-empty" role="status" hidden>
+          <p id="catalogEmptyMessage">לא נמצאו מוצרים מתאימים.</p>
+          <button id="clearCatalogFilters" class="catalog-clear-button" type="button">ניקוי מסננים</button>
+        </div>
         <div class="products" id="allProductsGrid" data-all-products></div>
       </section>
     </main>

@@ -59,6 +59,10 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .catalog-controls { display:grid; grid-template-columns:minmax(220px, 1.5fr) repeat(3, minmax(150px, .8fr)); gap:14px; align-items:end; margin:0 0 14px; padding:14px 0; border-block:1px solid var(--line); }
 .catalog-result-count { margin:0 0 14px; color:var(--muted); font-size:.9rem; }
 .catalog-empty { padding:32px 0; color:var(--muted); text-align:center; }
+.catalog-empty p { margin:0 0 14px; }
+.catalog-clear-button { min-height:40px; padding:8px 14px; border:1px solid var(--green); border-radius:8px; background:var(--white); color:var(--green); font:inherit; font-weight:700; cursor:pointer; }
+.catalog-clear-button:hover { background:var(--cream); }
+.catalog-clear-button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 @media (max-width:760px) {
 	.catalog-controls { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
 	.catalog-controls .form-field:first-child { grid-column:1 / -1; }

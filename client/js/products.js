@@ -183,8 +183,22 @@ const renderAllProducts = (container) => {
     if (sortOrder === 'name') visibleProducts.sort((first, second) => first.name.localeCompare(second.name, 'he'));
 
     container.replaceChildren(...visibleProducts.map(createProductCard));
-    document.getElementById('catalogEmpty').hidden = visibleProducts.length > 0;
+    const emptyState = document.getElementById('catalogEmpty');
+    const hasActiveFilters = searchTerm || selectedCategory !== 'all' || availability !== 'all' || sortOrder !== 'default';
+    emptyState.hidden = visibleProducts.length > 0;
+    document.getElementById('catalogEmptyMessage').textContent = products.length === 0
+        ? 'אין מוצרים להצגה כרגע.'
+        : 'לא נמצאו מוצרים שמתאימים לחיפוש או למסננים.';
+    document.getElementById('clearCatalogFilters').hidden = products.length === 0 || !hasActiveFilters;
     document.getElementById('catalogResultCount').textContent = `מציגים ${visibleProducts.length} מתוך ${products.length} מוצרים`;
+};
+
+const clearCatalogFilters = () => {
+    document.getElementById('catalogSearch').value = '';
+    document.getElementById('catalogCategory').value = 'all';
+    document.getElementById('catalogAvailability').value = 'all';
+    document.getElementById('catalogSort').value = 'default';
+    renderAllProducts(document.getElementById('allProductsGrid'));
 };
 
 // הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
@@ -272,4 +286,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById(id)?.addEventListener('input', () => renderAllProducts(document.getElementById('allProductsGrid')));
         document.getElementById(id)?.addEventListener('change', () => renderAllProducts(document.getElementById('allProductsGrid')));
     });
+    document.getElementById('clearCatalogFilters')?.addEventListener('click', clearCatalogFilters);
 });
