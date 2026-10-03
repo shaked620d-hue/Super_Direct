@@ -48,8 +48,8 @@ server.use(requestDate);
 // חוסם גישה בימי שישי ושבת בתקופה האסורה.
 server.use(createTimeBlocker({
   blockedDays: [5, 6],
-  startHour: 12,
-  endHour: 22,
+  startHour: 17,
+  endHour: 19,
   statusCode: 503,
   message: 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
 }));
