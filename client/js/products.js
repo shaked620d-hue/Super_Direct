@@ -76,7 +76,15 @@ const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
         const addButton = document.createElement('button');
         addButton.className = 'add-button';
         addButton.type = 'button';
-        addButton.textContent = 'הוסף לסל +';
+        const stock = Number(product.stock) || 0;
+        if (stock <= 0) {
+            addButton.classList.add('out-of-stock');
+            addButton.textContent = 'אזל מהמלאי';
+            addButton.disabled = true;
+            addButton.setAttribute('aria-label', `${product.name} אזל מהמלאי`);
+        } else {
+            addButton.textContent = 'הוסף לסל +';
+        }
         bottom.append(addButton);
     }
 
