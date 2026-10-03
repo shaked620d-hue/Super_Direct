@@ -5,6 +5,7 @@ let products = [];
 
 const loadCategoryNames = async () => {
     const response = await getCategories();
+    if (!response.ok) throw new Error('טעינת הקטגוריות נכשלה');
     const categories = await response.json();
     categories.forEach((category) => {
         categoryNames[category.id] = category.name;
@@ -12,6 +13,11 @@ const loadCategoryNames = async () => {
         categorySoldByWeight[category.id] = category.soldByWeight;
 
     });
+
+    const categoryFilter = document.getElementById('catalogCategory');
+    if (categoryFilter) {
+        categoryFilter.replaceChildren(new Option('כל הקטגוריות', 'all'), ...categories.map((category) => new Option(category.name, String(category.id))));
+    }
 };
 
 
@@ -143,8 +149,34 @@ const renderProducts = () => {
     });
 
     document.querySelectorAll('.products[data-all-products]').forEach((container) => {
-        container.replaceChildren(...products.map(createProductCard));
+        renderAllProducts(container);
     });
+};
+
+const renderAllProducts = (container) => {
+    const searchTerm = document.getElementById('catalogSearch')?.value.trim().toLocaleLowerCase('he') || '';
+    const selectedCategory = document.getElementById('catalogCategory')?.value || 'all';
+    const availability = document.getElementById('catalogAvailability')?.value || 'all';
+    const sortOrder = document.getElementById('catalogSort')?.value || 'default';
+
+    const visibleProducts = products.filter((product) => {
+        const searchText = `${product.name} ${product.description}`.toLocaleLowerCase('he');
+        const stock = Number(product.stock) || 0;
+        const matchesSearch = searchText.includes(searchTerm);
+        const matchesCategory = selectedCategory === 'all' || String(product.categoryId) === selectedCategory;
+        const matchesAvailability = availability === 'all'
+            || (availability === 'available' && stock > 0)
+            || (availability === 'out' && stock <= 0);
+        return matchesSearch && matchesCategory && matchesAvailability;
+    });
+
+    if (sortOrder === 'price-asc') visibleProducts.sort((first, second) => first.price - second.price);
+    if (sortOrder === 'price-desc') visibleProducts.sort((first, second) => second.price - first.price);
+    if (sortOrder === 'name') visibleProducts.sort((first, second) => first.name.localeCompare(second.name, 'he'));
+
+    container.replaceChildren(...visibleProducts.map(createProductCard));
+    document.getElementById('catalogEmpty').hidden = visibleProducts.length > 0;
+    document.getElementById('catalogResultCount').textContent = `מציגים ${visibleProducts.length} מתוך ${products.length} מוצרים`;
 };
 
 // הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
@@ -224,5 +256,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultsTitle = document.querySelector('#fresh-title');
             if (resultsTitle) resultsTitle.textContent = 'נבחרת טרייה להיום';
         }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    ['catalogSearch', 'catalogCategory', 'catalogAvailability', 'catalogSort'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('input', () => renderAllProducts(document.getElementById('allProductsGrid')));
+        document.getElementById(id)?.addEventListener('change', () => renderAllProducts(document.getElementById('allProductsGrid')));
     });
 });

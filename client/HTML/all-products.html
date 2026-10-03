@@ -46,6 +46,37 @@
           <h2 id="products-title">הקטלוג שלנו</h2>
           <a href="../index.html#categories">לכל הקטגוריות ←</a>
         </div>
+        <div class="catalog-controls" aria-label="חיפוש וסינון מוצרים">
+          <div class="form-field">
+            <label for="catalogSearch">חיפוש מוצר</label>
+            <input id="catalogSearch" type="search" placeholder="שם או תיאור" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="catalogCategory">קטגוריה</label>
+            <select id="catalogCategory">
+              <option value="all">כל הקטגוריות</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="catalogAvailability">זמינות</label>
+            <select id="catalogAvailability">
+              <option value="all">כל המוצרים</option>
+              <option value="available">במלאי</option>
+              <option value="out">אזל מהמלאי</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="catalogSort">מיון</label>
+            <select id="catalogSort">
+              <option value="default">סדר ברירת מחדל</option>
+              <option value="price-asc">מחיר: מהנמוך לגבוה</option>
+              <option value="price-desc">מחיר: מהגבוה לנמוך</option>
+              <option value="name">שם המוצר</option>
+            </select>
+          </div>
+        </div>
+        <p id="catalogResultCount" class="catalog-result-count" role="status" aria-live="polite"></p>
+        <p id="catalogEmpty" class="catalog-empty" hidden>לא נמצאו מוצרים מתאימים.</p>
         <div class="products" id="allProductsGrid" data-all-products></div>
       </section>
     </main>
