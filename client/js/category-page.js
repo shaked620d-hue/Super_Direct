@@ -17,7 +17,7 @@ const loadCategoryText = async () => {
         document.getElementById('categoryTitle').textContent = category.name;
         document.getElementById('categoryIntro').textContent = category.intro;
         const banner = document.getElementById('categoryBanner');
-        banner.setAttribute('aria-label', category.bannerAlt);
+        banner.setAttribute('aria-label', category.bannerAlt || category.name);
         // אם הועלתה תמונה אמיתית לקטגוריה, היא מחליפה את התמונה הקבועה שמוגדרת ב-CSS.
         if (category.image) banner.style.backgroundImage = `url(/public/${category.image})`;
         document.getElementById('products-title').textContent = category.productsTitle;
@@ -27,4 +27,3 @@ const loadCategoryText = async () => {
 };
 
 loadCategoryText();
-
