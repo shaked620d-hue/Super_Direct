@@ -1,7 +1,7 @@
 .accessibility-widget {
     position: fixed;
     bottom: 20px;
-    left: 20px;
+    right: 20px;
     z-index: 100;
     font: 16px/1.5 'Heebo', Arial, sans-serif;
 }
@@ -28,8 +28,8 @@
 .accessibility-panel {
     position: absolute;
     bottom: calc(100% + 10px);
-    left: 0;
-    width: min(300px, calc(100vw - 32px));
+    right: 0;
+    width: min(300px, calc(100vw - 40px));
     padding: 16px;
     border: 2px solid #18322f;
     border-radius: 14px;
