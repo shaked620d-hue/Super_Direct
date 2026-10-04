@@ -6,9 +6,14 @@ const publicDir = path.join(import.meta.dirname, '..', 'public');
 const messagesDir = path.join(publicDir, 'messages');
 const productsDir = path.join(publicDir, 'products');
 const categoriesDir = path.join(publicDir, 'categories');
-fs.mkdirSync(messagesDir, { recursive: true });
-fs.mkdirSync(productsDir, { recursive: true });
-fs.mkdirSync(categoriesDir, { recursive: true });
+try {
+  fs.mkdirSync(messagesDir, { recursive: true });
+  fs.mkdirSync(productsDir, { recursive: true });
+  fs.mkdirSync(categoriesDir, { recursive: true });
+} catch (error) {
+  console.error('Failed to create upload directories:', error);
+  throw error;
+}
 
 // בונה הגדרת אחסון של multer שכותבת לתיקייה נתונה, עם שם קובץ ייחודי לפי חותמת זמן.
 const makeStorage = (dir) => multer.diskStorage({

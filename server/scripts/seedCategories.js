@@ -27,6 +27,9 @@ try {
         })));
         console.log(`Seeded ${categoryDocuments.length} categories`);
     }
+} catch (error) {
+    console.error(error);
+    process.exitCode = 1;
 } finally {
     // זהו תהליך חד-פעמי, לכן סוגרים את החיבור למסד הנתונים בסיום.
     await mongoose.disconnect();

@@ -31,6 +31,9 @@ try {
             console.log('Admin created');
         }
     }
+} catch (error) {
+    console.error(error);
+    process.exitCode = 1;
 } finally {
     await mongoose.disconnect();
 }
