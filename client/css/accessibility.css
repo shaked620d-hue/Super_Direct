@@ -1,0 +1,135 @@
+.accessibility-widget {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 100;
+    font: 16px/1.5 'Heebo', Arial, sans-serif;
+}
+
+.accessibility-toggle,
+.accessibility-panel button {
+    min-height: 44px;
+    border: 2px solid #18322f;
+    border-radius: 10px;
+    background: #fff;
+    color: #18322f;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.accessibility-toggle {
+    padding: 9px 14px;
+    background: #18322f;
+    color: #fff;
+    box-shadow: 0 3px 12px #0003;
+}
+
+.accessibility-panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    width: min(300px, calc(100vw - 32px));
+    padding: 16px;
+    border: 2px solid #18322f;
+    border-radius: 14px;
+    background: #fff;
+    color: #18322f;
+    box-shadow: 0 8px 28px #0003;
+}
+
+.accessibility-panel[hidden] {
+    display: none;
+}
+
+.accessibility-panel h2 {
+    margin: 0 0 12px;
+    font: inherit;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.accessibility-text-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.accessibility-text-controls button {
+    flex: 1;
+}
+
+.accessibility-panel button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.accessibility-text-size {
+    margin: 8px 0;
+    text-align: center;
+}
+
+.accessibility-reset {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.accessibility-contrast {
+    width: 100%;
+}
+
+.accessibility-panel button:focus-visible,
+.accessibility-toggle:focus-visible {
+    outline: 3px solid #1d6b57;
+    outline-offset: 3px;
+}
+
+body.high-contrast {
+    --ink: #000;
+    --muted: #303030;
+    --green: #00523d;
+    --lime: #ff0;
+    --cream: #fff;
+    --line: #555;
+    --white: #fff;
+    color: #000;
+    background: #fff;
+}
+
+body.high-contrast .accessibility-toggle,
+body.high-contrast .accessibility-panel {
+    border-color: #000;
+}
+
+body.high-contrast .accessibility-toggle {
+    background: #000;
+    color: #fff;
+}
+
+body.high-contrast .accessibility-panel,
+body.high-contrast .accessibility-panel button {
+    background: #fff;
+    color: #000;
+}
+
+body.high-contrast .accessibility-panel button:focus-visible,
+body.high-contrast .accessibility-toggle:focus-visible {
+    outline-color: #000;
+}
+
+body.high-contrast .closed-content {
+    border-color: #000;
+}
+
+body.high-contrast .closed-brand,
+body.high-contrast .closed-brand span,
+body.high-contrast .closed-eyebrow,
+body.high-contrast .closed-copy,
+body.high-contrast .reopen-panel span,
+body.high-contrast .reopen-panel time,
+body.high-contrast .closed-note {
+    color: #000;
+}
+
+body.high-contrast .reopen-panel {
+    background: #fff;
+}
