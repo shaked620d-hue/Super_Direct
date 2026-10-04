@@ -123,10 +123,18 @@ if (!/^0\d{8,9}$/.test(phone)) {
   return;
 }
 
+const confirmButton = document.getElementById('confirmOrderButton');
+const confirmButtonText = document.getElementById('confirmOrderButtonText');
+const loadingSpinner = document.getElementById('orderLoadingSpinner');
+confirmButton.disabled = true;
+confirmButton.setAttribute('aria-busy', 'true');
+confirmButtonText.textContent = 'שולחים את ההזמנה...';
+loadingSpinner.hidden = false;
 
 const cart = readCart();
 const items = cart.map((item) => ({ productId: item.productId, qty: item.quantity }));
 let emailSent = false;
+let orderCompleted = false;
 
 try {
 const response = await createOrderRequest({ items, customerId: currentUser._id || currentUser.id, phone });
@@ -163,9 +171,17 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
     }
     const orderResult = await response.json();
     emailSent = orderResult.emailSent === true;
+    orderCompleted = true;
 } catch {
     showToast('אירעה שגיאה בשליחת ההזמנה');
     return;
+} finally {
+    if (!orderCompleted) {
+      confirmButton.disabled = false;
+      confirmButton.removeAttribute('aria-busy');
+      confirmButtonText.textContent = 'אישור הזמנה';
+      loadingSpinner.hidden = true;
+    }
 }
 
 writeCart([]);

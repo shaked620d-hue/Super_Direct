@@ -197,6 +197,10 @@ fieldset.form-field { border:0; padding:0; margin:0; }
 .checkout-stock-conflict[hidden] { display:none; }
 .checkout-stock-conflict p { margin:0 0 12px; line-height:1.6; }
 .checkout-stock-conflict .auth-submit { display:inline-block; }
+.payment-form .auth-submit:disabled { cursor:wait; opacity:.8; }
+.order-loading-spinner:not([hidden]) { display:inline-block; width:1em; height:1em; margin-inline-end:8px; vertical-align:-2px; border:2px solid currentColor; border-left-color:transparent; border-radius:50%; animation:order-loading-spin .7s linear infinite; }
+@keyframes order-loading-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .order-loading-spinner:not([hidden]) { animation:none; } }
 .order-card { background:var(--white); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px; }
 .order-card-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:0; padding-bottom:10px; cursor:pointer; list-style:none; font-weight:700; flex-wrap:wrap; }
 .order-card-header::-webkit-details-marker { display:none; }

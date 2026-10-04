@@ -73,7 +73,10 @@
                         <label for="phone">טלפון ליצירת קשר בעת המשלוח</label>
                         <input type="tel" id="phone" name="phone" inputmode="numeric" placeholder="050-0000000" dir="ltr" required>
                     </div>
-                    <button class="auth-submit" type="submit" id="confirmOrderButton">אישור הזמנה</button>
+                    <button class="auth-submit" type="submit" id="confirmOrderButton">
+                        <span id="orderLoadingSpinner" class="order-loading-spinner" aria-hidden="true" hidden></span>
+                        <span id="confirmOrderButtonText">אישור הזמנה</span>
+                    </button>
                 </form>
                 <small>משלוח חינם בקנייה מעל 250 ₪</small>
             </aside>
