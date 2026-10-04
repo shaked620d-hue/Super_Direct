@@ -103,42 +103,57 @@ const handleDeleteCategory = () => {
     });
 };
 
-const handleLoadCategoryForEdit = async () =>{
-   const loadButton  =  document.getElementById('loadCategoryForEditButton');
-   if (!loadButton ) {return}
-   loadButton .addEventListener('click' ,async  ()=>{
-           const select = document.getElementById('editCategorySelect');
-        const selectedId = select.value;
-        if (!selectedId) return;
-        try{
-           const response = await getCategoryById(selectedId);
-           if (!response.ok) {
-    showToast('שגיאה בטעינת הקטגוריה');
-    return;
-}
-            const category = await response.json();
-            setImagePreview(category.image);
-            
-             document.getElementById('name').value = category.name;
-            document.getElementById('slug').value = category.slug;
-             document.getElementById('description').value = category.description;
-            document.getElementById('icon').value = category.icon;
-             document.getElementById('eyebrow').value = category.eyebrow;
-            document.getElementById('intro').value = category.intro;
-             document.getElementById('bannerAlt').value = category.bannerAlt;
-            document.getElementById('productsTitle').value = category.productsTitle;
-            document.getElementById('soldByWeight').checked = category.soldByWeight;
-
-              document.getElementById('categoryFormHeading').textContent = 'עריכת קטגוריה קיימת';
-              document.getElementById('submitButton').textContent = 'שמירת שינויים';
-            id = selectedId;
-        }
-         catch {
+const loadCategoryForEdit = async (categoryId) => {
+    try {
+        const response = await getCategoryById(categoryId);
+        if (!response.ok) {
             showToast('שגיאה בטעינת הקטגוריה');
+            return;
         }
 
-   })
-}
+        const category = await response.json();
+        setImagePreview(category.image);
+
+        document.getElementById('name').value = category.name;
+        document.getElementById('slug').value = category.slug;
+        document.getElementById('description').value = category.description;
+        document.getElementById('icon').value = category.icon;
+        document.getElementById('eyebrow').value = category.eyebrow;
+        document.getElementById('intro').value = category.intro;
+        document.getElementById('bannerAlt').value = category.bannerAlt;
+        document.getElementById('productsTitle').value = category.productsTitle;
+        document.getElementById('soldByWeight').checked = category.soldByWeight;
+        document.getElementById('categoryFormHeading').textContent = 'עריכת קטגוריה קיימת';
+        document.getElementById('submitButton').textContent = 'שמירת שינויים';
+        id = categoryId;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', categoryId);
+        window.history.replaceState(null, '', url);
+    } catch {
+        showToast('שגיאה בטעינת הקטגוריה');
+    }
+};
+
+const handleLoadCategoryForEdit = () => {
+    const loadButton = document.getElementById('loadCategoryForEditButton');
+    if (!loadButton) return;
+
+    loadButton.addEventListener('click', async () => {
+        const selectedId = document.getElementById('editCategorySelect').value;
+        if (selectedId) await loadCategoryForEdit(selectedId);
+    });
+};
+
+const initializeCategoryEdit = async () => {
+    await loadCategoryOptionsInto('editCategorySelect', 'בחרו קטגוריה לעריכה');
+
+    const categoryId = new URLSearchParams(window.location.search).get('id');
+    if (!categoryId) return;
+
+    document.getElementById('editCategorySelect').value = categoryId;
+    await loadCategoryForEdit(categoryId);
+};
 
 document.addEventListener('DOMContentLoaded', guardAdminOnly);
 document.addEventListener('DOMContentLoaded', () => {
@@ -146,6 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 document.addEventListener('DOMContentLoaded', handleCategorySubmit);
 document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('deleteCategorySelect', 'בחרו קטגוריה למחיקה'));
-document.addEventListener('DOMContentLoaded', () => loadCategoryOptionsInto('editCategorySelect', 'בחרו קטגוריה לעריכה'));
+document.addEventListener('DOMContentLoaded', initializeCategoryEdit);
 document.addEventListener('DOMContentLoaded', handleDeleteCategory);
 document.addEventListener('DOMContentLoaded', handleLoadCategoryForEdit);
