@@ -286,3 +286,12 @@ fieldset.form-field { border:0; padding:0; margin:0; }
 .footer-links a:hover { color:var(--green); }
 .footer-copy { max-width:1180px; margin:0 auto; padding:0 24px 24px; color:var(--muted); font-size:.82rem; text-align:center; }
 @media (max-width:760px) { .nav-wrap { gap:12px; padding:0 16px; } .nav-links { display:none; } .menu-toggle { display:inline-flex; align-items:center; justify-content:center; } .nav-links.open { display:flex; flex-direction:column; position:absolute; top:100%; right:0; left:0; background:var(--white); padding:16px 24px; border-bottom:1px solid var(--line); gap:14px; z-index:6; } .hero { grid-template-columns:1fr; padding-top:34px; gap:25px; } .hero-image { min-height:260px; } main { padding-inline:16px; } .category-list { grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); } .category { padding:13px 6px; font-size:.9rem; } .category-icon { font-size:1.9rem; } .products { grid-template-columns:repeat(2,1fr); gap:10px; } .product-info { padding:12px; } .product-info h3 { font-size:1rem; } .product-description { font-size:.82rem; } .benefits { grid-template-columns:1fr; padding:22px; margin-top:40px; } h1 { font-size:3.1rem; } .auth-main { padding:0 16px; margin-top:36px; } .auth-card { padding:26px 20px; } .form-row { grid-template-columns:1fr; } .page-header { padding:0 16px; margin-top:30px; } .footer-wrap { padding:24px 16px 12px; justify-content:center; text-align:center; } .error-page { margin:60px auto; } .cart-layout { grid-template-columns:1fr; } .cart-header { padding-inline:0; } .cart-summary { position:static; } .cart-item { grid-template-columns:64px 1fr auto; gap:10px; } .cart-item img { width:64px; height:64px; } .cart-item-total { grid-column:2; } .remove-button { grid-column:3; grid-row:1; } .quantity-control { grid-column:3; grid-row:2; } }
+@media (max-width:460px) {
+	.kosher-badge-header { display:none; }
+}
+@media (max-width:360px) {
+	.nav-wrap { gap:6px; padding-inline:10px; }
+	.brand { gap:4px; font-size:1.1rem; }
+	.brand-mark { width:32px; height:32px; }
+	.menu-toggle { flex:0 0 38px; width:38px; height:38px; }
+}
