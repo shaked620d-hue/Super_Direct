@@ -118,6 +118,7 @@ if (!/^0\d{8,9}$/.test(phone)) {
 
 const cart = readCart();
 const items = cart.map((item) => ({ productId: item.productId, qty: item.quantity }));
+let emailSent = false;
 
 try {
 const response = await createOrderRequest({ items, customerId: currentUser._id || currentUser.id, phone });
@@ -152,6 +153,8 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
         showToast('שליחת ההזמנה נכשלה');
         return;
     }
+    const orderResult = await response.json();
+    emailSent = orderResult.emailSent === true;
 } catch {
     showToast('אירעה שגיאה בשליחת ההזמנה');
     return;
@@ -159,8 +162,10 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
 
 writeCart([]);
 
-showToast('ההזמנה בוצעה בהצלחה.');
-    window.setTimeout(() => { window.location.href = '../index.html'; }, 1500)
+showToast(emailSent
+  ? 'ההזמנה בוצעה ואישור נשלח למייל שלך.'
+  : 'ההזמנה נשמרה, אך לא הצלחנו לשלוח אישור למייל.');
+    window.setTimeout(() => { window.location.href = '../index.html'; }, 2500)
   })
 
 

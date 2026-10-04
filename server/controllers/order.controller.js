@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Order } from '../models/order.model.js';
 import { Product } from '../models/product.model.js';
 import { Customer } from '../models/auth.model.js';
+import { sendOrderConfirmationEmail } from '../services/email.service.js';
 
 
 // מחזיר את כל ההזמנות.
@@ -208,7 +209,18 @@ export const createOrder = async (req, res, next) => {
         // רק לאחר שההזמנה נשמרה בהצלחה מאשרים את כל שינויי המלאי.
         await session.commitTransaction();
 
-        res.status(201).json(newOrder);
+        let emailSent = false;
+        try {
+            await sendOrderConfirmationEmail({
+                email: customer.email,
+                firstName: customer.firstName
+            }, newOrder);
+            emailSent = true;
+        } catch (error) {
+            console.error(`Order ${newOrder._id} was saved, but its confirmation email could not be sent:`, error);
+        }
+
+        res.status(201).json({ ...newOrder.toObject(), emailSent });
     } catch (error) {
         // במקרה של כשל, לא נשאיר עדכון מלאי חלקי במסד הנתונים.
         if (session.inTransaction()) {
@@ -220,4 +232,3 @@ export const createOrder = async (req, res, next) => {
         await session.endSession();
     }
 };
-
