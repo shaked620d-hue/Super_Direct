@@ -13,6 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 </head>
 <body data-cart-path="cart.html">
+    <a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
     <aside class="announcement" aria-label="מבצע השבוע">משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית</aside>
     <header class="site-header">
         <nav class="nav-wrap" aria-label="ניווט ראשי">
@@ -22,7 +23,7 @@
             <div class="header-actions"><a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" href="cart.html" aria-label="סל הקניות">🛒<span class="cart-count"></span></a></div>
         </nav>
     </header>
-    <main class="cart-page">
+    <main id="main-content" class="cart-page" tabindex="-1">
         <section class="page-header cart-header" aria-labelledby="cart-title"><p class="eyebrow">כמעט אצלכם במטבח</p><h1 id="cart-title">סל הקניות</h1><p class="page-copy">בדקו את הבחירה שלכם, עדכנו כמויות והמשיכו להזמנה. <a href="orders.html">להזמנות הקודמות שלי ←</a></p></section>
         <section class="cart-layout" aria-label="פרטי סל הקניות">
             <div id="cartItems" class="cart-items"></div>
