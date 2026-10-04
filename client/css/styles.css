@@ -264,7 +264,6 @@ fieldset.form-field { border:0; padding:0; margin:0; }
 .cart-summary small { display:block; color:#b8c9bf; text-align:center; margin-top:13px; }
 .payment-form { display:flex; flex-direction:column; gap:14px; border-top:1px solid #ffffff2b; margin-top:20px; padding-top:20px; }
 .payment-form h3 { margin:0; font-size:1.05rem; color:var(--white); }
-.demo-payment-note { margin:0; color:#d6e1d9; font-size:.9rem; line-height:1.6; }
 .payment-form .form-field label { color:#d6e1d9; }
 .empty-cart { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:56px 24px; text-align:center; }
 .empty-cart-icon { display:block; font-size:3rem; margin-bottom:12px; }

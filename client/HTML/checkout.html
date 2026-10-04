@@ -50,31 +50,30 @@
                 <hr>
                 <div class="summary-total"><span>סה״כ ההזמנה</span><strong id="confirmTotal">0.00 ₪</strong></div>
                 <form id="paymentForm" class="payment-form">
-                    <h3>פרטי תשלום (הדמיה)</h3>
-                    <p class="demo-payment-note">זו הדמיה בלבד: לא מתבצע חיוב ואין להזין פרטי כרטיס אמיתיים. אפשר להזין כל ערך בשדות הכרטיס.</p>
+                    <h3>פרטי תשלום</h3>
                     <div class="form-field">
-                        <label for="cardNumber">מספר כרטיס לבדיקה</label>
-                        <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" placeholder="כל מספר לבדיקה" dir="ltr" required>
+                        <label for="cardNumber">מספר כרטיס</label>
+                        <input type="text" id="cardNumber" name="cardNumber" inputmode="numeric" placeholder="0000 0000 0000 0000" dir="ltr" required>
                     </div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label for="cardExpiry">תוקף לדוגמה</label>
-                            <input type="text" id="cardExpiry" name="cardExpiry" inputmode="numeric" placeholder="למשל 12/30" dir="ltr" required>
+                            <label for="cardExpiry">תוקף</label>
+                            <input type="text" id="cardExpiry" name="cardExpiry" inputmode="numeric" placeholder="MM/YY" dir="ltr" required>
                         </div>
                         <div class="form-field">
-                            <label for="cardCvv">CVV לדוגמה</label>
-                            <input type="text" id="cardCvv" name="cardCvv" inputmode="numeric" placeholder="למשל 123" dir="ltr" required>
+                            <label for="cardCvv">CVV</label>
+                            <input type="text" id="cardCvv" name="cardCvv" inputmode="numeric" placeholder="123" dir="ltr" required>
                         </div>
                     </div>
                     <div class="form-field">
-                        <label for="cardName">שם לבדיקה</label>
-                        <input type="text" id="cardName" name="cardName" placeholder="שם לדוגמה" required>
+                        <label for="cardName">שם בעל הכרטיס</label>
+                        <input type="text" id="cardName" name="cardName" placeholder="כפי שמופיע על הכרטיס" required>
                     </div>
                     <div class="form-field">
                         <label for="phone">טלפון ליצירת קשר בעת המשלוח</label>
                         <input type="tel" id="phone" name="phone" inputmode="numeric" placeholder="050-0000000" dir="ltr" required>
                     </div>
-                    <button class="auth-submit" type="submit" id="confirmOrderButton">אישור הזמנה (הדמיה)</button>
+                    <button class="auth-submit" type="submit" id="confirmOrderButton">אישור הזמנה</button>
                 </form>
                 <small>משלוח חינם בקנייה מעל 250 ₪</small>
             </aside>

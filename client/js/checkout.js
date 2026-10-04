@@ -18,13 +18,22 @@ const refreshCartStock = async () => {
   }
 };
 
+const formatMoney = (amount) => {
+  const formattedAmount = new Intl.NumberFormat('he-IL', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: false
+  }).format(Number(amount));
+  return `${formattedAmount} ₪`;
+};
+
 const renderCheckout = () =>{
   const cart=  readCart();
    const confirmItems=  document.getElementById('confirmItems');
   let totalP=0;
   cart.forEach(element => {
    const el= document.createElement('p');
-  el.textContent = `${element.name} - כמות ${element.quantity} ${element.unit} - ${element.price} ₪`;
+  el.textContent = `${element.name} - כמות ${element.quantity} ${element.unit} - ${formatMoney(element.price)}`;
 
     totalP+= element.price* element.quantity;
    
@@ -38,9 +47,9 @@ const renderCheckout = () =>{
   const confirmDelivery= document.getElementById('confirmDelivery');
   const confirmSubtotal= document.getElementById('confirmSubtotal');
 
- confirmSubtotal.textContent=  totalP ;
-  confirmDelivery.textContent = delivery;
-  confirmTotal.textContent= totalP+ delivery ;
+ confirmSubtotal.textContent= formatMoney(totalP);
+  confirmDelivery.textContent = formatMoney(delivery);
+  confirmTotal.textContent= formatMoney(totalP + delivery);
 }
 
 const handleConfirmOrder = ()=>{
@@ -63,6 +72,32 @@ const handleConfirmOrder = ()=>{
 }
 
 const phoneInput = document.getElementById('phone');
+const cardNumberInput = document.getElementById('cardNumber');
+cardNumberInput.addEventListener('input', (event) => {
+    const input = event.target;
+    const digitsBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
+    const digits = input.value.replace(/\D/g, '');
+
+    input.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+
+    const spacesBeforeCursor = Math.floor(Math.max(digitsBeforeCursor - 1, 0) / 4);
+    const cursorPosition = digitsBeforeCursor + spacesBeforeCursor;
+    input.setSelectionRange(cursorPosition, cursorPosition);
+});
+
+const cardExpiryInput = document.getElementById('cardExpiry');
+cardExpiryInput.addEventListener('input', (event) => {
+    const input = event.target;
+    const digitsBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
+    const digits = input.value.replace(/\D/g, '');
+
+    input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+
+    const slashBeforeCursor = digitsBeforeCursor > 2 ? 1 : 0;
+    const cursorPosition = digitsBeforeCursor + slashBeforeCursor;
+    input.setSelectionRange(cursorPosition, cursorPosition);
+});
+
 phoneInput.addEventListener('input', (event) => {
     const input = event.target;
     const validBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
@@ -124,7 +159,7 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
 
 writeCart([]);
 
-showToast('ההזמנה בוצעה בהצלחה במצב הדמיה. לא בוצע חיוב.');
+showToast('ההזמנה בוצעה בהצלחה.');
     window.setTimeout(() => { window.location.href = '../index.html'; }, 1500)
   })
 
