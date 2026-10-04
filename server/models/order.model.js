@@ -10,7 +10,8 @@ const orderSchema = new Schema({
     productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    qty: { type: Number, required: true, min: 1 }
+    qty: { type: Number, required: true, min: 1 },
+    unit: { type: String, enum: ['ק״ג', 'יחידות'], default: 'יחידות' }
 }],
 
     totalPrice: { type: Number, required: true },

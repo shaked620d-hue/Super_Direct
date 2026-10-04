@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Order } from '../models/order.model.js';
 import { Product } from '../models/product.model.js';
+import { Category } from '../models/category.model.js';
 import { Customer } from '../models/auth.model.js';
 import { sendOrderConfirmationEmail } from '../services/email.service.js';
 
@@ -168,6 +169,15 @@ export const createOrder = async (req, res, next) => {
             productsById.set(productId, product);
         }
 
+        const categoryIds = [...new Set([...productsById.values()].map((product) => product.categoryId))];
+        const categories = await Category.find({ id: { $in: categoryIds } })
+            .select('id soldByWeight')
+            .session(session);
+        const categoryUnits = new Map(categories.map((category) => [
+            category.id,
+            category.soldByWeight ? 'ק״ג' : 'יחידות'
+        ]));
+
         const orderItems = [];
         for (const item of req.body.items) {
             const product = productsById.get(item.productId);
@@ -175,7 +185,8 @@ export const createOrder = async (req, res, next) => {
                 productId: item.productId,
                 name: product.name,
                 price: product.price,
-                qty: item.qty
+                qty: item.qty,
+                unit: categoryUnits.get(product.categoryId) || 'יחידות'
             });
         }
 

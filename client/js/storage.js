@@ -234,7 +234,7 @@ const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '
 const createOrderItemRow = (item) => {
     const row = document.createElement('div');
     row.className = 'order-item-line';
-    row.textContent = `${item.name} × ${item.qty} — ${(item.price * item.qty).toFixed(2)} ₪`;
+    row.textContent = `${item.name} × ${item.qty} ${item.unit || 'יחידות'} — ${(item.price * item.qty).toFixed(2)} ₪`;
     return row;
 };
 

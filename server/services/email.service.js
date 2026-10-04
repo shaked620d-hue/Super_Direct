@@ -12,6 +12,7 @@ const escapeHtml = (value) => String(value)
     .replaceAll("'", '&#39;');
 
 const formatMoney = (amount) => `${Number(amount).toFixed(2)} ₪`;
+const formatQuantity = (item) => `${item.qty} ${item.unit || 'יחידות'}`;
 
 export const sendOrderConfirmationEmail = async (customer, order) => {
     if (!env.EMAIL_USER || !env.EMAIL_APP_PASSWORD) {
@@ -32,12 +33,12 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
     const itemRows = order.items.map((item) => `
         <tr>
             <td style="padding:8px;border-bottom:1px solid #e4e9df">${escapeHtml(item.name)}</td>
-            <td style="padding:8px;border-bottom:1px solid #e4e9df">${item.qty}</td>
+            <td style="padding:8px;border-bottom:1px solid #e4e9df">${escapeHtml(formatQuantity(item))}</td>
             <td style="padding:8px;border-bottom:1px solid #e4e9df">${formatMoney(item.price * item.qty)}</td>
         </tr>
     `).join('');
     const itemText = order.items
-        .map((item) => `- ${item.name} × ${item.qty}: ${formatMoney(item.price * item.qty)}`)
+        .map((item) => `- ${item.name} × ${formatQuantity(item)}: ${formatMoney(item.price * item.qty)}`)
         .join('\n');
     const customerName = customer.firstName || 'לקוח/ה';
     const orderId = String(order._id);
