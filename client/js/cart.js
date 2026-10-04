@@ -59,7 +59,7 @@ const mergeGuestCartIntoUserCart = () => {
 
 
 const updateCartCount = (cart = readCart()) => {
-    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    const count = new Set(cart.map(getCartItemKey)).size;
     document.querySelectorAll('.cart-count').forEach((badge) => {
         badge.textContent = count;
         badge.hidden = count === 0;
