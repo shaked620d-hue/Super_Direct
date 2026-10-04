@@ -76,7 +76,7 @@ const cardNumberInput = document.getElementById('cardNumber');
 cardNumberInput.addEventListener('input', (event) => {
     const input = event.target;
     const digitsBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
-    const digits = input.value.replace(/\D/g, '');
+    const digits = input.value.replace(/\D/g, '').slice(0, 16);
 
     input.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
 
