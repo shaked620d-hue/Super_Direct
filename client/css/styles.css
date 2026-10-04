@@ -107,6 +107,7 @@ main { max-width:1180px; margin:auto; padding:25px 24px 80px; }
 .add-button.out-of-stock, .add-button.out-of-stock:hover { background:#f3d9d3; color:#a13a2a; cursor:not-allowed; }
 .admin-actions { display:flex; gap:6px; }
 .admin-btn { border:0; border-radius:8px; padding:7px 11px; font-weight:800; font-size:.8rem; cursor:pointer; }
+.category-action-button { margin-top:16px; }
 .admin-btn.edit { background:var(--lime); color:var(--ink); }
 .admin-btn.edit:hover { background:#c7e052; }
 .admin-btn.delete { background:#f3d9d3; color:#a13a2a; }
