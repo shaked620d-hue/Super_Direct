@@ -27,7 +27,9 @@ const handleLoginSubmit = () => {
       localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
       mergeGuestCartIntoUserCart();
       showToast('התחברת בהצלחה');
-      window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
+      const returnToCheckout = new URLSearchParams(window.location.search).get('returnTo') === 'checkout.html';
+      const redirectPath = returnToCheckout ? 'checkout.html' : '../index.html';
+      window.setTimeout(() => { window.location.href = redirectPath; }, 1500);
     } catch {
       // מטפלים במצב שבו לא ניתן להגיע לשרת.
       showToast('אירעה שגיאה בהתחברות לשרת');

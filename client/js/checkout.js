@@ -107,6 +107,13 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
         return;
       }
 
+      if (response.status === 401) {
+        const authNotice = document.getElementById('checkoutAuthError');
+        authNotice.hidden = false;
+        authNotice.focus();
+        return;
+      }
+
         showToast('שליחת ההזמנה נכשלה');
         return;
     }
