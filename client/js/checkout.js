@@ -89,13 +89,21 @@ const cardExpiryInput = document.getElementById('cardExpiry');
 cardExpiryInput.addEventListener('input', (event) => {
     const input = event.target;
     const digitsBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
-    const digits = input.value.replace(/\D/g, '');
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
 
     input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
 
     const slashBeforeCursor = digitsBeforeCursor > 2 ? 1 : 0;
     const cursorPosition = digitsBeforeCursor + slashBeforeCursor;
     input.setSelectionRange(cursorPosition, cursorPosition);
+});
+
+const cardCvvInput = document.getElementById('cardCvv');
+cardCvvInput.addEventListener('input', (event) => {
+    const input = event.target;
+    const digitsBeforeCursor = input.value.slice(0, input.selectionStart).replace(/\D/g, '').length;
+    input.value = input.value.replace(/\D/g, '').slice(0, 3);
+    input.setSelectionRange(Math.min(digitsBeforeCursor, input.value.length), Math.min(digitsBeforeCursor, input.value.length));
 });
 
 phoneInput.addEventListener('input', (event) => {
