@@ -1,5 +1,8 @@
+import path from 'node:path';
 import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
+
+const logoPath = path.join(import.meta.dirname, '..', 'assets', 'super-direct-logo.png');
 
 const escapeHtml = (value) => String(value)
     .replaceAll('&', '&amp;')
@@ -44,6 +47,11 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
             from: `"סופר דיירקט" <${env.EMAIL_USER}>`,
             to: customer.email,
             subject: `אישור הזמנה ${orderId}`,
+            attachments: [{
+                filename: 'super-direct-logo.png',
+                path: logoPath,
+                cid: 'super-direct-logo'
+            }],
             text: [
                 `שלום ${customerName},`,
                 '',
@@ -59,6 +67,9 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
             ].join('\n'),
             html: `
             <div dir="rtl" style="font-family:Arial,sans-serif;color:#18322f;max-width:600px;margin:auto">
+                <div style="text-align:center;margin-bottom:24px">
+                    <img src="cid:super-direct-logo" alt="סופר דיירקט" width="64" height="64" style="display:inline-block;border:0">
+                </div>
                 <h1>תודה על ההזמנה, ${escapeHtml(customerName)}!</h1>
                 <p>קיבלנו את ההזמנה שלך. הנה הפרטים:</p>
                 <table style="width:100%;border-collapse:collapse;text-align:right">
