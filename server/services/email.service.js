@@ -14,12 +14,13 @@ const escapeHtml = (value) => String(value)
 const formatMoney = (amount) => `${Number(amount).toFixed(2)} ₪`;
 const formatQuantity = (item) => `${item.qty} ${item.unit || 'יחידות'}`;
 
-export const sendOrderConfirmationEmail = async (customer, order) => {
+// יוצר חיבור ל-Gmail לשליחת מייל - משותף לכל סוגי המיילים שהאתר שולח.
+const createTransporter = () => {
     if (!env.EMAIL_USER || !env.EMAIL_APP_PASSWORD) {
-        throw new Error('EMAIL_USER and EMAIL_APP_PASSWORD must be configured to send order emails');
+        throw new Error('EMAIL_USER and EMAIL_APP_PASSWORD must be configured to send emails');
     }
 
-    const transporter = nodemailer.createTransport({
+    return nodemailer.createTransport({
         service: 'gmail',
         connectionTimeout: 10000,
         greetingTimeout: 10000,
@@ -29,6 +30,10 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
             pass: env.EMAIL_APP_PASSWORD
         }
     });
+};
+
+export const sendOrderConfirmationEmail = async (customer, order) => {
+    const transporter = createTransporter();
 
     const itemRows = order.items.map((item) => `
         <tr>
@@ -88,6 +93,29 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
                 <p>טלפון למשלוח: ${escapeHtml(order.phone)}</p>
                 <p>מספר הזמנה: ${escapeHtml(orderId)}</p>
                 <p>תודה שקניתם בסופר דיירקט.</p>
+            </div>
+            `
+        });
+    } finally {
+        transporter.close();
+    }
+};
+
+export const sendMessageReplyEmail = async (message, replyText) => {
+    const transporter = createTransporter();
+
+    try {
+        await transporter.sendMail({
+            from: `"סופר דיירקט" <${env.EMAIL_USER}>`,
+            to: message.email,
+            subject: `Re: ${message.subject}`,
+            text: replyText,
+            html: `
+            <div dir="rtl" style="font-family:Arial,sans-serif;color:#18322f;max-width:600px;margin:auto">
+                <p>שלום ${escapeHtml(message.name)},</p>
+                <p style="white-space:pre-wrap">${escapeHtml(replyText)}</p>
+                <hr style="border:none;border-top:1px solid #e4e9df;margin:24px 0">
+                <p style="color:#5c6b66;font-size:.9rem">בתגובה להודעה ששלחת: "${escapeHtml(message.subject)}"</p>
             </div>
             `
         });

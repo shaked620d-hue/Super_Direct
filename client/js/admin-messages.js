@@ -41,17 +41,43 @@ const createMessageCard = (message) => {
     handledRow.className = 'message-handled-row';
     handledRow.append(handledLabel);
 
-    // כפתור מענה מיותר להודעה שכבר טופלה.
-    if (!message.handled) {
-        // פותח את תוכנת המייל של מי שלוחץ (לא תלוי בשרת), עם כתובת הלקוח כבר ממולאת.
-        const replyLink = document.createElement('a');
-        replyLink.className = 'admin-btn edit';
-        replyLink.href = `mailto:${message.email}?subject=${encodeURIComponent(`Re: ${message.subject}`)}`;
-        replyLink.textContent = 'מענה';
-        handledRow.append(replyLink);
-    }
-
     const children = [summary, subject, email, body];
+    let replyBox;
+
+    // תיבת התגובה מוצגת ישירות (בלי כפתור "מענה" נפרד) - מיותר להודעה שכבר טופלה.
+    if (!message.handled) {
+        replyBox = document.createElement('div');
+        replyBox.className = 'message-reply-box';
+
+        const replyTextarea = document.createElement('textarea');
+        replyTextarea.placeholder = 'כתבי כאן את התגובה ללקוח...';
+
+        const sendButton = document.createElement('button');
+        sendButton.type = 'button';
+        sendButton.className = 'admin-btn edit';
+        sendButton.textContent = 'שליחה';
+
+        sendButton.addEventListener('click', async () => {
+            const replyText = replyTextarea.value.trim();
+            if (!replyText) {
+                showToast('יש לכתוב תגובה לפני השליחה');
+                return;
+            }
+            try {
+                const response = await replyToMessageRequest(message._id, replyText);
+                if (!response.ok) {
+                    showToast('שליחת התגובה נכשלה');
+                    return;
+                }
+                showToast('התגובה נשלחה בהצלחה ללקוח, וההודעה סומנה כטופלה');
+                loadMessages();
+            } catch {
+                showToast('אירעה שגיאה בשליחת התגובה');
+            }
+        });
+
+        replyBox.append(replyTextarea, sendButton);
+    }
 
     if (message.attachment) {
         const attachmentLink = document.createElement('a');
@@ -66,6 +92,7 @@ const createMessageCard = (message) => {
     }
 
     children.push(handledRow);
+    if (replyBox) children.push(replyBox);
     card.append(...children);
     return card;
 };

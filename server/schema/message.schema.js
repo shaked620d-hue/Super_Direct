@@ -7,3 +7,7 @@ export const createMessageSchema = Joi.object({
     message: Joi.string().min(2).required(),
     attachment: Joi.string()
 });
+
+export const replyMessageSchema = Joi.object({
+    replyText: Joi.string().min(2).required()
+});

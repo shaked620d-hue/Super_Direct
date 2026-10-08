@@ -1,6 +1,7 @@
 import { Message } from '../models/message.model.js';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { sendMessageReplyEmail } from '../services/email.service.js';
 
 // מחזיר את כל ההודעות, החדשות קודם.
 export const getMessages = async (req, res, next) => {
@@ -10,6 +11,17 @@ export const getMessages = async (req, res, next) => {
     } catch (error) {
         error.statusCode = 500;
         next(error);
+    }
+};
+
+// מוחק את הקובץ המצורף של הודעה, אם יש - משותף לכל מקום שמסמן הודעה כטופלה.
+const deleteAttachmentIfExists = async (message) => {
+    if (!message.attachment) return;
+    const filePath = path.join(import.meta.dirname, '..', 'public', message.attachment);
+    try {
+        await fs.unlink(filePath);
+    } catch {
+        // הקובץ כבר לא קיים בדיסק - לא קריטי
     }
 };
 
@@ -27,12 +39,7 @@ export const updateMessageStatus = async (req, res, next) => {
         const updates = { handled: req.body.handled };
 
         if (req.body.handled && !existing.handled && existing.attachment) {
-            const filePath = path.join(import.meta.dirname, '..', 'public', existing.attachment);
-            try {
-                await fs.unlink(filePath);
-            } catch {
-                // הקובץ כבר לא קיים בדיסק - לא קריטי
-            }
+            await deleteAttachmentIfExists(existing);
             updates.attachment = null;
         }
 
@@ -42,6 +49,37 @@ export const updateMessageStatus = async (req, res, next) => {
             { new: true, runValidators: true }
         );
         res.status(200).json(message);
+    } catch (error) {
+        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        next(error);
+    }
+};
+
+// שולח מייל תגובה ללקוח ישירות מהאתר, דרך חשבון המייל של סופר דיירקט, ומסמן את ההודעה כטופלה.
+export const replyToMessage = async (req, res, next) => {
+    try {
+        const message = await Message.findById(req.params.id);
+        if (!message) {
+            const error = new Error('message not found');
+            error.statusCode = 404;
+            error.type = 'not found';
+            return next(error);
+        }
+
+        await sendMessageReplyEmail(message, req.body.replyText);
+
+        const updates = { handled: true };
+        if (message.attachment) {
+            await deleteAttachmentIfExists(message);
+            updates.attachment = null;
+        }
+
+        const updatedMessage = await Message.findByIdAndUpdate(
+            req.params.id,
+            { $set: updates },
+            { new: true, runValidators: true }
+        );
+        res.status(200).json(updatedMessage);
     } catch (error) {
         error.statusCode = error.name === 'CastError' ? 400 : 500;
         next(error);
