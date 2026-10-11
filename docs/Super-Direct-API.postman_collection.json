@@ -10,7 +10,8 @@
     { "key": "productId", "value": "" },
     { "key": "categoryId", "value": "" },
     { "key": "userId", "value": "" },
-    { "key": "orderId", "value": "" }
+    { "key": "orderId", "value": "" },
+    { "key": "messageId", "value": "" }
   ],
   "item": [
     {
@@ -46,6 +47,21 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
             "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"123456\",\n  \"newPassword\": \"1234567\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/change-password", "host": ["{{baseUrl}}"], "path": ["api", "auth", "change-password"] }
           }
         }
       ]
@@ -294,6 +310,38 @@
               ]
             },
             "url": { "raw": "{{baseUrl}}/api/message", "host": ["{{baseUrl}}"], "path": ["api", "message"] }
+          }
+        },
+        {
+          "name": "Get all messages (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/message", "host": ["{{baseUrl}}"], "path": ["api", "message"] }
+          }
+        },
+        {
+          "name": "Update message status (admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"handled\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/api/message/{{messageId}}/status", "host": ["{{baseUrl}}"], "path": ["api", "message", "{{messageId}}", "status"] }
+          }
+        },
+        {
+          "name": "Reply to message (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"replyText\": \"תודה שפנית אלינו, נבדוק ונחזור אליך בהקדם.\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/message/{{messageId}}/reply", "host": ["{{baseUrl}}"], "path": ["api", "message", "{{messageId}}", "reply"] }
           }
         }
       ]
