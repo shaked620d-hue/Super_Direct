@@ -3,6 +3,12 @@ import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 import { createToken } from '../utils/jwt.js';
 
+// מחפש כתובת מדויקת בלי תלות באותיות גדולות/קטנות, כולל חשבונות ישנים שנשמרו לפני הנרמול.
+const findCustomersByEmail = (email) => {
+	const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	return Customer.find({ email: new RegExp(`^\\s*${escapedEmail}\\s*$`, 'i') }).exec();
+};
+
 /**
  * יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
  * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי הלקוח בגוף הבקשה.
@@ -12,6 +18,14 @@ import { createToken } from '../utils/jwt.js';
  */
 export const register = async (req, res,next) => {
 	try {
+	const existingCustomers = await findCustomersByEmail(req.body.email);
+	if (existingCustomers.length > 0) {
+		const error = new Error('כתובת האימייל כבר רשומה');
+		error.statusCode = 409;
+		error.type = 'conflict';
+		return next(error);
+	}
+
 	const newCustomer = await Customer.create({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -45,23 +59,39 @@ catch (error) {
  */
 export const login = async (req, res, next) => {
 	try {
-	const customer = await Customer.findOne({ email: req.body.email }).exec();
-	if (!customer) {
+	const customers = await findCustomersByEmail(req.body.email);
+	if (customers.length === 0) {
 		const error = new Error('User not found');
 		error.statusCode = 404;
 		error.type = 'not found';
 		return next(error);
 	}
-	if (await bcrypt.compare(req.body.password, customer.password)) {
-		const safeCustomer = sanitizeCustomer(customer.toObject());
-		// הסיסמה נבדקת מול ה-hash, והאסימון נוצר רק לאחר אימות מוצלח.
-		res.status(200).json({ ...safeCustomer, token: createToken(customer) });
-	} else {
+
+	const matchingCustomers = [];
+	for (const customer of customers) {
+		if (await bcrypt.compare(req.body.password, customer.password)) {
+			matchingCustomers.push(customer);
+		}
+	}
+
+	if (matchingCustomers.length === 0) {
 		const error = new Error('Wrong password');
 		error.statusCode = 401;
 		error.type = 'unauthorized';
 		return next(error);
 	}
+
+	if (matchingCustomers.length > 1) {
+		const error = new Error('נמצאו כמה חשבונות עם כתובת האימייל הזו; נדרשת בדיקת מנהל');
+		error.statusCode = 409;
+		error.type = 'conflict';
+		return next(error);
+	}
+
+	const [customer] = matchingCustomers;
+	const safeCustomer = sanitizeCustomer(customer.toObject());
+	// כשיש חשבונות כפולים, הכניסה מתבצעת לחשבון שסיסמתו אומתה בפועל.
+	res.status(200).json({ ...safeCustomer, token: createToken(customer) });
 } catch (error) {
         error.statusCode = error.name === 'CastError' ? 400 : 500;
         next(error);

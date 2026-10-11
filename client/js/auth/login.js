@@ -20,6 +20,10 @@ const handleLoginSubmit = () => {
 
       // תשובה שאינה 2xx מציינת שהאימייל או הסיסמה אינם תקינים.
       if (!response.ok) {
+        if (response.status === 409) {
+          showToast('נמצאו כמה חשבונות עם כתובת האימייל הזו; יש לפנות למנהל האתר');
+          return;
+        }
         showToast('אימייל או סיסמה שגויים');
         return;
       }
