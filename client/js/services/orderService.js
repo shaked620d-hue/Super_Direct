@@ -1,6 +1,6 @@
 const createOrderRequest = async (details) => apiRequest('/api/order', { method: 'POST', body: details, auth: true });
 
-const getMyOrdersRequest = async (customerId) => apiRequest(`/api/order/my?customerId=${customerId}`, { auth: true });
+const getMyOrdersRequest = async () => apiRequest('/api/order/my', { auth: true });
 
 const getOrdersRequest = async () => apiRequest('/api/order', { auth: true });
 

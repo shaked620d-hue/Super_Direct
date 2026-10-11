@@ -30,8 +30,9 @@ total.append(totalLabel, totalValue);
 
 const loadOrders = async () => {
     const currentUser = getCurrentUser();
-    if (!currentUser) {
-        window.location.href = 'login.html';
+    if (!currentUser?.token) {
+        localStorage.removeItem('superDirectCurrentUser');
+        window.location.href = 'login.html?returnTo=orders.html';
         return;
     }
 
@@ -41,8 +42,20 @@ const loadOrders = async () => {
     }
 
     try {
-        const response = await getMyOrdersRequest(currentUser._id || currentUser.id);
+        const response = await getMyOrdersRequest();
+        if (response.status === 401) {
+            localStorage.removeItem('superDirectCurrentUser');
+            window.location.href = 'login.html?returnTo=orders.html';
+            return;
+        }
+        if (!response.ok) {
+            throw new Error(`Failed to load orders: ${response.status}`);
+        }
+
         const orders = await response.json();
+        if (!Array.isArray(orders)) {
+            throw new Error('The orders response is not a list');
+        }
 
         if (orders.length === 0) {
             document.getElementById('noOrders').hidden = false;

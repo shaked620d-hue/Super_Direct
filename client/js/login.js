@@ -27,8 +27,10 @@ const handleLoginSubmit = () => {
       localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
       mergeGuestCartIntoUserCart();
       showToast('התחברת בהצלחה');
-      const returnToCheckout = new URLSearchParams(window.location.search).get('returnTo') === 'checkout.html';
-      const redirectPath = returnToCheckout ? 'checkout.html' : '../index.html';
+      // אחרי התחברות שנדרשה לצורך הזמנה או צפייה בהזמנות, חוזרים לעמוד המבוקש.
+      const returnTo = new URLSearchParams(window.location.search).get('returnTo');
+      // מאפשרים רק יעדים פנימיים מוכרים, כדי לא להפנות לכתובת חיצונית שסופקה בכתובת הדף.
+      const redirectPath = ['checkout.html', 'orders.html'].includes(returnTo) ? returnTo : '../index.html';
       window.setTimeout(() => { window.location.href = redirectPath; }, 1500);
     } catch {
       // מטפלים במצב שבו לא ניתן להגיע לשרת.
