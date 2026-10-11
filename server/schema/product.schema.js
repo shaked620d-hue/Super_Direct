@@ -18,13 +18,10 @@ categoryId: Joi.number().integer().positive().required(),
 // בעדכון חלקי אפשר להשאיר קטגוריה קיימת ללא שינוי; ביצירה היא חובה.
 export const updateProductSchema = createProductSchema.fork(
     ['name', 'description', 'price', 'categoryId'],
-<<<<<<< HEAD
-=======
     /**
      * הופך שדה חובה בסכמה לשדה אופציונלי, לשימוש בעדכון חלקי.
      * @param {import('joi').Schema} schema - סכמת ה-Joi של השדה המקורי.
      * @returns {import('joi').Schema} הסכמה המעודכנת, עם השדה כאופציונלי.
      */
->>>>>>> eeb5a6f50059101845952b257bc1b3331ce5bbf5
     (schema) => schema.optional()
 );
