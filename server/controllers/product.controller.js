@@ -1,4 +1,21 @@
+import path from 'node:path';
+import fs from 'node:fs/promises';
 import { Product } from '../models/product.model.js';
+
+/**
+ * מוחקת את קובץ התמונה של מוצר מהדיסק, אם יש לו אחד - נקראת רק לאחר שהמוצר נמחק בהצלחה.
+ * @param {import('mongoose').Document} product - מסמך המוצר שממנו יש למחוק את התמונה.
+ * @returns {Promise<void>}
+ */
+const deleteProductImageIfExists = async (product) => {
+	if (!product.image) return;
+	const filePath = path.join(import.meta.dirname, '..', 'public', product.image);
+	try {
+		await fs.unlink(filePath);
+	} catch {
+		// הקובץ כבר לא קיים בדיסק - לא קריטי
+	}
+};
 
 /**
  * מחזיר מוצר אחד לפי מזהה.
@@ -131,6 +148,7 @@ export const deleteProduct = async (req, res, next) => {
 	try {
 		const deleted = await Product.findByIdAndDelete(req.params.id);
 		if (deleted) {
+			await deleteProductImageIfExists(deleted);
 			res.status(200).send({ message: 'deleted successfuly' });
 		} else {
 			const error = new Error('product not found');
