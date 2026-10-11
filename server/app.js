@@ -106,18 +106,15 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
-<<<<<<< HEAD
 const databaseConnected = await connectDB();
 if (!databaseConnected) {
   throw new Error('Server startup aborted because MongoDB connection failed');
 }
 
-=======
 /**
  * מריץ הודעת לוג לקונסולה לאחר שהשרת עלה בהצלחה.
  * @returns {void}
  */
->>>>>>> a7a4c61f5badef5a553c2e5ae6553a88f1f7fdb6
 server.listen(env.PORT, () => {
   console.log(`Server is running on http://localhost:${env.PORT}`);
 });
