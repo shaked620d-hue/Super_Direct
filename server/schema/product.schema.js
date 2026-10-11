@@ -5,7 +5,7 @@ export const createProductSchema= Joi.object({
   description: Joi.string().required(),
   price: Joi.number().positive().required(),
   stock: Joi.number().integer().min(0),
-categoryId: Joi.number().integer().positive(),
+categoryId: Joi.number().integer().positive().required(),
   image: Joi.string(),
   containsGluten: Joi.boolean(),
   containsDairy: Joi.boolean(),
@@ -15,7 +15,8 @@ categoryId: Joi.number().integer().positive(),
 })
 
 
+// בעדכון חלקי אפשר להשאיר קטגוריה קיימת ללא שינוי; ביצירה היא חובה.
 export const updateProductSchema = createProductSchema.fork(
-    ['name', 'description', 'price'],
+    ['name', 'description', 'price', 'categoryId'],
     (schema) => schema.optional()
 );
