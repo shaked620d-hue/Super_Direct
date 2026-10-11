@@ -11,3 +11,7 @@ export const createOrderSchema = Joi.object({
     ).min(1).required()
 });
 
+export const updateOrderStatusSchema = Joi.object({
+    // מקבלים רק סטטוסים שהממשק מציג, כדי למנוע ערכים שלא יוצגו בקבוצות ההזמנות.
+    status: Joi.string().valid('התקבלה', 'בהכנה', 'נשלחה', 'נמסרה').required()
+});

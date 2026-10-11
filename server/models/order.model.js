@@ -15,7 +15,8 @@ const orderSchema = new Schema({
 }],
 
     totalPrice: { type: Number, required: true },
-    status: { type: String, default: 'התקבלה' }
+    // הגבלה גם במודל מגנה על הנתונים מכל מסלול שמנסה לשמור הזמנה בלי בדיקת Joi.
+    status: { type: String, enum: ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'], default: 'התקבלה' }
 });
 
 export const Order = model('Order', orderSchema);

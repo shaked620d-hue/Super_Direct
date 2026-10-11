@@ -27,6 +27,8 @@ const createOrderCard = (order) => {
     const select = document.createElement('select');
     select.className = 'order-status-select';
     select.dataset.orderId = order._id;
+    // שומרים את הערך האחרון שהשרת אישר כדי שנוכל לבטל שינוי שלא נשמר.
+    select.dataset.currentStatus = order.status;
     statusOptions.forEach((statusOption) => {
         const option = document.createElement('option');
         option.value = statusOption;
@@ -54,11 +56,14 @@ const handleStatusChange = async (event) => {
     try {
         const response = await updateOrderStatusRequest(orderId, select.value);
         if (!response.ok) {
+            select.value = select.dataset.currentStatus;
             showToast('עדכון הסטטוס נכשל');
             return;
         }
+        select.dataset.currentStatus = select.value;
         showToast('הסטטוס עודכן');
     } catch {
+        select.value = select.dataset.currentStatus;
         showToast('אירעה שגיאה בעדכון הסטטוס');
     }
 };
