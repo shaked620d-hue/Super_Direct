@@ -1,9 +1,20 @@
+/**
+ * מחזירה מזהה ייחודי לפריט בעגלה, לצורך השוואה ומיזוג פריטים זהים.
+ * @param {object} item - פריט בעגלה (עם productId או name).
+ * @returns {string} מזהה ייחודי לפריט.
+ */
 const getCartItemKey = (item) => {
     if (item?.productId) return `product:${item.productId}`;
     if (item?.name) return `name:${item.name}`;
     return `index:${Math.random()}`;
 };
 
+/**
+ * מאחדת שתי רשימות עגלה לרשימה אחת - פריטים זהים מצטברים בכמות, פריטים חדשים מתווספים.
+ * @param {object[]} [targetCart=[]] - רשימת העגלה הקיימת.
+ * @param {object[]} [incomingCart=[]] - רשימת העגלה שיש לשלב פנימה (לדוגמה, עגלת אורח).
+ * @returns {object[]} רשימת העגלה המאוחדת.
+ */
 const mergeCartItems = (targetCart = [], incomingCart = []) => {
     const merged = [...targetCart];
 
@@ -22,6 +33,10 @@ const mergeCartItems = (targetCart = [], incomingCart = []) => {
     return merged;
 };
 
+/**
+ * קובעת היכן לאחסן את העגלה: ב-localStorage לפי מזהה המשתמש אם מחובר, אחרת ב-sessionStorage כעגלת אורח.
+ * @returns {{storage: Storage, key: string}} אובייקט ה-storage המתאים ומפתח האחסון.
+ */
 const getCartStorage = () => {
     const currentUser = getCurrentUser();
     if (currentUser) {
@@ -31,6 +46,10 @@ const getCartStorage = () => {
 };
 
 
+/**
+ * קוראת את תוכן העגלה הנוכחית מהאחסון המתאים.
+ * @returns {object[]} רשימת הפריטים בעגלה, או מערך ריק אם אין עגלה שמורה או שהקריאה נכשלה.
+ */
 const readCart = () => {
     try {
         const { storage, key } = getCartStorage();
@@ -40,12 +59,19 @@ const readCart = () => {
     }
 };
 
+/**
+ * שומרת את רשימת העגלה באחסון המתאים ומעדכנת את מספר הפריטים המוצג.
+ * @param {object[]} cart - רשימת הפריטים לשמירה.
+ */
 const writeCart = (cart) => {
     const { storage, key } = getCartStorage();
     storage.setItem(key, JSON.stringify(cart));
     updateCartCount(cart);
 };
 
+/**
+ * מעבירה את תוכן עגלת האורח (sessionStorage) לעגלת המשתמש המחובר, בעת התחברות/הרשמה.
+ */
 const mergeGuestCartIntoUserCart = () => {
     const guestCart = JSON.parse(sessionStorage.getItem('superDirectCart_guest')) || [];
     if (guestCart.length === 0) return;
@@ -58,6 +84,10 @@ const mergeGuestCartIntoUserCart = () => {
 };
 
 
+/**
+ * מעדכנת את תגית מספר הפריטים בעגלה (cart-count) בכל מקום בעמוד שבו היא מוצגת.
+ * @param {object[]} [cart=readCart()] - רשימת הפריטים בעגלה.
+ */
 const updateCartCount = (cart = readCart()) => {
     const count = new Set(cart.map(getCartItemKey)).size;
     document.querySelectorAll('.cart-count').forEach((badge) => {
@@ -66,6 +96,10 @@ const updateCartCount = (cart = readCart()) => {
     });
 };
 
+/**
+ * מוסיפה את המוצר המתואר בכרטיס המוצר לעגלה, בכפוף לבדיקת מלאי.
+ * @param {HTMLElement} card - אלמנט כרטיס המוצר שממנו נלקחים פרטי המוצר.
+ */
 const addToCart = (card) => {
     const name = card.querySelector('h3')?.textContent.trim();
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
@@ -103,6 +137,10 @@ const addToCart = (card) => {
     showToast(`${name} נוסף לסל`);
 };
 
+/**
+ * מטפלת בלחיצה על כפתור "הוספה לסל" - בודקת מלאי עדכני מול השרת ומוסיפה את המוצר לעגלה.
+ * @param {Event} event - אירוע הלחיצה.
+ */
 const handleAddToCartClick = async (event) => {
     // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
@@ -143,6 +181,10 @@ const handleAddToCartClick = async (event) => {
     }
 };
 
+/**
+ * מציגה הודעת טוסט קצרה בתחתית העמוד ומסתירה אותה אוטומטית אחרי כמה שניות.
+ * @param {string} message - תוכן ההודעה להצגה.
+ */
 const showToast = (message) => {
     let toast = document.querySelector('.toast');
     if (!toast) {
@@ -156,6 +198,9 @@ const showToast = (message) => {
     showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2200);
 };
 
+/**
+ * מציגה את תוכן העגלה בדף העגלה - פריטים, בקרת כמות, מחירים וסיכום (לרבות עלות משלוח).
+ */
 const renderCart = () => {
     const list = document.querySelector('#cartItems');
     const empty = document.querySelector('#emptyCart');
@@ -258,6 +303,9 @@ const renderCart = () => {
     document.querySelector('#delivery').textContent = delivery === 0 ? 'חינם' : `${delivery.toFixed(2)} ₪`;
     document.querySelector('#total').textContent = `${(subtotal + delivery).toFixed(2)} ₪`;
 };
+/**
+ * מוסיפה כפתור תפריט למובייל שפותח וסוגר את קישורי הניווט.
+ */
 const initMobileMenu = () => {
     const navWrap = document.querySelector('.nav-wrap');
     if (!navWrap) return;
@@ -275,6 +323,9 @@ const initMobileMenu = () => {
     });
 }
 
+/**
+ * מחברת את כפתור המעבר לתשלום לדף ה-checkout.
+ */
 const handleCheckout= () =>{
    const checkOutBtn= document.getElementById('checkoutButton');
     if (!checkOutBtn) return;

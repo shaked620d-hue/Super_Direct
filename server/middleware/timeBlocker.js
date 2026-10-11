@@ -1,6 +1,13 @@
-// Middleware גמיש:
-//  מקבל פרמטרים של ימים/שעות חסומים
-//  ומחזיר middleware
+/**
+ * Middleware גמיש: מקבל פרמטרים של ימים/שעות חסומים ומחזיר middleware שחוסם גישה בפרק הזמן הזה.
+ * @param {object} [options] - הגדרות החסימה.
+ * @param {number[]} [options.blockedDays] - מספרי הימים החסומים (0 = יום ראשון, 5 = יום שישי, 6 = שבת).
+ * @param {number} [options.startHour] - השעה שבה מתחילה החסימה ביום שישי.
+ * @param {number} [options.endHour] - השעה שבה מסתיימת החסימה בשבת.
+ * @param {number} [options.statusCode] - קוד הסטטוס שיוחזר לבקשות API בזמן חסימה.
+ * @param {string} [options.message] - הודעת השגיאה שתוחזר לבקשות API בזמן חסימה.
+ * @returns {import('express').RequestHandler} ה-middleware שבודק את החסימה בכל בקשה.
+ */
 export const createTimeBlocker = ({
   blockedDays = [5, 6], // 5 = יום שישי, 6 = שבת
   startHour = 12,
@@ -8,6 +15,13 @@ export const createTimeBlocker = ({
   statusCode = 503,
   message = 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
 } = {}) => {
+  /**
+   * בודק אם הבקשה הנוכחית מתרחשת בתקופה החסומה, ומחזיר דף סגירה או שגיאת 503 בהתאם.
+   * @param {import('express').Request} req - בקשת ה-HTTP.
+   * @param {import('express').Response} res - אובייקט התשובה.
+   * @param {import('express').NextFunction} next - פונקציית ה-next של Express.
+   * @returns {void}
+   */
   return (req, res, next) => {
     // דף הסגירה והנכסים שלו חייבים להישאר זמינים גם כשהאתר חסום.
     const allowedClosedPageAssets = new Set(['/HTML/closed.html', '/css/closed.css', '/js/closed.js']);

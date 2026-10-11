@@ -1,28 +1,53 @@
+/**
+ * מחזירה את הנתיב היחסי הבסיסי לקבצי ה-HTML, בהתאם לתיקייה הנוכחית.
+ * @returns {string} 'HTML/' אם הדף הנוכחי מחוץ לתיקיית HTML, אחרת מחרוזת ריקה.
+ */
 const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
-// מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
+/**
+ * מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
+ * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
+ */
 const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
+/**
+ * בודקת אם המשתמש המחובר כרגע הוא מנהל.
+ * @returns {boolean} true אם המשתמש המחובר הוא מנהל.
+ */
 const isAdmin = ()=>{
     const currentUser = getCurrentUser();
     return currentUser?.role === 'admin';
 }
 
+/**
+ * מפנה לעמוד הבית אם המשתמש המחובר אינו מנהל, כדי להגן על דפי ניהול.
+ */
 const guardAdminOnly = () => {
     if (!isAdmin()) {
         window.location.href = '../index.html';
     }
 };
 
-// מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
+/**
+ * מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
+ * @returns {object} אובייקט עם כותרת Authorization אם יש משתמש מחובר עם אסימון, אחרת אובייקט ריק.
+ */
 const getAuthHeaders = () => {
     const currentUser = getCurrentUser();
     // מצרפים את האסימון לכל בקשה מוגנת שנשלחת מהלקוח.
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
 
-// פונקציית fetch משותפת לכל קבצי ה-services. body יכול להיות FormData (תמונה) או אובייקט רגיל (הופך ל-JSON אוטומטית).
-// auth:true מצרף את כותרת ההרשאה, לבקשות שדורשות משתמש מחובר.
+/**
+ * פונקציית fetch משותפת לכל קבצי ה-services. body יכול להיות FormData (תמונה) או אובייקט רגיל (הופך ל-JSON אוטומטית).
+ * auth:true מצרף את כותרת ההרשאה, לבקשות שדורשות משתמש מחובר.
+ * @param {string} path - נתיב ה-API היחסי לבקשה (לדוגמה '/api/product').
+ * @param {object} [options] - אפשרויות הבקשה.
+ * @param {string} [options.method='GET'] - מתודת ה-HTTP.
+ * @param {object|FormData} [options.body] - גוף הבקשה.
+ * @param {boolean} [options.auth=false] - האם לצרף כותרת הרשאה.
+ * @returns {Promise<Response>} תשובת השרת.
+ */
 const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => {
     const isFormData = body instanceof FormData;
     const headers = {
@@ -46,6 +71,9 @@ const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => 
     return response;
 };
 
+/**
+ * מעדכנת את ממשק הכותרת (header) בהתאם למשתמש המחובר - שם, קישור לפרופיל, קישורי הזמנות ותפריט ניהול למנהל.
+ */
 const updateAuthUI = ()=>{
     const authButton= document.getElementById('authButton');
     if(!authButton){return;}
@@ -119,6 +147,9 @@ const updateAuthUI = ()=>{
     }
 
 }
+/**
+ * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מה-localStorage ומרעננת את הדף.
+ */
 const handleLogout = ()=>{
     
     const logoutButton  = document.getElementById('logoutButton');
@@ -139,7 +170,9 @@ const handleLogout = ()=>{
 
 
 
-// טוען את רשימת הקטגוריות מהשרת ובונה מחדש את תפריט הקטגוריות הנפתח, כדי שקטגוריה חדשה תופיע אוטומטית בכל הדפים.
+/**
+ * טוען את רשימת הקטגוריות מהשרת ובונה מחדש את תפריט הקטגוריות הנפתח, כדי שקטגוריה חדשה תופיע אוטומטית בכל הדפים.
+ */
 const populateCategoryDropdown = async () => {
     const menu = document.querySelector('.nav-dropdown-menu');
     if (!menu) return;
@@ -158,7 +191,9 @@ const populateCategoryDropdown = async () => {
     }
 };
 
-// עוטפת את סמל הבד"ץ בתפריט hover קטן שמסביר את המשמעות שלו.
+/**
+ * עוטפת את סמל הבד"ץ בתפריט hover קטן שמסביר את המשמעות שלו.
+ */
 const enhanceKosherBadge = () => {
     const badge = document.querySelector('.kosher-badge-header');
     if (!badge) return;
@@ -179,7 +214,9 @@ const enhanceKosherBadge = () => {
     wrap.append(tooltip);
 };
 
-// טוענת את כל הקטגוריות מהשרת לתוך הקרוסלה בדף הבית, כולל האימוג'י שנשמר לכל קטגוריה.
+/**
+ * טוענת את כל הקטגוריות מהשרת לתוך הקרוסלה בדף הבית, כולל האימוג'י שנשמר לכל קטגוריה.
+ */
 const populateCategoryCarousel = async () => {
     const list = document.getElementById('categoryList');
     if (!list) return;
@@ -205,8 +242,13 @@ const populateCategoryCarousel = async () => {
     }
 };
 
-// ממלאת תיבת בחירת קטגוריה מהשרת. valueField קובע איזה מזהה משתמשים בו כ-value:
-// '_id' (מונגו) כשבוחרים קטגוריה כדי לערוך/למחוק אותה, 'id' (המספר הרגיל) כשבוחרים קטגוריה של מוצר.
+/**
+ * ממלאת תיבת בחירת קטגוריה מהשרת. valueField קובע איזה מזהה משתמשים בו כ-value:
+ * '_id' (מונגו) כשבוחרים קטגוריה כדי לערוך/למחוק אותה, 'id' (המספר הרגיל) כשבוחרים קטגוריה של מוצר.
+ * @param {string} selectId - המזהה (id) של אלמנט ה-select שממלאים.
+ * @param {string} placeholderText - הטקסט שיוצג באופציית ה-placeholder.
+ * @param {string} [valueField='_id'] - שם השדה בקטגוריה שישמש כ-value של האופציה.
+ */
 const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '_id') => {
     const select = document.getElementById(selectId)
     if (!select) return;
@@ -230,7 +272,11 @@ const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '
     }
 };
 
-// שורת פריט אחת בתוך כרטיס הזמנה - זהה ללקוח ולמנהל.
+/**
+ * שורת פריט אחת בתוך כרטיס הזמנה - זהה ללקוח ולמנהל.
+ * @param {object} item - פריט בהזמנה (שם, כמות, יחידה ומחיר).
+ * @returns {HTMLElement} אלמנט ה-div של שורת הפריט.
+ */
 const createOrderItemRow = (item) => {
     const row = document.createElement('div');
     row.className = 'order-item-line';
@@ -240,7 +286,11 @@ const createOrderItemRow = (item) => {
 
 const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
 
-// מקבצת הזמנות לפי סטטוס ומציגה אותן ב-ordersList - זהה ללקוח ולמנהל, רק כרטיס ההזמנה עצמו (createCard) שונה בין השניים.
+/**
+ * מקבצת הזמנות לפי סטטוס ומציגה אותן ב-ordersList - זהה ללקוח ולמנהל, רק כרטיס ההזמנה עצמו (createCard) שונה בין השניים.
+ * @param {object[]} orders - רשימת ההזמנות להצגה.
+ * @param {Function} createCard - פונקציה שמקבלת הזמנה ומחזירה את אלמנט הכרטיס שלה.
+ */
 const renderOrdersGroupedByStatus = (orders, createCard) => {
     const groups = [];
     STATUS_ORDER.forEach((status) => {
@@ -264,7 +314,9 @@ const renderOrdersGroupedByStatus = (orders, createCard) => {
     document.getElementById('ordersList').replaceChildren(...groups);
 };
 
-// מחברת את חצי הגלילה של הקרוסלה.
+/**
+ * מחברת את חצי הגלילה של הקרוסלה.
+ */
 const wireCategoryCarouselArrows = () => {
     const list = document.getElementById('categoryList');
     const nextButton = document.getElementById('categoryCarouselNext');

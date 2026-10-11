@@ -1,4 +1,8 @@
-// כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
+/**
+ * כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
+ * @param {object} order - אובייקט ההזמנה להצגה (כולל פרטי לקוח, פריטים וסטטוס).
+ * @returns {HTMLElement} אלמנט ה-details של כרטיס ההזמנה, עם תפריט לשינוי סטטוס.
+ */
 const createOrderCard = (order) => {
     const card = document.createElement('details');
     card.className = 'order-card';
@@ -45,6 +49,10 @@ const createOrderCard = (order) => {
     card.append(summary, customer, phone, ...order.items.map(createOrderItemRow), select, total);
     return card;
 };
+/**
+ * מטפלת בשינוי תיבת הבחירה של סטטוס הזמנה - מעדכנת את הסטטוס בשרת.
+ * @param {Event} event - אירוע השינוי של תיבת הבחירה.
+ */
 const handleStatusChange = async (event) => {
     const select = event.target;
     const orderId = select.dataset.orderId;
@@ -60,6 +68,9 @@ const handleStatusChange = async (event) => {
     }
 };
 
+/**
+ * טוענת את כל ההזמנות מהשרת ומציגה אותן מקובצות לפי סטטוס (לצפיית מנהל).
+ */
 const loadOrders = async () => {
     try {
         const response = await getOrdersRequest();

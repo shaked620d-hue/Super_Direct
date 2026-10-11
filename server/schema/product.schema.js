@@ -17,5 +17,10 @@ categoryId: Joi.number().integer().positive(),
 
 export const updateProductSchema = createProductSchema.fork(
     ['name', 'description', 'price'],
+    /**
+     * הופך שדה חובה בסכמה לשדה אופציונלי, לשימוש בעדכון חלקי.
+     * @param {import('joi').Schema} schema - סכמת ה-Joi של השדה המקורי.
+     * @returns {import('joi').Schema} הסכמה המעודכנת, עם השדה כאופציונלי.
+     */
     (schema) => schema.optional()
 );

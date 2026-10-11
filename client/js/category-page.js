@@ -3,6 +3,9 @@ const slug = params.get('cat');
 document.getElementById('productGrid').dataset.category = slug;
 
 
+/**
+ * טוענת מהשרת את פרטי הקטגוריה הנוכחית (לפי פרמטר ה-cat בכתובת) ומציגה אותם בעמוד.
+ */
 const loadCategoryText = async () => {
     try {
         const response = await getCategories();

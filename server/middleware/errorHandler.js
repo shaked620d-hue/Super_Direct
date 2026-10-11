@@ -1,8 +1,12 @@
-// Middleware לטיפול בשגיאות כלליות:
-// נוצר כדי לתפוס שגיאות שלא טופלו ב־
-// route או ב־ controller,
-// ולשלוח ללקוח תשובה 
-// JSON אחידה במקום שגיאה גולמית.
+/**
+ * Middleware לטיפול בשגיאות כלליות: נוצר כדי לתפוס שגיאות שלא טופלו ב-route או ב-controller,
+ * ולשלוח ללקוח תשובה JSON אחידה במקום שגיאה גולמית.
+ * @param {Error} err - אובייקט השגיאה שהגיע מה-middleware הקודם.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - פונקציית ה-next של Express.
+ * @returns {void}
+ */
 export const errorHandler = (err, req, res, next) => {
   // בודק אם המערכת נמצאת במצב פיתוח כדי להציג 
   // stack trace.

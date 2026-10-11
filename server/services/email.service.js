@@ -4,6 +4,11 @@ import { env } from '../config/env.js';
 
 const logoPath = path.join(import.meta.dirname, '..', 'assets', 'super-direct-logo.png');
 
+/**
+ * ממיר תווים מיוחדים ב-HTML לישויות בטוחות, כדי למנוע הזרקת קוד בתוכן המייל.
+ * @param {*} value - הערך שיש להמיר למחרוזת בטוחה ל-HTML.
+ * @returns {string} המחרוזת לאחר ה-escaping.
+ */
 const escapeHtml = (value) => String(value)
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
@@ -11,10 +16,25 @@ const escapeHtml = (value) => String(value)
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 
+/**
+ * מעצב סכום כספי עם שני מקומות עשרוניים וסימן ש"ח.
+ * @param {number} amount - הסכום לעיצוב.
+ * @returns {string} הסכום המעוצב, לדוגמה "12.50 ₪".
+ */
 const formatMoney = (amount) => `${Number(amount).toFixed(2)} ₪`;
+/**
+ * מעצב את הכמות וסוג היחידה של פריט בהזמנה.
+ * @param {object} item - פריט בהזמנה.
+ * @param {number} item.qty - הכמות שהוזמנה.
+ * @param {string} [item.unit] - יחידת המידה (למשל "יחידות" או "ק״ג").
+ * @returns {string} מחרוזת המתארת את הכמות, לדוגמה "2 יחידות".
+ */
 const formatQuantity = (item) => `${item.qty} ${item.unit || 'יחידות'}`;
 
-// יוצר חיבור ל-Gmail לשליחת מייל - משותף לכל סוגי המיילים שהאתר שולח.
+/**
+ * יוצר חיבור ל-Gmail לשליחת מייל - משותף לכל סוגי המיילים שהאתר שולח.
+ * @returns {import('nodemailer').Transporter} אובייקט ה-transporter של nodemailer.
+ */
 const createTransporter = () => {
     if (!env.EMAIL_USER || !env.EMAIL_APP_PASSWORD) {
         throw new Error('EMAIL_USER and EMAIL_APP_PASSWORD must be configured to send emails');
@@ -32,6 +52,14 @@ const createTransporter = () => {
     });
 };
 
+/**
+ * שולח ללקוח מייל אישור הזמנה עם פירוט הפריטים, המשלוח והסכום לתשלום.
+ * @param {object} customer - פרטי הלקוח לשליחת המייל.
+ * @param {string} customer.email - כתובת המייל של הלקוח.
+ * @param {string} [customer.firstName] - שם פרטי הלקוח, לברכה בפתיחת המייל.
+ * @param {import('mongoose').Document} order - מסמך ההזמנה לפירוט במייל.
+ * @returns {Promise<void>}
+ */
 export const sendOrderConfirmationEmail = async (customer, order) => {
     const transporter = createTransporter();
 
@@ -101,6 +129,12 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
     }
 };
 
+/**
+ * שולח מייל תגובה ללקוח שיצר קשר, בהתבסס על הודעתו המקורית.
+ * @param {import('mongoose').Document} message - מסמך ההודעה שאליה עונים.
+ * @param {string} replyText - תוכן התגובה שיישלח ללקוח.
+ * @returns {Promise<void>}
+ */
 export const sendMessageReplyEmail = async (message, replyText) => {
     const transporter = createTransporter();
 

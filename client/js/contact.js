@@ -1,5 +1,8 @@
 
 
+/**
+ * מטפלת בטופס יצירת הקשר - תצוגה מקדימה של קובץ מצורף, ניקוי הקובץ ושליחת ההודעה לשרת.
+ */
 const handleContactSubmit=() =>{
     const contactForm=document.getElementById('contactForm');
 const attachment=  document.getElementById('attachment');

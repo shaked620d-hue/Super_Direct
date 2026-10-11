@@ -1,6 +1,12 @@
 import { Product } from '../models/product.model.js';
 
-// מחזיר מוצר אחד לפי מזהה.
+/**
+ * מחזיר מוצר אחד לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getProductById = async(req, res, next) => {
 	try {
 		const product = await Product.findById(req.params.id);
@@ -20,7 +26,13 @@ export const getProductById = async(req, res, next) => {
 	
 };
 
-// מחזיר את כל המוצרים, עם אפשרות לסינון לפי קטגוריה.
+/**
+ * מחזיר את כל המוצרים, עם אפשרות לסינון לפי קטגוריה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, עם אפשרות לפרמטר שאילתה category.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getProducts = async (req, res, next) => {
 	console.log("--> פונקציית getProducts הופעלה!");
 
@@ -38,7 +50,13 @@ export const getProducts = async (req, res, next) => {
 	}
 };
 
-// יוצר מוצר חדש.
+/**
+ * יוצר מוצר חדש.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי המוצר בגוף הבקשה ואופציונלית לקובץ תמונה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const createProduct = async (req, res, next) => {
 	try {
 		const newProduct = await Product.create({
@@ -62,7 +80,13 @@ export const createProduct = async (req, res, next) => {
 };
 
 
-// מעדכן רק את השדות שנשלחו עבור מוצר קיים.
+/**
+ * מעדכן רק את השדות שנשלחו עבור מוצר קיים.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ולשדות עדכון בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const updateProduct = async (req, res, next) => {
 	try{
 		
@@ -96,8 +120,13 @@ export const updateProduct = async (req, res, next) => {
 	
 };
 
-// מוחק מוצר לפי מזהה.
-
+/**
+ * מוחק מוצר לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const deleteProduct = async (req, res, next) => {
 	try {
 		const deleted = await Product.findByIdAndDelete(req.params.id);

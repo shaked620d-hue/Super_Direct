@@ -3,7 +3,13 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import { sendMessageReplyEmail } from '../services/email.service.js';
 
-// מחזיר את כל ההודעות, החדשות קודם.
+/**
+ * מחזיר את כל ההודעות, החדשות קודם.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getMessages = async (req, res, next) => {
     try {
         const messages = await Message.find().sort({ createdAt: -1 });
@@ -14,7 +20,11 @@ export const getMessages = async (req, res, next) => {
     }
 };
 
-// מוחק את הקובץ המצורף של הודעה, אם יש - משותף לכל מקום שמסמן הודעה כטופלה.
+/**
+ * מוחק את הקובץ המצורף של הודעה, אם יש - משותף לכל מקום שמסמן הודעה כטופלה.
+ * @param {import('mongoose').Document} message - מסמך ההודעה שממנו יש למחוק את הקובץ המצורף.
+ * @returns {Promise<void>}
+ */
 const deleteAttachmentIfExists = async (message) => {
     if (!message.attachment) return;
     const filePath = path.join(import.meta.dirname, '..', 'public', message.attachment);
@@ -25,7 +35,13 @@ const deleteAttachmentIfExists = async (message) => {
     }
 };
 
-// מעדכן האם הודעה טופלה. במעבר הראשון ל"טופלה" (לא כשמבטלים סימון קיים) מוחק גם את הקובץ המצורף, אם יש.
+/**
+ * מעדכן האם הודעה טופלה. במעבר הראשון ל"טופלה" (לא כשמבטלים סימון קיים) מוחק גם את הקובץ המצורף, אם יש.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ול-handled בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const updateMessageStatus = async (req, res, next) => {
     try {
         const existing = await Message.findById(req.params.id);
@@ -55,7 +71,13 @@ export const updateMessageStatus = async (req, res, next) => {
     }
 };
 
-// שולח מייל תגובה ללקוח ישירות מהאתר, דרך חשבון המייל של סופר דיירקט, ומסמן את ההודעה כטופלה.
+/**
+ * שולח מייל תגובה ללקוח ישירות מהאתר, דרך חשבון המייל של סופר דיירקט, ומסמן את ההודעה כטופלה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ול-replyText בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const replyToMessage = async (req, res, next) => {
     try {
         const message = await Message.findById(req.params.id);
@@ -86,6 +108,13 @@ export const replyToMessage = async (req, res, next) => {
     }
 };
 
+/**
+ * יוצר הודעת צור קשר חדשה, עם אפשרות לקובץ מצורף.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי ההודעה בגוף הבקשה ואופציונלית לקובץ מצורף.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const createMessage = async (req, res, next) => {
     try {
         const newMessage = await Message.create({

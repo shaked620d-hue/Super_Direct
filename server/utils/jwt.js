@@ -3,7 +3,11 @@ import { env } from '../config/env.js';
 
 const JWT_SECRET = env.JWT_SECRET;
 
-// יוצר אסימון חתום שמזהה את המשתמש בלי לשמור את הסיסמה בתוך האסימון.
+/**
+ * יוצר אסימון חתום שמזהה את המשתמש בלי לשמור את הסיסמה בתוך האסימון.
+ * @param {import('mongoose').Document} customer - מסמך הלקוח שעבורו יש ליצור את האסימון.
+ * @returns {string} אסימון ה-JWT החתום.
+ */
 export const createToken = (customer) => {
     if (!JWT_SECRET) {
         throw new Error('JWT_SECRET is not configured');

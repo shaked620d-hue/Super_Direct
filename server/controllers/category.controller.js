@@ -1,7 +1,13 @@
 import { Category } from '../models/category.model.js';
 import { Product } from '../models/product.model.js';
 
-// מחזיר את כל הקטגוריות.
+/**
+ * מחזיר את כל הקטגוריות.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getCategories = async (req, res, next) => {
 	try {
 		const categories = await Category.find().sort({ name: 1 });
@@ -12,7 +18,13 @@ export const getCategories = async (req, res, next) => {
 	}
 };
 
-// מחזיר קטגוריה אחת לפי מזהה.
+/**
+ * מחזיר קטגוריה אחת לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getCategoryById = async (req, res, next) => {
 	try {
 		const category = await Category.findById(req.params.id);
@@ -30,7 +42,13 @@ export const getCategoryById = async (req, res, next) => {
 	}
 };
 
-// יוצר קטגוריה חדשה.
+/**
+ * יוצר קטגוריה חדשה, עם הקצאת מזהה אוטומטית ומילוי שדות ברירת מחדל.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי הקטגוריה בגוף הבקשה ואופציונלית לקובץ תמונה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const createCategory = async (req, res, next) => {
 	try {
 		// מקצה מזהה מספרי אוטומטית - הבא אחרי המזהה הגבוה ביותר הקיים.
@@ -55,7 +73,13 @@ export const createCategory = async (req, res, next) => {
 	}
 };
 
-// מעדכן את שם הקטגוריה לפי מזהה.
+/**
+ * מעדכן את שם הקטגוריה לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ולשדות עדכון בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const updateCategory = async (req, res, next) => {
 	try {
 		const updates = { ...req.body };
@@ -80,7 +104,13 @@ export const updateCategory = async (req, res, next) => {
 	}
 };
 
-// מוחק קטגוריה לפי מזהה, וגם את כל המוצרים ששייכים אליה.
+/**
+ * מוחק קטגוריה לפי מזהה, וגם את כל המוצרים ששייכים אליה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const deleteCategory = async (req, res, next) => {
 	try {
 		const deletedCategory = await Category.findByIdAndDelete(req.params.id);

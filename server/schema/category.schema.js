@@ -15,5 +15,10 @@ export const createCategorySchema = Joi.object({
 
 export const updateCategorySchema = createCategorySchema.fork(
     ['name', 'slug', 'description' ], // רק מי שהוא חובה
+    /**
+     * הופך שדה חובה בסכמה לשדה אופציונלי, לשימוש בעדכון חלקי.
+     * @param {import('joi').Schema} schema - סכמת ה-Joi של השדה המקורי.
+     * @returns {import('joi').Schema} הסכמה המעודכנת, עם השדה כאופציונלי.
+     */
     (schema) => schema.optional()
 );

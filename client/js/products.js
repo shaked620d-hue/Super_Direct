@@ -4,6 +4,9 @@ let categorySoldByWeight = {};
 let products = [];
 let productsLoaded = false;
 
+/**
+ * טוענת מהשרת את רשימת הקטגוריות ובונה מהן מיפויים נוחים (שם לפי מזהה, מזהה לפי slug, האם נמכרת לפי משקל), ומציגה את תפריט הקטגוריות בסינון הקטלוג.
+ */
 const loadCategoryNames = async () => {
     const response = await getCategories();
     if (!response.ok) throw new Error('טעינת הקטגוריות נכשלה');
@@ -22,6 +25,11 @@ const loadCategoryNames = async () => {
 };
 
 
+/**
+ * בונה כרטיס תצוגה למוצר - תמונה, תגי אלרגנים, מחיר, וכפתור הוספה לסל או פעולות ניהול למנהל.
+ * @param {object} product - המוצר להצגה.
+ * @returns {HTMLElement} אלמנט הכרטיס של המוצר.
+ */
 const createProductCard = (product) => {
     const img = document.createElement('img');
     img.className = 'product-image';
@@ -122,6 +130,11 @@ editLink.href = `${getBasePath()}product-form.html?id=${product._id}`;
     return card;
 };
 
+/**
+ * מנרמלת אובייקט מוצר שהתקבל מהשרת - מוודאת שיש לו גם _id וגם id, וממירה categoryId ו-price למספרים.
+ * @param {object} product - המוצר כפי שהתקבל מהשרת.
+ * @returns {object} המוצר המנורמל.
+ */
 const normalizeProduct = (product) => ({
     ...product,
     _id: product._id || product.id,
@@ -133,6 +146,9 @@ const normalizeProduct = (product) => ({
     image: product.image || ''
 });
 
+/**
+ * טוענת מהשרת את הקטגוריות והמוצרים, ומציגה אותם בעמוד (עם מצב טעינה וטיפול בכשל).
+ */
 const loadProducts = async () => {
     const loadingState = document.getElementById('catalogLoadingState');
     const loadingMessage = document.getElementById('catalogLoadingMessage');
@@ -161,6 +177,9 @@ const loadProducts = async () => {
     }
 };
 
+/**
+ * מציגה את המוצרים בכל המכלים הרלוונטיים בעמוד: רשת לפי קטגוריה, מוצרים מומלצים אקראיים, ורשימת כל המוצרים עם סינון.
+ */
 const renderProducts = () => {
     document.querySelectorAll('.products[data-category]').forEach((grid) => {
         const categoryId = categoryIdsBySlug[grid.dataset.category];
@@ -177,6 +196,10 @@ const renderProducts = () => {
     });
 };
 
+/**
+ * מציגה את רשימת כל המוצרים בעמוד הקטלוג, מסוננת לפי חיפוש, קטגוריה וזמינות, ומסודרת לפי מיון שנבחר.
+ * @param {HTMLElement} container - האלמנט שאליו מוצגת רשימת המוצרים.
+ */
 const renderAllProducts = (container) => {
     if (!productsLoaded) return;
 
@@ -211,6 +234,9 @@ const renderAllProducts = (container) => {
     document.getElementById('catalogResultCount').textContent = `מציגים ${visibleProducts.length} מתוך ${products.length} מוצרים`;
 };
 
+/**
+ * מאפסת את כל שדות הסינון בעמוד הקטלוג (חיפוש, קטגוריה, זמינות, מיון) ומציגה שוב את כל המוצרים.
+ */
 const clearCatalogFilters = () => {
     document.getElementById('catalogSearch').value = '';
     document.getElementById('catalogCategory').value = 'all';
@@ -219,7 +245,10 @@ const clearCatalogFilters = () => {
     renderAllProducts(document.getElementById('allProductsGrid'));
 };
 
-// הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
+/**
+ * הפונקציה מסננת את המוצרים לפי טקסט החיפוש ומציגה את התוצאות בדף הבית.
+ * @param {string} query - טקסט החיפוש (ריק להצגת מוצרים אקראיים).
+ */
 const renderSearchResults = (query) => {
     // מאתרים את מיכל המוצרים שבו יוצגו תוצאות החיפוש.
     const productContainer = document.querySelector('#productGrid');
@@ -250,6 +279,10 @@ const renderSearchResults = (query) => {
     productContainer.replaceChildren(...visibleProducts.map(createProductCard));
 };
 
+/**
+ * מטפלת בשליחת טופס החיפוש בדף הבית - מציגה את תוצאות החיפוש וגוללת אליהן.
+ * @param {Event} event - אירוע שליחת טופס החיפוש.
+ */
 const handleSearch = (event) => {
     // מונע מהטופס לבצע רענון רגיל של הדף לאחר השליחה.
     event.preventDefault();
@@ -268,6 +301,10 @@ const handleSearch = (event) => {
     document.querySelector('#fresh')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
+/**
+ * מטפלת בלחיצה על כפתור מחיקת מוצר - מוחקת את המוצר בשרת וטוענת מחדש את רשימת המוצרים.
+ * @param {Event} event - אירוע הלחיצה.
+ */
 const deleteProduct = async  (event) => {
     if (!event.target.classList.contains('delete')) return;
     const id = event.target.dataset.id;

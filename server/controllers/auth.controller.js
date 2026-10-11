@@ -3,7 +3,13 @@ import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 import { createToken } from '../utils/jwt.js';
 
-// יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
+/**
+ * יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי הלקוח בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const register = async (req, res,next) => {
 	try {
 	const newCustomer = await Customer.create({
@@ -25,7 +31,13 @@ catch (error) {
     }
 	};
 
-// מחפש משתמש לפי אימייל ובודק את הסיסמה שנשלחה.
+/**
+ * מאמת שם משתמש וסיסמה ומחזיר טוקן התחברות.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-email ו-password בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const login = async (req, res, next) => {
 	try {
 	const customer = await Customer.findOne({ email: req.body.email }).exec();
@@ -50,12 +62,24 @@ export const login = async (req, res, next) => {
         next(error);
     }
 };
-// יחזיר בעתיד את פרטי המשתמש לפי אסימון JWT.
+/**
+ * מחזיר את פרטי המשתמש המחובר, לפי אסימון ה-JWT שאומת ב-middleware.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה למשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @returns {void}
+ */
 export const getCurrentUser = (req, res) => {
 	// req.user הוזן על ידי middleware האימות לאחר בדיקת ה-JWT.
 	res.status(200).json(sanitizeCustomer(req.user.toObject()));
 };
 
+/**
+ * מחליף את סיסמת המשתמש המחובר, לאחר אימות הסיסמה הנוכחית.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-currentPassword ו-newPassword בגוף הבקשה ולמשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const changePassword = async (req, res, next) => {
 	try {
 		if (!(await bcrypt.compare(req.body.currentPassword, req.user.password))) {

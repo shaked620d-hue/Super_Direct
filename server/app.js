@@ -66,10 +66,22 @@ server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
 server.use('/js', express.static(path.join(clientDir, 'js')));
 
+/**
+ * מגיש את קובץ ה-favicon בפורמט SVG.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @returns {void}
+ */
 server.get('/favicon.svg', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.svg'));
 });
 
+/**
+ * מגיש את קובץ ה-favicon בפורמט ICO.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @returns {void}
+ */
 server.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
 });
@@ -96,6 +108,10 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
+/**
+ * מריץ הודעת לוג לקונסולה לאחר שהשרת עלה בהצלחה.
+ * @returns {void}
+ */
 server.listen(env.PORT, () => {
   console.log('Server is running on http://localhost:5000')
 })
