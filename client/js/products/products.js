@@ -1,3 +1,8 @@
+import { getBasePath, isAdmin } from '../shared/storage.js';
+import { getCategories } from '../categories/categoryService.js';
+import { getProducts, deleteProductRequest } from './productService.js';
+import { showToast } from '../cart/cart.js';
+
 let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
 let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
 let categorySoldByWeight = {};

@@ -1,20 +1,24 @@
+import { API_BASE_URL } from './config.js';
+import { getCategories } from '../categories/categoryService.js';
+import { showToast } from '../cart/cart.js';
+
 /**
  * מחזירה את הנתיב היחסי הבסיסי לקבצי ה-HTML, בהתאם לתיקייה הנוכחית.
  * @returns {string} 'HTML/' אם הדף הנוכחי מחוץ לתיקיית HTML, אחרת מחרוזת ריקה.
  */
-const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
+export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 /**
  * מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
-const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+export const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
 
 /**
  * בודקת אם המשתמש המחובר כרגע הוא מנהל.
  * @returns {boolean} true אם המשתמש המחובר הוא מנהל.
  */
-const isAdmin = ()=>{
+export const isAdmin = ()=>{
     const currentUser = getCurrentUser();
     return currentUser?.role === 'admin';
 }
@@ -22,7 +26,7 @@ const isAdmin = ()=>{
 /**
  * מפנה לעמוד הבית אם המשתמש המחובר אינו מנהל, כדי להגן על דפי ניהול.
  */
-const guardAdminOnly = () => {
+export const guardAdminOnly = () => {
     if (!isAdmin()) {
         window.location.href = '../index.html';
     }
@@ -48,7 +52,7 @@ const getAuthHeaders = () => {
  * @param {boolean} [options.auth=false] - האם לצרף כותרת הרשאה.
  * @returns {Promise<Response>} תשובת השרת.
  */
-const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => {
+export const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => {
     const isFormData = body instanceof FormData;
     const headers = {
         ...(auth ? getAuthHeaders() : {}),
@@ -227,7 +231,7 @@ const populateCategoryCarousel = async () => {
  * @param {string} placeholderText - הטקסט שיוצג באופציית ה-placeholder.
  * @param {string} [valueField='_id'] - שם השדה בקטגוריה שישמש כ-value של האופציה.
  */
-const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '_id') => {
+export const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '_id') => {
     const select = document.getElementById(selectId)
     if (!select) return;
 
@@ -255,7 +259,7 @@ const loadCategoryOptionsInto = async (selectId, placeholderText, valueField = '
  * @param {object} item - פריט בהזמנה (שם, כמות, יחידה ומחיר).
  * @returns {HTMLElement} אלמנט ה-div של שורת הפריט.
  */
-const createOrderItemRow = (item) => {
+export const createOrderItemRow = (item) => {
     const row = document.createElement('div');
     row.className = 'order-item-line';
     row.textContent = `${item.name} × ${item.qty} ${item.unit || 'יחידות'} — ${(item.price * item.qty).toFixed(2)} ₪`;
@@ -269,7 +273,7 @@ const STATUS_ORDER = ['התקבלה', 'בהכנה', 'נשלחה', 'נמסרה'];
  * @param {object[]} orders - רשימת ההזמנות להצגה.
  * @param {Function} createCard - פונקציה שמקבלת הזמנה ומחזירה את אלמנט הכרטיס שלה.
  */
-const renderOrdersGroupedByStatus = (orders, createCard) => {
+export const renderOrdersGroupedByStatus = (orders, createCard) => {
     const groups = [];
     STATUS_ORDER.forEach((status) => {
         const ordersInStatus = orders

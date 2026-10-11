@@ -1,3 +1,8 @@
+import { getMessagesRequest, updateMessageStatusRequest, replyToMessageRequest } from './messageService.js';
+import { guardAdminOnly } from '../shared/storage.js';
+import { API_BASE_URL } from '../shared/config.js';
+import { showToast } from '../cart/cart.js';
+
 /**
  * כרטיס הודעה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, כמו בהזמנות.
  * @param {object} message - אובייקט ההודעה להצגה.

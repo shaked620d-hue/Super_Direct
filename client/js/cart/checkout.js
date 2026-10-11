@@ -1,3 +1,8 @@
+import { getCurrentUser } from '../shared/storage.js';
+import { getProducts } from '../products/productService.js';
+import { readCart, writeCart, showToast } from './cart.js';
+import { createOrderRequest } from '../orders/orderService.js';
+
 const currentUser = getCurrentUser();
 
 /**
