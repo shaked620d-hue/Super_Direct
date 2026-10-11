@@ -30,7 +30,9 @@ const handleLoginSubmit = () => {
       // אחרי התחברות שנדרשה לצורך הזמנה או צפייה בהזמנות, חוזרים לעמוד המבוקש.
       const returnTo = new URLSearchParams(window.location.search).get('returnTo');
       // מאפשרים רק יעדים פנימיים מוכרים, כדי לא להפנות לכתובת חיצונית שסופקה בכתובת הדף.
-      const redirectPath = ['checkout.html', 'orders.html'].includes(returnTo) ? returnTo : '../index.html';
+      const redirectPath = ['checkout.html', 'orders.html', 'admin-orders.html'].includes(returnTo)
+        ? returnTo
+        : '../index.html';
       window.setTimeout(() => { window.location.href = redirectPath; }, 1500);
     } catch {
       // מטפלים במצב שבו לא ניתן להגיע לשרת.

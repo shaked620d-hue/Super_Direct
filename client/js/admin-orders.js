@@ -14,7 +14,10 @@ const createOrderCard = (order) => {
 
     const customer = document.createElement('p');
     customer.className = 'order-customer';
-    customer.textContent = `לקוח: ${order.customerId.firstName} ${order.customerId.lastName}`;
+    const customerName = order.customerId
+        ? `${order.customerId.firstName} ${order.customerId.lastName}`.trim()
+        : 'פרטי הלקוח אינם זמינים';
+    customer.textContent = `לקוח: ${customerName}`;
 
     const phone = document.createElement('p');
     phone.className = 'order-customer';
@@ -63,7 +66,24 @@ const handleStatusChange = async (event) => {
 const loadOrders = async () => {
     try {
         const response = await getOrdersRequest();
+        if (response.status === 401) {
+            // אסימון שנדחה אינו שימושי; מתחברים מחדש וחוזרים לעמוד הניהול.
+            localStorage.removeItem('superDirectCurrentUser');
+            window.location.href = 'login.html?returnTo=admin-orders.html';
+            return;
+        }
+        if (response.status === 403) {
+            showToast('אין לך הרשאה לצפות בהזמנות');
+            return;
+        }
+        if (!response.ok) {
+            throw new Error(`Failed to load orders: ${response.status}`);
+        }
+
         const orders = await response.json();
+        if (!Array.isArray(orders)) {
+            throw new Error('The orders response is not a list');
+        }
 
         if (orders.length === 0) {
             document.getElementById('noOrders').hidden = false;
@@ -76,7 +96,20 @@ const loadOrders = async () => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', loadOrders);
+const initializeAdminOrders = () => {
+    const currentUser = getCurrentUser();
+    if (currentUser?.role !== 'admin') {
+        guardAdminOnly();
+        return;
+    }
 
+    if (!currentUser.token) {
+        localStorage.removeItem('superDirectCurrentUser');
+        window.location.href = 'login.html?returnTo=admin-orders.html';
+        return;
+    }
 
-document.addEventListener('DOMContentLoaded', guardAdminOnly);
+    loadOrders();
+};
+
+document.addEventListener('DOMContentLoaded', initializeAdminOrders);
