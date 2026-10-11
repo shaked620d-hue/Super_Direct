@@ -1,5 +1,7 @@
 
-// מטפלת בשליחת טופס ההתחברות.
+/**
+ * מטפלת בשליחת טופס ההתחברות.
+ */
 const handleLoginSubmit = () => {
   // מוצאים את הטופס. אם אנחנו בדף אחר, אין צורך להמשיך.
   const loginForm = document.getElementById('loginForm');

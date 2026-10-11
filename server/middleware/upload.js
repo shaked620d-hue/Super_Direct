@@ -15,17 +15,41 @@ try {
   throw error;
 }
 
-// בונה הגדרת אחסון של multer שכותבת לתיקייה נתונה, עם שם קובץ ייחודי לפי חותמת זמן.
+/**
+ * בונה הגדרת אחסון של multer שכותבת לתיקייה נתונה, עם שם קובץ ייחודי לפי חותמת זמן.
+ * @param {string} dir - נתיב התיקייה שבה יישמרו הקבצים שהועלו.
+ * @returns {import('multer').StorageEngine} הגדרת האחסון עבור multer.
+ */
 const makeStorage = (dir) => multer.diskStorage({
+  /**
+   * קובע את תיקיית היעד לקובץ שהועלה.
+   * @param {import('express').Request} req - בקשת ה-HTTP.
+   * @param {Express.Multer.File} file - פרטי הקובץ שהועלה.
+   * @param {Function} cb - callback של multer, מקבל (error, destination).
+   * @returns {void}
+   */
   destination: (req, file, cb) => {
     cb(null, dir);
   },
+  /**
+   * קובע שם ייחודי לקובץ שהועלה, לפי חותמת זמן והסיומת המקורית.
+   * @param {import('express').Request} req - בקשת ה-HTTP.
+   * @param {Express.Multer.File} file - פרטי הקובץ שהועלה.
+   * @param {Function} cb - callback של multer, מקבל (error, filename).
+   * @returns {void}
+   */
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}${path.extname(file.originalname)}`);
   }
 });
 
-// שלא יעלו קובץ אחר אלא רק תמונה
+/**
+ * מסנן קבצים שמועלים כדי לוודא שרק תמונות מתקבלות.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {Express.Multer.File} file - פרטי הקובץ שהועלה.
+ * @param {Function} cb - callback של multer, מקבל (error, acceptFile).
+ * @returns {void}
+ */
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);

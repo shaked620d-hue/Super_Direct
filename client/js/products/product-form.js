@@ -1,7 +1,10 @@
 let id;
 let imagePreviewObjectUrl;
 
-// מציגה תמונה קיימת בעריכה, או מסתירה את התצוגה כשאין למוצר תמונה.
+/**
+ * מציגה תמונה קיימת בעריכה, או מסתירה את התצוגה כשאין למוצר תמונה.
+ * @param {string} source - נתיב התמונה השמורה, או ריק/undefined אם אין תמונה.
+ */
 const setImagePreview = (source) => {
     const preview = document.getElementById('imagePreview');
     if (imagePreviewObjectUrl) {
@@ -20,7 +23,9 @@ const setImagePreview = (source) => {
     preview.hidden = false;
 };
 
-// מציגה את הקובץ שנבחר מיד, לפני שליחת הטופס לשרת.
+/**
+ * מציגה את הקובץ שנבחר מיד, לפני שליחת הטופס לשרת.
+ */
 const handleImagePreview = () => {
     const imageFile = document.getElementById('image').files[0];
     if (!imageFile) return;
@@ -32,6 +37,9 @@ const handleImagePreview = () => {
     preview.hidden = false;
 };
 
+/**
+ * טוענת את רשימת הקטגוריות לתפריט הבחירה, ואם יש מזהה מוצר בכתובת - טוענת את פרטיו לעריכה.
+ */
 const takeData = async ()=>{
     try {
         await loadCategoryOptionsInto('categoryId', 'בחרו קטגוריה', 'id');
@@ -63,6 +71,10 @@ const takeData = async ()=>{
 }
 
 
+/**
+ * מטפלת בשליחת טופס המוצר - יוצרת מוצר חדש או מעדכנת מוצר קיים, לפי id.
+ * @param {Event} event - אירוע השליחה של הטופס.
+ */
 const addOrUpdateProduct = async (event) =>{
    event.preventDefault();
 

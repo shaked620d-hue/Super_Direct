@@ -64,10 +64,22 @@ server.use(express.static(clientDir));
 server.use('/css', express.static(path.join(clientDir, 'css')));
 server.use('/js', express.static(path.join(clientDir, 'js')));
 
+/**
+ * מגיש את קובץ ה-favicon בפורמט SVG.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @returns {void}
+ */
 server.get('/favicon.svg', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.svg'));
 });
 
+/**
+ * מגיש את קובץ ה-favicon בפורמט ICO.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @returns {void}
+ */
 server.get('/favicon.ico', (req, res) => {
   res.sendFile(path.join(clientDir, '..', 'favicon.ico'));
 });
@@ -94,11 +106,18 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
+<<<<<<< HEAD
 const databaseConnected = await connectDB();
 if (!databaseConnected) {
   throw new Error('Server startup aborted because MongoDB connection failed');
 }
 
+=======
+/**
+ * מריץ הודעת לוג לקונסולה לאחר שהשרת עלה בהצלחה.
+ * @returns {void}
+ */
+>>>>>>> a7a4c61f5badef5a553c2e5ae6553a88f1f7fdb6
 server.listen(env.PORT, () => {
   console.log(`Server is running on http://localhost:${env.PORT}`);
 });

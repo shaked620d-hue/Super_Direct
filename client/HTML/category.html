@@ -13,7 +13,7 @@
     />
     <link rel="stylesheet" href="../css/styles.css" />
     <link rel="stylesheet" href="../css/accessibility.css" />
-    <script src="../js/accessibility.js" defer></script>
+    <script src="../js/shared/accessibility.js" defer></script>
     <link rel="stylesheet" href="../css/category.css" />
   <link rel="icon" type="image/x-icon" href="../../favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
@@ -28,7 +28,7 @@
         <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית">
           <span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט
         </a>
-        <img class="kosher-badge-header" src="../images/badatz-logo.png" alt="בהשגחת הבד&quot;ץ ירושלים של העדה החרדית">
+        <span class="kosher-badge-header">✡ הכל בהכשר</span>
         <nav class="nav-links" aria-label="ניווט ראשי"><div class="nav-dropdown"><a href="../index.html#categories">קטגוריות</a><div class="nav-dropdown-menu"><a href="category.html?cat=fruits">פירות</a><a href="category.html?cat=vegetables">ירקות</a><a href="category.html?cat=dairy">מחלבה</a><a href="category.html?cat=bakery">מאפים</a><a href="category.html?cat=pantry">מזווה</a></div></div><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></nav>
         <div class="header-actions">
           <a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a
@@ -61,11 +61,11 @@
       </div>
     </footer>
   </body>
-  <script src="../js/storage.js"></script>
-  <script src="../js/config.js"></script>
-  <script src="../js/services/productService.js"></script>
-  <script src="../js/services/categoryService.js"></script>
-  <script src="../js/category-page.js"></script>
-  <script src="../js/products.js"></script>
-  <script src="../js/cart.js"></script>
+  <script src="../js/shared/storage.js"></script>
+  <script src="../js/shared/config.js"></script>
+  <script src="../js/products/productService.js"></script>
+  <script src="../js/categories/categoryService.js"></script>
+  <script src="../js/categories/category-page.js"></script>
+  <script src="../js/products/products.js"></script>
+  <script src="../js/cart/cart.js"></script>
 </html>

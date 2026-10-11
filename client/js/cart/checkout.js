@@ -1,5 +1,8 @@
 const currentUser = getCurrentUser();
 
+/**
+ * מרעננת את נתוני המלאי של פריטי העגלה מהשרת, כדי להציג זמינות עדכנית בדף התשלום.
+ */
 const refreshCartStock = async () => {
   try {
     const response = await getProducts();
@@ -18,6 +21,11 @@ const refreshCartStock = async () => {
   }
 };
 
+/**
+ * מעצבת סכום כסף לתצוגה בפורמט עברי עם סימן ₪.
+ * @param {number} amount - הסכום לעיצוב.
+ * @returns {string} הסכום המעוצב, לדוגמה "15.00 ₪".
+ */
 const formatMoney = (amount) => {
   const formattedAmount = new Intl.NumberFormat('he-IL', {
     minimumFractionDigits: 2,
@@ -27,6 +35,9 @@ const formatMoney = (amount) => {
   return `${formattedAmount} ₪`;
 };
 
+/**
+ * מציגה בעמוד הסיכום את פריטי העגלה ואת חישוב הסכום הכולל (סכום ביניים, משלוח וסה"כ).
+ */
 const renderCheckout = () =>{
   const cart=  readCart();
    const confirmItems=  document.getElementById('confirmItems');
@@ -52,6 +63,9 @@ const renderCheckout = () =>{
   confirmTotal.textContent= formatMoney(totalP + delivery);
 }
 
+/**
+ * מחברת את טופס התשלום - מעצבת את שדות הקלט (מספר כרטיס, תוקף, CVV, טלפון) ושולחת את ההזמנה לשרת בעת האישור.
+ */
 const handleConfirmOrder = ()=>{
   const paymentForm= document.getElementById('paymentForm');
   if(!paymentForm)

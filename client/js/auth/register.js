@@ -1,5 +1,8 @@
 
 
+/**
+ * מטפלת בשליחת טופס ההרשמה - בודקת שהסיסמאות תואמות, שולחת את הפרטים לשרת ושומרת את המשתמש שחזר.
+ */
 const handleRegisterSubmit = () => {
 
     const registerForm = document.getElementById('registerForm');

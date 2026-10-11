@@ -12,6 +12,11 @@ const authSchema = new Schema({
 	role: { type: String, enum: ['customer', 'admin'], default: 'customer' }
 });
 
+/**
+ * hook שרץ לפני שמירת מסמך לקוח: מצפין את הסיסמה עם bcrypt, רק אם היא השתנתה.
+ * @this {import('mongoose').Document} מסמך הלקוח שעומד להישמר.
+ * @returns {Promise<void>}
+ */
 authSchema.pre('save', async function () {
 	if (!this.isModified('password')) {
 		return;

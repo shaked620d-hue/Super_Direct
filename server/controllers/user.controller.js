@@ -1,7 +1,13 @@
 import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 
-// מחזיר את רשימת הלקוחות.
+/**
+ * מחזיר את רשימת הלקוחות.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getUsers = async (req, res, next) => {
 	try {
 		const customers = await Customer.find();
@@ -12,7 +18,13 @@ export const getUsers = async (req, res, next) => {
 	}
 };
 
-// מחזיר לקוח אחד לפי מזהה.
+/**
+ * מחזיר לקוח אחד לפי מזהה, רק לבעל החשבון או לאדמין.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ולמשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getUserById = async (req, res, next) => {
 	try {
 		if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
@@ -37,7 +49,13 @@ export const getUserById = async (req, res, next) => {
 	}
 };
 
-// מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה.
+/**
+ * מעדכן את פרטי הלקוח בשדות שנשלחו בבקשה, רק לבעל החשבון או לאדמין.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ולשדות עדכון בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const updateUser = async (req, res, next) => {
 	try {
 		if (req.user.role !== 'admin' && req.user._id.toString() !== req.params.id) {
@@ -72,7 +90,13 @@ export const updateUser = async (req, res, next) => {
 	}
 };
 
-// מוחק לקוח לפי מזהה.
+/**
+ * מוחק לקוח לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const deleteUser = async (req, res, next) => {
 	try {
 		const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);

@@ -1,4 +1,10 @@
-// מידלוואר שמוסיף לתוך req את התאריך/שעה הנוכחיים רק לבקשות GET
+/**
+ * מידלוואר שמוסיף לתוך req את התאריך/שעה הנוכחיים רק לבקשות GET.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - פונקציית ה-next של Express.
+ * @returns {void}
+ */
 export const requestDate = (req, res, next) => {
   if (req.method !== 'GET') {
     return next();

@@ -1,4 +1,8 @@
-// כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
+/**
+ * כרטיס הזמנה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, בדיוק כמו בוויקיפדיה.
+ * @param {object} order - אובייקט ההזמנה להצגה.
+ * @returns {HTMLElement} אלמנט ה-details של כרטיס ההזמנה.
+ */
 const createOrderCard = (order) => {
     const card = document.createElement('details');
     card.className = 'order-card';
@@ -28,6 +32,9 @@ total.append(totalLabel, totalValue);
     return card;
 };
 
+/**
+ * טוענת את ההזמנות של המשתמש המחובר ומציגה אותן בעמוד, מקובצות לפי סטטוס.
+ */
 const loadOrders = async () => {
     const currentUser = getCurrentUser();
     if (!currentUser?.token) {

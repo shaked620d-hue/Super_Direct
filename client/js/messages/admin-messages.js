@@ -1,4 +1,8 @@
-// כרטיס הודעה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, כמו בהזמנות.
+/**
+ * כרטיס הודעה מוצג כ-details/summary כדי שיהיה סגור כברירת מחדל וייפתח בלחיצה, כמו בהזמנות.
+ * @param {object} message - אובייקט ההודעה להצגה.
+ * @returns {HTMLElement} אלמנט ה-details של כרטיס ההודעה.
+ */
 const createMessageCard = (message) => {
     const card = document.createElement('details');
     card.className = 'order-card';
@@ -97,6 +101,10 @@ const createMessageCard = (message) => {
     return card;
 };
 
+/**
+ * מטפלת בשינוי תיבת הסימון "טופלה" של הודעה - מעדכנת את הסטטוס בשרת.
+ * @param {Event} event - אירוע השינוי של תיבת הסימון.
+ */
 const handleStatusChange = async (event) => {
     const checkbox = event.target;
     const messageId = checkbox.dataset.messageId;
@@ -115,6 +123,9 @@ const handleStatusChange = async (event) => {
 const HANDLED_ORDER = [false, true];
 const HANDLED_LABEL = { false: 'לא טופלו', true: 'טופלו' };
 
+/**
+ * טוענת את כל ההודעות מהשרת ומציגה אותן מקובצות לפי מצב הטיפול (טופלו / לא טופלו).
+ */
 const loadMessages = async () => {
     try {
         const response = await getMessagesRequest();

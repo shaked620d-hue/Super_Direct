@@ -1,4 +1,7 @@
 
+/**
+ * מפנה לעמוד ההתחברות אם אין משתמש מחובר, כדי להגן על עמוד הפרופיל.
+ */
 const guardLoggedIn =()=>{
     const currentUser = getCurrentUser();
 
@@ -6,6 +9,9 @@ const guardLoggedIn =()=>{
     window.location.href = 'login.html';
 }
 }
+/**
+ * ממלאת את טופס הפרופיל בפרטי המשתמש המחובר.
+ */
 const fillProfileForm =()=>{
     const currentUser = getCurrentUser();
 
@@ -15,6 +21,9 @@ const fillProfileForm =()=>{
     document.getElementById('address').value = currentUser.address || '';
 }
 
+/**
+ * מציגה את כפתור השמירה בטופס הפרופיל ברגע שהמשתמש משנה שדה כלשהו.
+ */
 const revealSaveButton=()=>{
  const   profileForm = document.getElementById('profileForm');
     const profileSaveButton= document.getElementById('profileSaveButton');
@@ -22,6 +31,10 @@ const revealSaveButton=()=>{
          profileSaveButton.hidden=false;
 })
 }
+/**
+ * מטפלת בשמירת פרטי הפרופיל - שולחת את הפרטים המעודכנים לשרת ומעדכנת את המשתמש השמור ב-localStorage.
+ * @param {Event} event - אירוע שליחת הטופס.
+ */
 const handleProfileSave = async (event) => {
 
     event.preventDefault();
@@ -50,6 +63,10 @@ try{
     }
 }
 
+/**
+ * מטפלת בשינוי סיסמה - בודקת שהסיסמה החדשה ואימותה תואמים ושולחת את הבקשה לשרת.
+ * @param {Event} event - אירוע שליחת טופס שינוי הסיסמה.
+ */
 const handlePasswordChange = async (event) => {
     event.preventDefault();
 
@@ -76,6 +93,9 @@ const handlePasswordChange = async (event) => {
     }
 };
 
+/**
+ * מחברת את כפתור פתיחת/סגירת טופס שינוי הסיסמה.
+ */
 const togglePasswordForm = () => {
     const toggleButton = document.getElementById('changePasswordToggle');
     const passwordForm = document.getElementById('passwordForm');
@@ -94,16 +114,25 @@ const togglePasswordForm = () => {
     });
 };
 
+/**
+ * מחברת את כפתור "הצגת סיסמה" לשדה הסיסמה החדשה - מציג את הסיסמה כל עוד הכפתור לחוץ (עכבר, מגע או מקלדת).
+ */
 const setupPasswordVisibility = () => {
     const passwordInput = document.getElementById('newPassword');
     const visibilityButton = document.getElementById('newPasswordVisibility');
 
+    /**
+     * מחזירה את שדה הסיסמה למצב מוסתר (type="password").
+     */
     const hidePassword = () => {
         passwordInput.type = 'password';
         visibilityButton.setAttribute('aria-label', 'הצגת הסיסמה החדשה');
         visibilityButton.title = 'הצגת הסיסמה החדשה';
     };
 
+    /**
+     * חושפת את שדה הסיסמה כטקסט רגיל (type="text").
+     */
     const showPassword = () => {
         passwordInput.type = 'text';
         visibilityButton.setAttribute('aria-label', 'הסתרת הסיסמה החדשה');

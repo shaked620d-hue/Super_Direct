@@ -6,7 +6,13 @@ import { Customer } from '../models/auth.model.js';
 import { sendOrderConfirmationEmail } from '../services/email.service.js';
 
 
-// מחזיר את כל ההזמנות.
+/**
+ * מחזיר את כל ההזמנות.
+ * @param {import('express').Request} req - בקשת ה-HTTP.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getOrders = async (req, res, next) => {
     try {
         const orders = await Order.find().populate('customerId', 'firstName lastName');
@@ -17,8 +23,14 @@ export const getOrders = async (req, res, next) => {
     }
 };
 
-// יחזיר את הזמנות המשתמש המחובר לאחר הוספת JWT.
-// צריך להתאים את זה 
+/**
+ * מחזיר את הזמנות המשתמש המחובר, לפי זיהוי מה-JWT.
+ * צריך להתאים את זה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה למשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getMyOrders = async (req, res, next) => {
     try {
         // מזהים את הלקוח לפי ה-JWT ולא לפי customerId שהלקוח יכול לזייף.
@@ -31,7 +43,13 @@ export const getMyOrders = async (req, res, next) => {
 };
 
 
-// מחזיר הזמנה אחת לפי מזהה.
+/**
+ * מחזיר הזמנה אחת לפי מזהה, רק לבעל ההזמנה או לאדמין.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ולמשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const getOrderById = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -56,7 +74,13 @@ export const getOrderById = async (req, res, next) => {
     }
 };
 
-// מעדכן את סטטוס ההזמנה לפי מזהה.
+/**
+ * מעדכן את סטטוס ההזמנה לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב ול-status בגוף הבקשה.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const updateOrderStatus = async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -77,7 +101,13 @@ export const updateOrderStatus = async (req, res, next) => {
 };
 
 
-// מוחק או מבטל הזמנה לפי מזהה.
+/**
+ * מוחק או מבטל הזמנה לפי מזהה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה ל-id בפרמטרי הנתיב.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const deleteOrder = async (req, res, next) => {
     try {
         const deleted = await Order.findByIdAndDelete(req.params.id);
@@ -96,7 +126,10 @@ export const deleteOrder = async (req, res, next) => {
 };
 
 
-// מחשבת את מועד המשלוח לפי שעת ביצוע ההזמנה.
+/**
+ * מחשבת את מועד המשלוח לפי שעת ביצוע ההזמנה.
+ * @returns {Date} מועד המשלוח הצפוי.
+ */
 function calculateExpectedDelivery() {
 	const now = new Date();
 	const delivery = new Date();
@@ -111,7 +144,13 @@ function calculateExpectedDelivery() {
 	return delivery;
 }
 
-// יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל.
+/**
+ * יוצר הזמנה, מעדכן מלאי ומחשב את המחיר הכולל, תוך שימוש ב-transaction כדי לשמור על עקביות הנתונים.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לפרטי ההזמנה בגוף הבקשה ולמשתמש מחובר (req.user).
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const createOrder = async (req, res, next) => {
     const session = await mongoose.startSession();
     try {

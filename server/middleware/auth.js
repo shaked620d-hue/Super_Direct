@@ -4,7 +4,13 @@ import { env } from '../config/env.js';
 
 const JWT_SECRET = env.JWT_SECRET;
 
-// מאמת את האסימון וטוען את המשתמש למסמך הבקשה.
+/**
+ * מאמת את האסימון וטוען את המשתמש למסמך הבקשה.
+ * @param {import('express').Request} req - בקשת ה-HTTP, מצפה לכותרת Authorization בפורמט Bearer.
+ * @param {import('express').Response} res - אובייקט התשובה.
+ * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
+ * @returns {Promise<void>}
+ */
 export const authenticate = async (req, res, next) => {
     try {
         if (!JWT_SECRET) {

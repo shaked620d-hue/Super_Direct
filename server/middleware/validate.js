@@ -1,3 +1,8 @@
+/**
+ * יוצר middleware שמאמת את גוף הבקשה מול סכמת Joi נתונה.
+ * @param {import('joi').Schema} schema - סכמת ה-Joi שלפיה יש לאמת את req.body.
+ * @returns {import('express').RequestHandler} ה-middleware שמבצע את האימות.
+ */
 export const createValidator = (schema) => (req, res, next) => {
 	const { error, value } = schema.validate(req.body, { abortEarly: false });// חוזרים כולם לא רק הראשון
 

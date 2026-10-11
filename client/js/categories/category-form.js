@@ -1,7 +1,10 @@
 let id;
 let imagePreviewObjectUrl;
 
-// מציגה באנר שכבר נשמר, או מסתירה את התצוגה אם לקטגוריה אין תמונה.
+/**
+ * מציגה באנר שכבר נשמר, או מסתירה את התצוגה אם לקטגוריה אין תמונה.
+ * @param {string} source - נתיב התמונה השמורה, או ריק/undefined אם אין תמונה.
+ */
 const setImagePreview = (source) => {
     const preview = document.getElementById('imagePreview');
     if (imagePreviewObjectUrl) {
@@ -20,7 +23,9 @@ const setImagePreview = (source) => {
     preview.hidden = false;
 };
 
-// מציגה את קובץ הבאנר שנבחר לפני שליחת הטופס לשרת.
+/**
+ * מציגה את קובץ הבאנר שנבחר לפני שליחת הטופס לשרת.
+ */
 const handleImagePreview = () => {
     const imageFile = document.getElementById('image').files[0];
     if (!imageFile) return;
@@ -32,6 +37,9 @@ const handleImagePreview = () => {
     preview.hidden = false;
 };
 
+/**
+ * מחברת את שליחת טופס הקטגוריה - יוצרת קטגוריה חדשה או מעדכנת קיימת, לפי id.
+ */
 const handleCategorySubmit = () => {
     const categoryForm = document.getElementById('categoryForm');
     if (!categoryForm) return;
@@ -72,6 +80,9 @@ const handleCategorySubmit = () => {
     });
 };
 
+/**
+ * מחברת את כפתור מחיקת הקטגוריה - מבקשת אישור ואז מוחקת ומרעננת את רשימות הבחירה.
+ */
 const handleDeleteCategory = () => {
     const deleteButton = document.getElementById('deleteCategoryButton');
     if (!deleteButton) return;
@@ -103,6 +114,10 @@ const handleDeleteCategory = () => {
     });
 };
 
+/**
+ * טוענת את פרטי הקטגוריה הנבחרת לתוך טופס העריכה, ומעדכנת את כתובת הדף עם מזהה הקטגוריה.
+ * @param {string} categoryId - מזהה הקטגוריה לעריכה.
+ */
 const loadCategoryForEdit = async (categoryId) => {
     try {
         const response = await getCategoryById(categoryId);
@@ -135,6 +150,9 @@ const loadCategoryForEdit = async (categoryId) => {
     }
 };
 
+/**
+ * מחברת את כפתור טעינת קטגוריה לעריכה - טוענת את הקטגוריה שנבחרה בתפריט לתוך הטופס.
+ */
 const handleLoadCategoryForEdit = () => {
     const loadButton = document.getElementById('loadCategoryForEditButton');
     if (!loadButton) return;
@@ -145,6 +163,9 @@ const handleLoadCategoryForEdit = () => {
     });
 };
 
+/**
+ * מאתחלת את מצב העריכה בעת טעינת הדף - ממלאת את רשימת הקטגוריות לעריכה, ואם יש מזהה קטגוריה בכתובת, טוענת אותה אוטומטית.
+ */
 const initializeCategoryEdit = async () => {
     await loadCategoryOptionsInto('editCategorySelect', 'בחרו קטגוריה לעריכה');
 

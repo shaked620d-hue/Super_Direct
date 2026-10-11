@@ -1,3 +1,6 @@
+/**
+ * יוצרת ומחברת את תפריט כלי הנגישות (הגדלת/הקטנת טקסט, ניגודיות גבוהה) ומוסיפה אותו לעמוד.
+ */
 const initializeAccessibilityWidget = () => {
     if (document.getElementById('accessibilityWidget')) return;
 
@@ -61,6 +64,9 @@ const initializeAccessibilityWidget = () => {
     widget.append(toggle, panel);
     document.body.append(widget);
 
+    /**
+     * מעדכנת את גודל הגופן של הדף לפי textScale הנוכחי, ושומרת את הבחירה ב-localStorage.
+     */
     const updateTextSize = () => {
         document.documentElement.style.fontSize = `${textScale}%`;
         textSize.textContent = `גודל הטקסט: ${textScale}%`;
@@ -69,12 +75,19 @@ const initializeAccessibilityWidget = () => {
         localStorage.setItem('superDirectAccessibilityTextScale', String(textScale));
     };
 
+    /**
+     * מעדכנת את מצב הניגודיות הגבוהה בדף לפי highContrast הנוכחי, ושומרת את הבחירה ב-localStorage.
+     */
     const updateContrast = () => {
         document.body.classList.toggle('high-contrast', highContrast);
         contrast.setAttribute('aria-pressed', String(highContrast));
         localStorage.setItem('superDirectAccessibilityHighContrast', String(highContrast));
     };
 
+    /**
+     * סוגרת את תפריט הנגישות.
+     * @param {boolean} [returnFocus=false] - אם true, מחזירה את המיקוד לכפתור שפתח את התפריט.
+     */
     const closePanel = (returnFocus = false) => {
         panel.hidden = true;
         toggle.setAttribute('aria-expanded', 'false');

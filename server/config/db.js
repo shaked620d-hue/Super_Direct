@@ -2,6 +2,10 @@ import mongoose from 'mongoose'
 import { env } from './env.js';
 const DB_URI =env.MONGODB_URI
 
+/**
+ * מתחבר למסד הנתונים MongoDB לפי כתובת ה-URI שבהגדרות הסביבה.
+ * @returns {Promise<boolean>} true אם ההתחברות הצליחה, false אם נכשלה.
+ */
 export const connectDB = async () => {
   try {
     await mongoose.connect(DB_URI);

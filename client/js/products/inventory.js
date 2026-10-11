@@ -1,12 +1,22 @@
 let inventoryProducts = [];
 let inventoryCategories = [];
 
+/**
+ * קובעת את מצב המלאי של מוצר לפי כמותו.
+ * @param {number} stock - הכמות הנוכחית במלאי.
+ * @returns {{key: string, label: string}} מפתח המצב ('out'/'low'/'available') והתווית שלו בעברית.
+ */
 const getInventoryStatus = (stock) => {
     if (stock === 0) return { key: 'out', label: 'אזל מהמלאי' };
     if (stock <= 5) return { key: 'low', label: 'מלאי נמוך' };
     return { key: 'available', label: 'מלאי תקין' };
 };
 
+/**
+ * בונה שורת מלאי אחת עם פרטי המוצר וטופס לעדכון הכמות שלו.
+ * @param {object} product - המוצר להצגה.
+ * @returns {HTMLElement} אלמנט השורה של המוצר במלאי.
+ */
 const createInventoryRow = (product) => {
     const row = document.createElement('article');
     row.className = 'inventory-row';
@@ -76,6 +86,9 @@ const createInventoryRow = (product) => {
     return row;
 };
 
+/**
+ * מציגה את רשימת המלאי המסוננת (לפי חיפוש, סטטוס וקטגוריה) ומעדכנת את תקציר המלאי.
+ */
 const renderInventory = () => {
     const searchTerm = document.getElementById('inventorySearch').value.trim().toLocaleLowerCase('he');
     const selectedStatus = document.getElementById('inventoryFilter').value;
@@ -118,6 +131,9 @@ const renderInventory = () => {
     }
 };
 
+/**
+ * טוענת מהשרת את המוצרים והקטגוריות, ממלאת את תפריט הסינון לפי קטגוריה ומציגה את המלאי.
+ */
 const loadInventory = async () => {
     try {
         const [productsResponse, categoriesResponse] = await Promise.all([getProducts(), getCategories()]);
