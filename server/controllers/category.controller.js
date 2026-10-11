@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Category } from '../models/category.model.js';
 import { Product } from '../models/product.model.js';
 
@@ -112,19 +113,30 @@ export const updateCategory = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 export const deleteCategory = async (req, res, next) => {
+	const session = await mongoose.startSession();
 	try {
-		const deletedCategory = await Category.findByIdAndDelete(req.params.id);
-		if (deletedCategory) {
-			await Product.deleteMany({ categoryId: deletedCategory.id });
-			res.status(200).json({ message: 'deleted successfully' });
-		} else {
+		await session.startTransaction();
+
+		const deletedCategory = await Category.findByIdAndDelete(req.params.id).session(session);
+		if (!deletedCategory) {
 			const error = new Error('category not found');
 			error.statusCode = 404;
 			error.type = 'not found';
-			return next(error);
+			throw error;
 		}
+
+		// שני המחיקות קורות באותה transaction, כדי שלא יישארו מוצרים יתומים אם השנייה נכשלת.
+		await Product.deleteMany({ categoryId: deletedCategory.id }).session(session);
+
+		await session.commitTransaction();
+		res.status(200).json({ message: 'deleted successfully' });
 	} catch (error) {
-		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		if (session.inTransaction()) {
+			await session.abortTransaction();
+		}
+		error.statusCode = error.statusCode || (error.name === 'CastError' ? 400 : 500);
 		next(error);
+	} finally {
+		await session.endSession();
 	}
 };
