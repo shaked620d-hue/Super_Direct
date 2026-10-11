@@ -20,7 +20,12 @@ export const register = async (req, res,next) => {
 	res.status(201).json({ ...safeCustomer, token: createToken(newCustomer) });
 }
 catch (error) {
-        error.statusCode = error.name === 'CastError' ? 400 : 500;
+        // כפילות באינדקס הייחודי מוחזרת כשגיאת התנגשות, לא כשגיאת שרת כללית.
+        error.statusCode = error.code === 11000 ? 409 : error.name === 'CastError' ? 400 : 500;
+        if (error.code === 11000) {
+            error.type = 'conflict';
+            error.message = 'כתובת האימייל כבר רשומה';
+        }
         next(error);
     }
 	};

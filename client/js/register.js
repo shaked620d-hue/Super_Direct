@@ -24,7 +24,8 @@ const handleRegisterSubmit = () => {
             const response = await registerRequest(details);
 
             if (!response.ok) {
-                showToast('ההרשמה נכשלה');
+                // מציגים הודעה ממוקדת כשמנסים להירשם עם כתובת שכבר קיימת.
+                showToast(response.status === 409 ? 'כתובת האימייל כבר רשומה' : 'ההרשמה נכשלה');
                 return;
             }
 

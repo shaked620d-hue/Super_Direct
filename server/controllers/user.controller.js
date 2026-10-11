@@ -62,7 +62,12 @@ export const updateUser = async (req, res, next) => {
 			return next(error);
 		}
 	} catch (error) {
-		error.statusCode = error.name === 'CastError' ? 400 : 500;
+		// כתובת דוא"ל שכבר שייכת למשתמש אחר לא תחליף את פרטי החשבון.
+		error.statusCode = error.code === 11000 ? 409 : error.name === 'CastError' ? 400 : 500;
+		if (error.code === 11000) {
+			error.type = 'conflict';
+			error.message = 'כתובת האימייל כבר רשומה';
+		}
 		next(error);
 	}
 };

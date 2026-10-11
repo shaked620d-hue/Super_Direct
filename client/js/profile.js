@@ -37,7 +37,8 @@ try{
     const response= await updateUserRequest(currentUser._id, details);
     if(!response.ok)
     {
-           showToast('שמירת הפרטים נכשלה');
+           // מסבירים שהשמירה נכשלה בגלל כתובת שכבר משויכת לחשבון אחר.
+           showToast(response.status === 409 ? 'כתובת האימייל כבר רשומה' : 'שמירת הפרטים נכשלה');
             return;
     }
     const updateUser= await response.json();
