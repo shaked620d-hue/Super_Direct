@@ -128,6 +128,7 @@ const updateAuthUI = ()=>{
                 const adminPages = [
                     { href: 'product-form.html', text: 'הוספת מוצר חדש' },
                     { href: 'admin-orders.html', text: 'ניהול הזמנות' },
+                    { href: 'admin-users.html', text: 'ניהול משתמשים' },
                     { href: 'category-form.html', text: 'ניהול קטגוריות' },
                     { href: 'admin-messages.html', text: 'ניהול הודעות' },
                     { href: 'inventory.html', text: 'ניהול מלאי' }

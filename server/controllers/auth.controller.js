@@ -2,12 +2,10 @@ import bcrypt from 'bcrypt';
 import { Customer } from '../models/auth.model.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
 import { createToken } from '../utils/jwt.js';
+import { createEmailPattern } from '../utils/email.js';
 
 // מחפש כתובת מדויקת בלי תלות באותיות גדולות/קטנות, כולל חשבונות ישנים שנשמרו לפני הנרמול.
-const findCustomersByEmail = (email) => {
-	const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	return Customer.find({ email: new RegExp(`^\\s*${escapedEmail}\\s*$`, 'i') }).exec();
-};
+const findCustomersByEmail = (email) => Customer.find({ email: createEmailPattern(email) }).exec();
 
 /**
  * יוצר משתמש חדש ומוסיף אותו לרשימת הלקוחות.

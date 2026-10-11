@@ -1,5 +1,12 @@
 import { Customer } from '../models/auth.model.js';
+import { Message } from '../models/message.model.js';
+import mongoose from 'mongoose';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { createEmailPattern } from '../utils/email.js';
 import { sanitizeCustomer } from '../utils/sanitizeCustomer.js';
+
+const messagesDirectory = path.join(import.meta.dirname, '..', 'public', 'messages');
 
 /**
  * מחזיר את רשימת הלקוחות.
@@ -98,18 +105,77 @@ export const updateUser = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 export const deleteUser = async (req, res, next) => {
+	let session;
 	try {
-		const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);
-		if (deletedCustomer) {
-			res.status(200).json({ message: 'deleted successfully' });
-		} else {
-			const error = new Error('customer not found');
-			error.statusCode = 404;
-			error.type = 'not found';
+		if (req.user._id.toString() === req.params.id) {
+			const error = new Error('מנהל אינו יכול למחוק את החשבון שבו הוא משתמש');
+			error.statusCode = 403;
+			error.type = 'forbidden';
 			return next(error);
 		}
+
+		let messageAttachments = [];
+		let deletedMessageCount = 0;
+		session = await mongoose.startSession();
+		await session.withTransaction(async () => {
+			const customer = await Customer.findById(req.params.id).session(session);
+			if (!customer) {
+				const error = new Error('customer not found');
+				error.statusCode = 404;
+				error.type = 'not found';
+				throw error;
+			}
+
+			if (customer.role === 'admin') {
+				const error = new Error('לא ניתן למחוק חשבון מנהל');
+				error.statusCode = 403;
+				error.type = 'forbidden';
+				throw error;
+			}
+
+			const emailPattern = createEmailPattern(customer.email);
+			const messages = await Message.find({ email: emailPattern })
+				.select('attachment')
+				.session(session);
+			messageAttachments = messages
+				.map((message) => message.attachment)
+				.filter((attachment) => typeof attachment === 'string' && attachment.startsWith('messages/'));
+
+			const deletedMessages = await Message.deleteMany({ email: emailPattern }, { session });
+			deletedMessageCount = deletedMessages.deletedCount;
+			const deletedCustomer = await Customer.deleteOne({ _id: customer._id }, { session });
+			if (deletedCustomer.deletedCount !== 1) {
+				throw new Error('Customer account could not be deleted');
+			}
+		});
+
+		let deletedAttachmentCount = 0;
+		const attachmentCleanupFailures = [];
+		for (const attachment of new Set(messageAttachments)) {
+			const stillInUse = await Message.exists({ attachment });
+			if (stillInUse) continue;
+
+			try {
+				await fs.unlink(path.join(messagesDirectory, path.basename(attachment)));
+				deletedAttachmentCount += 1;
+			} catch (error) {
+				if (error.code !== 'ENOENT') {
+					attachmentCleanupFailures.push(attachment);
+					console.error(`Failed to delete user message attachment ${attachment}:`, error);
+				}
+			}
+		}
+
+		res.status(200).json({
+			message: 'User and related contact messages deleted; orders retained',
+			deletedMessages: deletedMessageCount,
+			deletedAttachments: deletedAttachmentCount,
+			attachmentCleanupFailures: attachmentCleanupFailures.length
+		});
 	} catch (error) {
 		error.statusCode = error.name === 'CastError' ? 400 : 500;
 		next(error);
+	} finally {
+		if (session) await session.endSession();
 	}
 };

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ניהול משתמשים בסופר דיירקט.">
+    <title>ניהול משתמשים | סופר דיירקט</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/accessibility.css">
+    <script src="../js/shared/accessibility.js" defer></script>
+    <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">דלג לתוכן הראשי</a>
+    <aside class="announcement" aria-label="מבצע השבוע">משלוח חינם בקנייה מעל 250 ₪ · מהיום אצלכם בבית</aside>
+    <header class="site-header">
+        <nav class="nav-wrap" aria-label="ניווט ראשי">
+            <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <span class="kosher-badge-header">✡ הכל בהכשר</span>
+            <div class="nav-links"><div class="nav-dropdown"><a href="../index.html#categories">קטגוריות</a><div class="nav-dropdown-menu"><a href="category.html?cat=fruits">פירות</a><a href="category.html?cat=vegetables">ירקות</a><a href="category.html?cat=dairy">מחלבה</a><a href="category.html?cat=bakery">מאפים</a><a href="category.html?cat=pantry">מזווה</a></div></div><a href="../index.html#fresh">טרי על המדף</a><a href="about.html">למה אנחנו</a></div>
+            <div class="header-actions"><a class="icon-button" id="authButton" href="login.html" aria-label="כניסה לחשבון">♙</a><button type="button" id="logoutButton" class="logout-btn" hidden title="התנתקות" aria-label="התנתקות">✕</button><a class="icon-button" href="cart.html" aria-label="פתיחת סל הקניות">🛒<span class="cart-count"></span></a></div>
+        </nav>
+    </header>
+    <main id="main-content" class="orders-main" tabindex="-1">
+        <a class="auth-back" href="../index.html">→ חזרה לדף הבית</a>
+        <p class="auth-eyebrow">ניהול</p>
+        <h1>ניהול משתמשים</h1>
+        <p class="auth-subtitle">צפייה בחשבונות משתמשים ומחיקת חשבון, הודעות וקבצים קשורים.</p>
+        <div id="usersList" class="users-list" aria-live="polite"></div>
+        <p id="noUsers" class="page-copy" hidden>לא נמצאו משתמשים.</p>
+    </main>
+    <dialog id="userDeleteDialog" class="user-delete-dialog" aria-labelledby="userDeleteTitle" aria-describedby="userDeleteWarning">
+        <h2 id="userDeleteTitle">מחיקת משתמש</h2>
+        <p id="userDeleteWarning">הפעולה בלתי הפיכה. חשבון המשתמש וכל הודעות צור־הקשר והקבצים המצורפים המשויכים לכתובת האימייל יימחקו. ההזמנות יישארו במערכת, כולל הפרטים שבהן.</p>
+        <p id="userDeleteIdentity" class="user-delete-identity"></p>
+        <div class="user-delete-actions">
+            <button type="button" id="cancelUserDelete" class="admin-btn">ביטול</button>
+            <button type="button" id="confirmUserDelete" class="admin-btn delete">מחיקה לצמיתות</button>
+        </div>
+    </dialog>
+    <footer class="site-footer">
+        <div class="footer-wrap">
+            <a class="brand" href="../index.html" aria-label="סופר דיירקט - עמוד הבית"><span class="brand-mark" aria-hidden="true">✦</span>סופר דיירקט</a>
+            <nav class="footer-links" aria-label="ניווט תחתון"><a href="about.html">אודות</a><a href="contact.html">צור קשר</a><a href="faq.html">שאלות נפוצות</a><a href="terms.html">תנאי שימוש ופרטיות</a></nav>
+        </div>
+        <p class="footer-copy">© 2026 סופר דיירקט. כל הזכויות שמורות.</p>
+    </footer>
+    <script src="../js/cart/cart.js"></script>
+    <script src="../js/shared/storage.js"></script>
+    <script src="../js/shared/config.js"></script>
+    <script src="../js/categories/categoryService.js"></script>
+    <script src="../js/users/userService.js"></script>
+    <script src="../js/users/admin-users.js"></script>
+</body>
+</html>
