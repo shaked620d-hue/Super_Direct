@@ -17,8 +17,6 @@ import { connectDB } from './config/db.js';
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
 
-connectDB();
-
 // מפרש JSON שנשלח בבקשות POST/PUT.
 server.use(express.json());
 // מאפשר לבקשות מהדפדפן להגיע לשרת גם אם המקור שונה.
@@ -96,6 +94,11 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
+const databaseConnected = await connectDB();
+if (!databaseConnected) {
+  throw new Error('Server startup aborted because MongoDB connection failed');
+}
+
 server.listen(env.PORT, () => {
-  console.log('Server is running on http://localhost:5000')
-})
+  console.log(`Server is running on http://localhost:${env.PORT}`);
+});
