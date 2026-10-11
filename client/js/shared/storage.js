@@ -192,29 +192,6 @@ const populateCategoryDropdown = async () => {
 };
 
 /**
- * עוטפת את סמל הבד"ץ בתפריט hover קטן שמסביר את המשמעות שלו.
- */
-const enhanceKosherBadge = () => {
-    const badge = document.querySelector('.kosher-badge-header');
-    if (!badge) return;
-
-    const wrap = document.createElement('div');
-    wrap.className = 'kosher-badge-wrap';
-    badge.replaceWith(wrap);
-    wrap.append(badge);
-
-    const tooltip = document.createElement('div');
-    tooltip.className = 'kosher-badge-tooltip';
-    const tooltipImage = document.createElement('img');
-    tooltipImage.src = badge.getAttribute('src');
-    tooltipImage.alt = badge.getAttribute('alt');
-    const tooltipText = document.createElement('span');
-    tooltipText.textContent = 'כל המוצרים בהכשר הבד"ץ';
-    tooltip.append(tooltipImage, tooltipText);
-    wrap.append(tooltip);
-};
-
-/**
  * טוענת את כל הקטגוריות מהשרת לתוך הקרוסלה בדף הבית, כולל האימוג'י שנשמר לכל קטגוריה.
  */
 const populateCategoryCarousel = async () => {
@@ -330,6 +307,5 @@ const wireCategoryCarouselArrows = () => {
 document.addEventListener('DOMContentLoaded', updateAuthUI);
 document.addEventListener('DOMContentLoaded', handleLogout);
 document.addEventListener('DOMContentLoaded', populateCategoryDropdown);
-document.addEventListener('DOMContentLoaded', enhanceKosherBadge);
 document.addEventListener('DOMContentLoaded', populateCategoryCarousel);
 document.addEventListener('DOMContentLoaded', wireCategoryCarouselArrows);
