@@ -6,11 +6,10 @@
 const createOrderRequest = async (details) => apiRequest('/api/order', { method: 'POST', body: details, auth: true });
 
 /**
- * מביאה מהשרת את ההזמנות של לקוח מסוים.
- * @param {string} customerId - מזהה הלקוח שאת הזמנותיו מביאים.
+ * מביאה מהשרת את ההזמנות של המשתמש המחובר, לפי הזהות שה-JWT מאמת - לא לפי פרמטר מהלקוח.
  * @returns {Promise<Response>} תשובת השרת עם רשימת ההזמנות של הלקוח.
  */
-const getMyOrdersRequest = async (customerId) => apiRequest(`/api/order/my?customerId=${customerId}`, { auth: true });
+const getMyOrdersRequest = async () => apiRequest('/api/order/my', { auth: true });
 
 /**
  * מביאה מהשרת את רשימת כל ההזמנות (לצפיית מנהל).
