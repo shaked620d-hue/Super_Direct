@@ -14,6 +14,11 @@ import indexRouter from './routes/index.route.js';
 import { connectDB } from './config/db.js';
 
 
+// הסדר של כל ה-server.use למטה קובע הכל - express מריץ middleware בדיוק בסדר
+// הרישום. זה מה שעומד מאחורי כל כלל פה: json/cors/helmet צריכים לרוץ לפני
+// שמגיעים לכל route; timeBlocker חייב לרוץ *לפני* ה-static/routes כדי שיוכל
+// לעצור גם בקשת API וגם בקשת דף רגיל; קבצי closed.html עצמם חייבים להיות
+// מוגשים *אחרי* ה-timeBlocker (אחרת לא יהיה אפשר להציג אותם כשהאתר "סגור").
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
 
@@ -86,6 +91,9 @@ server.get('/favicon.ico', (req, res) => {
 
 
 // הגבלה מחמירה במיוחד על התחברות/הרשמה - זה המקום שבו תוקף באמת ינסה לנחש סיסמאות.
+// שני ההגבלות הבאות *שתיהן* חלות על בקשה ל-/api/auth/login: express.use מתאים
+// לפי prefix, אז "/api" הוא גם prefix חוקי של "/api/auth" - הבקשה עוברת קודם דרך
+// המגבלה הנוקשה (20) ואז גם דרך הכללית (1000), לא רק אחת מהן.
 server.use('/api/auth', rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -106,6 +114,9 @@ server.use(notFoundHandler);
 server.use(errorHandler);
 
 // עד כאן
+// await ברמה העליונה של הקובץ (לא בתוך פונקציה) - אפשרי כי app.js הוא ES module
+// (type:"module" בpackage.json). לפני שהשרת מתחיל להאזין לבקשות, מחכים שהחיבור
+// למונגו יצליח או ייכשל בוודאות - כדי לא "לעלות" עם שרת שנראה פעיל אבל בלי DB.
 const databaseConnected = await connectDB();
 if (!databaseConnected) {
   throw new Error('Server startup aborted because MongoDB connection failed');

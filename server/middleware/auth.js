@@ -28,8 +28,11 @@ export const authenticate = async (req, res, next) => {
             return next(error);
         }
 
-        const token = authorization.slice(7);
-        // מאמתים את החתימה, ואז טוענים את המשתמש העדכני ממסד הנתונים.
+        const token = authorization.slice(7); // 7 = אורך המחרוזת 'Bearer ' (כולל הרווח), מה שנשאר אחריה הוא ה-token עצמו.
+        // מאמתים את החתימה, ואז טוענים את המשתמש העדכני ממסד הנתונים - *לא* סומכים
+        // על role/email ששמורים בתוך ה-token עצמו. ככה אם מנהל/ת שינתה הרשאה של
+        // משתמש, או שהחשבון נמחק, זה מתעדכן באותו רגע בבקשה הבאה - לא רק אחרי
+        // שה-token הישן יפוג (יום שלם, לפי jwt.js).
         const payload = jwt.verify(token, JWT_SECRET);
         const customer = await Customer.findById(payload.userId);
         if (!customer) {

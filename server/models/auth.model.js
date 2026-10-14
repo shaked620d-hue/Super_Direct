@@ -18,6 +18,10 @@ const authSchema = new Schema({
  * @returns {Promise<void>}
  */
 authSchema.pre('save', async function () {
+	// בלי הבדיקה הזו, כל .save() (גם עדכון כתובת בלבד) היה מצפין מחדש את הערך
+	// שכבר נמצא בשדה password - אבל הערך הזה כבר *מוצפן* משמירה קודמת, אז היינו
+	// מצפינים hash על גבי hash, והלקוח היה ננעל מחוץ לחשבון שלו בפעם הבאה שינסה
+	// להתחבר (bcrypt.compare מול הסיסמה המקורית כבר לא היה תואם).
 	if (!this.isModified('password')) {
 		return;
 	}

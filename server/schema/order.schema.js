@@ -1,5 +1,8 @@
 import Joi from "joi"
 
+// שימו לב: הגוף שהלקוח שולח כולל רק productId+qty לכל פריט - לא name/price/unit.
+// אלה מחושבים ונשלפים מהשרת עצמו ב-order.controller.js (לא סומכים על מה שהלקוח
+// טוען שהמחיר הוא), ורק אז נשמרים לתוך ה-items של ההזמנה (ר' order.model.js).
 export const createOrderSchema = Joi.object({
     customerId: Joi.string().required(),
     phone: Joi.string().pattern(/^0\d{8,9}$/).required(),

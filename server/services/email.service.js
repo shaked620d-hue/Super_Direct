@@ -7,6 +7,9 @@ const logoPath = path.join(import.meta.dirname, '..', 'assets', 'super-direct-lo
 
 /**
  * ממיר תווים מיוחדים ב-HTML לישויות בטוחות, כדי למנוע הזרקת קוד בתוכן המייל.
+ * חשוב כאן במיוחד: subject/name/message בטופס יצירת קשר מגיעים ישירות מהלקוח -
+ * בלי escaping, מישהו יכול לשלוח הודעה שהנושא שלה הוא "<img src=x onerror=...>"
+ * והיא הייתה מורצת כ-HTML אמיתי ברגע שהאדמין פותח את המייל שחוזר אליו.
  * @param {*} value - הערך שיש להמיר למחרוזת בטוחה ל-HTML.
  * @returns {string} המחרוזת לאחר ה-escaping.
  */

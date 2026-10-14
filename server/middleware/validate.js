@@ -14,6 +14,10 @@ export const createValidator = (schema) => (req, res, next) => {
 		return next(validationError);
 	}
 
+	// קריטי: מחליפים את req.body ב-value (לא משאירים את req.body המקורי) - Joi לא
+	// רק *בודק* תקינות, הוא גם *ממיר* טיפוסים (בבקשת multipart/form-data הכל מגיע
+	// כמחרוזות - "20" לא 20). בלי השורה הזו, product.controller.js היה מקבל
+	// price/stock כמחרוזות במקום מספרים אמיתיים.
 	req.body = value;
 	next();
 };

@@ -68,6 +68,9 @@ export const createCategory = async (req, res, next) => {
 		});
 		res.status(201).json(newCategory);
 	} catch (error) {
+		// 11000 הוא קוד השגיאה הקבוע של MongoDB לכפילות על שדה עם unique index (למשל
+		// שני יצירות-קטגוריה בו-זמנית שקיבלו אותו nextId מחושב) - מתורגם ל-409
+		// "התנגשות" ללקוח, במקום 500 כללי שהיה מרמז על באג בשרת.
 		error.statusCode = error.code === 11000 ? 409 : 500;
 		error.type = error.code === 11000 ? 'conflict' : 'server error';
 		next(error);

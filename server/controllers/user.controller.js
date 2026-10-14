@@ -117,6 +117,11 @@ export const deleteUser = async (req, res, next) => {
 		let messageAttachments = [];
 		let deletedMessageCount = 0;
 		session = await mongoose.startSession();
+		// withTransaction() הוא עטיפה נוחה יותר ל-session: היא עושה startTransaction,
+		// מריצה את ה-callback, ועושה commit/abort אוטומטית לפי אם הוא זרק שגיאה או לא -
+		// לעומת order.controller.js/category.controller.js ששם כתבנו את כל זה ידנית
+		// (startTransaction/commitTransaction/abortTransaction/try-catch). שתי הדרכים
+		// תקינות, זו רק יותר קצרה כשאין צורך בשליטה עדינה יותר על מתי ה-commit קורה.
 		await session.withTransaction(async () => {
 			const customer = await Customer.findById(req.params.id).session(session);
 			if (!customer) {
@@ -148,10 +153,17 @@ export const deleteUser = async (req, res, next) => {
 				throw new Error('Customer account could not be deleted');
 			}
 		});
+		// שימו לב: מחיקת החשבון וההודעות - שתיהן בתוך ה-transaction למעלה. אבל
+		// *ההזמנות* של הלקוח *לא* נמחקות בכלל (לא כאן, לא בשום מקום) - הן נשארות
+		// במסד כרשומה היסטורית גם אחרי שהחשבון עצמו נעלם, כי זה מידע עסקי/חשבונאי
+		// אמיתי (מה שבאמת נמכר ונשלח), לא רק "נתוני פרופיל" שאפשר למחוק יחד איתו.
 
 		let deletedAttachmentCount = 0;
 		const attachmentCleanupFailures = [];
 		for (const attachment of new Set(messageAttachments)) {
+			// בדיקה נוספת לפני מחיקת הקובץ מהדיסק: ייתכן (נדיר) ששתי הודעות שונות
+			// הצביעו בטעות לאותו נתיב קובץ - Set כבר מסנן כפילויות ברשימה, אבל זו
+			// הגנה נוספת שבאמת בודקת מול המסד שאף הודעה אחרת עדיין לא "צריכה" את הקובץ.
 			const stillInUse = await Message.exists({ attachment });
 			if (stillInUse) continue;
 

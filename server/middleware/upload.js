@@ -20,6 +20,9 @@ try {
  * @param {string} dir - נתיב התיקייה שבה יישמרו הקבצים שהועלו.
  * @returns {import('multer').StorageEngine} הגדרת האחסון עבור multer.
  */
+// פעם הייתה כאן אותה הגדרת multer.diskStorage כפולה 3 פעמים (אחת לכל סוג קובץ) -
+// makeStorage(dir) מרכז את זה לפונקציה אחת שרק משתנה לפי תיקיית היעד, כדי שלכל
+// שינוי עתידי בלוגיקת ה-storage לא יהיה צריך לזכור לעדכן 3 מקומות זהים.
 const makeStorage = (dir) => multer.diskStorage({
   /**
    * קובע את תיקיית היעד לקובץ שהועלה.

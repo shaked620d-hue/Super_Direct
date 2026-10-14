@@ -25,7 +25,6 @@ export const getOrders = async (req, res, next) => {
 
 /**
  * מחזיר את הזמנות המשתמש המחובר, לפי זיהוי מה-JWT.
- * צריך להתאים את זה.
  * @param {import('express').Request} req - בקשת ה-HTTP, מצפה למשתמש מחובר (req.user).
  * @param {import('express').Response} res - אובייקט התשובה.
  * @param {import('express').NextFunction} next - מעביר שגיאות ל-middleware הטיפול בשגיאות.
@@ -152,6 +151,10 @@ function calculateExpectedDelivery() {
  * @returns {Promise<void>}
  */
 export const createOrder = async (req, res, next) => {
+    // למה transaction בכלל: הפעולה הזו נוגעת בשני אוספים (מורידה מלאי ב-Product,
+    // ויוצרת מסמך חדש ב-Order) - אם אחת מהן תצליח והשנייה תיכשל, נקבל נתונים לא
+    // עקביים (מלאי ירד בלי שנוצרה הזמנה, או הזמנה נוצרה בלי שהמלאי ירד).
+    // ה-session מבטיח ששתי הפעולות קורות "ביחד" - או שתיהן, או אף אחת.
     const session = await mongoose.startSession();
     try {
         // חשבון אדמין הוא לניהול בלבד - לא מיועד לביצוע הזמנות אישיות.
@@ -230,7 +233,11 @@ export const createOrder = async (req, res, next) => {
         }
 
         for (const [productId, quantity] of quantitiesByProduct) {
-            // תנאי המלאי בתוך העדכון מגן גם מפני שתי הזמנות מקבילות.
+            // חשוב: בדקנו מלאי כבר למעלה (בלולאה שבנתה את productsById) - אז למה לבדוק שוב?
+            // כי בין הבדיקה הראשונה לבין הרגע הזה, הזמנה *אחרת* (ממשתמש/ת אחר/ת, במקביל)
+            // יכלה "לתפוס" את אותו מלאי קודם. לכן stock: {$gte: quantity} בתוך ה-filter
+            // של updateOne בודק ומעדכן *באותה פעולה אטומית אחת* - אם מישהי הקדימה אותנו,
+            // ה-filter לא ימצא התאמה, modifiedCount יהיה 0, ונדע שצריך לבטל הכל.
             const stockUpdate = await Product.updateOne(
                 { _id: productId, stock: { $gte: quantity } },
                 { $inc: { stock: -quantity } },
@@ -259,6 +266,11 @@ export const createOrder = async (req, res, next) => {
         // רק לאחר שההזמנה נשמרה בהצלחה מאשרים את כל שינויי המלאי.
         await session.commitTransaction();
 
+        // חשוב: שליחת המייל קורית *אחרי* ה-commit, בבלוק try/catch נפרד משלה.
+        // ה-transaction כבר הסתיימה בהצלחה בשלב הזה - אם שליחת המייל נכשלת (כמו
+        // שבאמת קרה לנו עם IPv6), זה לא אמור לבטל את ההזמנה שכבר נשמרה ואת המלאי
+        // שכבר ירד! לכן זו לא חלק מה-try/catch הראשי, ולכן emailSent מוחזר ללקוח
+        // כדי שהוא ידע אם המייל נשלח בלי שההזמנה עצמה תיכשל.
         let emailSent = false;
         try {
             await sendOrderConfirmationEmail({

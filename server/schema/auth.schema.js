@@ -21,6 +21,9 @@ export const loginSchema = Joi.object({
 
 export const changePasswordSchema = Joi.object({
     currentPassword: Joi.string().required(),
+    // Joi.ref('currentPassword') משווה את newPassword לערך ששלחו בשדה currentPassword
+    // *באותה בקשה* (לא למה ששמור במסד - זה עוד לא ידוע בשלב ה-Joi, לפני שהגענו
+    // לקונטרולר) - invalid() דוחה את הבקשה אם שתי הסיסמאות באותה בקשה זהות.
     newPassword: Joi.string().min(6).invalid(Joi.ref('currentPassword')).required()
 })
 

@@ -7,9 +7,15 @@
  * @param {import('express').NextFunction} next - פונקציית ה-next של Express.
  * @returns {void}
  */
+// Express מזהה middleware כ"error handler" *רק* לפי מספר הפרמטרים שהוא מקבל - 4
+// (err, req, res, next), לא 3 כמו middleware רגיל. זו הסיבה היחידה שהפונקציה הזו
+// בכלל "יודעת" לתפוס שגיאות: next(error) בכל מקום בקוד (controllers, middlewares)
+// מדלג על כל ה-middleware הרגילים וקופץ ישר לפונקציה הזו, כי היא רשומה אחרונה
+// ב-app.js ומתאימה לחתימה המיוחדת.
 export const errorHandler = (err, req, res, next) => {
-  // בודק אם המערכת נמצאת במצב פיתוח כדי להציג 
-  // stack trace.
+  // בודק אם המערכת נמצאת במצב פיתוח כדי להציג
+  // stack trace. בפועל: NODE_ENV אף פעם לא מוגדר בפרויקט הזה (לא ב-.env, לא
+  // בשום סקריפט) - כך שה-isDev הזה תמיד false, וה-stack אף פעם לא מוצג בפועל.
   const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev';
 
   // אם לא הוגדר קוד שגיאה, מחזירים 500 כברירת מחדל.

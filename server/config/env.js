@@ -1,6 +1,11 @@
 import path from 'node:path';
 import dotenv from 'dotenv';
 
+// path.join(import.meta.dirname, ...) בונה נתיב מוחלט לקובץ .env לפי *מיקום הקובץ
+// הזה בדיסק*, לא לפי תיקיית העבודה שממנה מריצים את node. זה מה שתיקן את הבאג
+// המקורי: dotenv.config() רגיל (בלי path) מחפש .env יחסית ל-cwd, אז הרצה מהתיקייה
+// הלא נכונה (למשל משורש הפרויקט במקום מתוך server/) הייתה משאירה את כל המשתנים
+// undefined - גם אם .env קיים בפועל.
 dotenv.config({ path: path.join(import.meta.dirname, '..', '.env') });
 
 export const env = {

@@ -65,6 +65,10 @@ export const login = async (req, res, next) => {
 		return next(error);
 	}
 
+	// למה בכלל יכולים להיות כמה customers לאותו אימייל: אם שני חשבונות נוצרו לפני
+	// שה-unique index על email נאכף (או בגרסאות ישנות של הנתונים), ייתכנו כמה
+	// מסמכים עם אותו email. עוברים על כולם ובודקים איזה *סיסמה* באמת תואמת -
+	// זה מה שבאמת מזהה את החשבון הנכון, לא רק האימייל.
 	const matchingCustomers = [];
 	for (const customer of customers) {
 		if (await bcrypt.compare(req.body.password, customer.password)) {

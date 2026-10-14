@@ -9,6 +9,9 @@ import { authorizeRoles } from '../middleware/authorize.js';
 const router = express.Router();
 
 router.get('/', authenticate, authorizeRoles('admin'), getUsers);
+// אין authorizeRoles('admin') על השורות האלה - ה-route לבד לא יכול לדעת אם "זה
+// המשתמש שלך" (צריך להשוות req.user._id מול req.params.id), אז הבדיקה "בעל
+// החשבון או מנהל" קורית *בתוך* הקונטרולר עצמו (getUserById/updateUser), לא כאן.
 router.get('/:id', authenticate, getUserById);
 router.put('/:id', authenticate, createValidator(updateUserSchema), updateUser);
 router.delete('/:id', authenticate, authorizeRoles('admin'), deleteUser);
