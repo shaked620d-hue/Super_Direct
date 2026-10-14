@@ -44,6 +44,13 @@ const deleteAttachmentIfExists = async (message) => {
  */
 export const updateMessageStatus = async (req, res, next) => {
     try {
+        if (req.body.handled) {
+            const error = new Error('An admin reply must be sent successfully before marking a message as handled');
+            error.statusCode = 409;
+            error.type = 'conflict';
+            return next(error);
+        }
+
         const existing = await Message.findById(req.params.id);
         if (!existing) {
             const error = new Error('message not found');

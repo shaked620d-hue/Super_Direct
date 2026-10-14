@@ -1,4 +1,4 @@
-import { getMessagesRequest, updateMessageStatusRequest, replyToMessageRequest } from './messageService.js';
+import { getMessagesRequest, replyToMessageRequest } from './messageService.js';
 import { guardAdminOnly } from '../shared/storage.js';
 import { API_BASE_URL } from '../shared/config.js';
 import { showToast } from '../cart/cart.js';
@@ -40,11 +40,9 @@ const createMessageCard = (message) => {
     const handledCheckbox = document.createElement('input');
     handledCheckbox.type = 'checkbox';
     handledCheckbox.checked = message.handled;
-    // ברגע שהודעה מסומנת כטופלה זה חד-כיווני - הקובץ המצורף כבר נמחק בשרת, אז אין טעם לאפשר לבטל את הסימון.
-    handledCheckbox.disabled = message.handled;
-    handledCheckbox.dataset.messageId = message._id;
-    handledCheckbox.addEventListener('change', handleStatusChange);
-    handledLabel.append(handledCheckbox, 'טופלה');
+    handledCheckbox.disabled = true;
+    handledCheckbox.title = 'ההודעה מסומנת כטופלה רק לאחר שליחת תגובה בהצלחה';
+    handledLabel.append(handledCheckbox, 'טופלה לאחר תגובה בהצלחה');
 
     const handledRow = document.createElement('div');
     handledRow.className = 'message-handled-row';
@@ -108,25 +106,6 @@ const createMessageCard = (message) => {
     if (replyBox) children.push(replyBox);
     card.append(...children);
     return card;
-};
-
-/**
- * מטפלת בשינוי תיבת הסימון "טופלה" של הודעה - מעדכנת את הסטטוס בשרת.
- * @param {Event} event - אירוע השינוי של תיבת הסימון.
- */
-const handleStatusChange = async (event) => {
-    const checkbox = event.target;
-    const messageId = checkbox.dataset.messageId;
-    try {
-        const response = await updateMessageStatusRequest(messageId, checkbox.checked);
-        if (!response.ok) {
-            showToast('עדכון הסטטוס נכשל');
-            return;
-        }
-        showToast('הסטטוס עודכן');
-    } catch {
-        showToast('אירעה שגיאה בעדכון הסטטוס');
-    }
 };
 
 const HANDLED_ORDER = [false, true];
