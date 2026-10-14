@@ -10,24 +10,15 @@ const getUserId = (user) => String(user?._id || user?.id || '');
 
 tabSyncChannel?.addEventListener('message', ({ data }) => {
     const currentUser = getCurrentUser();
-    if (!currentUser) return;
-
-    if (data?.type === 'user-updated' && getUserId(currentUser) === getUserId(data.user)) {
-        sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(data.user));
-        updateAuthUI();
-        window.dispatchEvent(new CustomEvent('superDirect:user-updated'));
-        return;
-    }
-
-    if (data?.type === 'logout' && getUserId(currentUser) === data.userId) {
-        clearCurrentUser(false);
-        window.location.reload();
-        return;
-    }
-
-    if (data?.type === 'orders-updated'
+    if (currentUser && data?.type === 'orders-updated'
         && (currentUser.role === 'admin' || !data.userId || getUserId(currentUser) === data.userId)) {
         window.dispatchEvent(new CustomEvent('superDirect:orders-updated'));
+    }
+});
+
+window.addEventListener('storage', (event) => {
+    if (event.key === 'superDirectCurrentUser') {
+        window.location.reload();
     }
 });
 
@@ -42,36 +33,31 @@ export const broadcastTabSync = (type, details = {}) => {
 export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 /**
- * מחזיר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
+ * מחזיר את המשתמש המחובר המשותף לכל כרטיסיות האתר.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
 export const getCurrentUser = () => {
     const storageKey = 'superDirectCurrentUser';
-    const currentUser = sessionStorage.getItem(storageKey);
-    localStorage.removeItem(storageKey);
+    sessionStorage.removeItem(storageKey);
+    const currentUser = localStorage.getItem(storageKey);
     return currentUser ? JSON.parse(currentUser) : null;
 };
 
 /**
- * שומר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
+ * שומר את המשתמש המחובר לכל כרטיסיות האתר.
  * @param {object} user - פרטי המשתמש ואסימון ההתחברות.
  */
 export const setCurrentUser = (user) => {
-    sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
-    localStorage.removeItem('superDirectCurrentUser');
-    broadcastTabSync('user-updated', { user });
+    localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+    sessionStorage.removeItem('superDirectCurrentUser');
 };
 
 /**
- * מוחק את ההתחברות מהכרטיסייה הנוכחית, ומעדכן כרטיסיות של אותו משתמש.
- * @param {boolean} [broadcast=true] - האם להודיע לכרטיסיות האחרות.
+ * מוחק את ההתחברות המשותפת לכל כרטיסיות האתר.
  */
-export const clearCurrentUser = (broadcast = true) => {
-    const currentUser = getCurrentUser();
+export const clearCurrentUser = () => {
+    localStorage.removeItem('superDirectCurrentUser');
     sessionStorage.removeItem('superDirectCurrentUser');
-    if (broadcast && currentUser) {
-        broadcastTabSync('logout', { userId: getUserId(currentUser) });
-    }
 };
 
 /**
@@ -213,7 +199,7 @@ const updateAuthUI = ()=>{
 
 }
 /**
- * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מהכרטיסייה הנוכחית ומרעננת את הדף.
+ * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מכל הכרטיסיות ומרעננת את הדף.
  */
 const handleLogout = ()=>{
     const logoutButton = document.getElementById('logoutButton');
