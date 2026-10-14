@@ -57,7 +57,10 @@ const createTransporter = () => {
 };
 
 const sendEmail = async (message) => {
-    if (env.RESEND_API_KEY) {
+    // זמנית מושבת: חשבון Resend עדיין לא מאומת עם דומיין אמיתי, ולכן הוא שולח רק
+    // לכתובת המייל של בעל/ת החשבון עצמה (מגבלת sandbox של השירות) - כל לקוח/ה אחר/ת נכשל.
+    // חוזרים אוטומטית ל-Gmail (עם תיקון ה-IPv4) עד שיאומת דומיין אצל Resend.
+    if (false && env.RESEND_API_KEY) {
         if (!env.EMAIL_FROM) {
             throw new Error('EMAIL_FROM must be configured when RESEND_API_KEY is used');
         }
