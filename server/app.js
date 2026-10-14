@@ -115,6 +115,8 @@ if (!databaseConnected) {
  * מריץ הודעת לוג לקונסולה לאחר שהשרת עלה בהצלחה.
  * @returns {void}
  */
-server.listen(env.PORT, () => {
-  console.log(`Server is running on http://localhost:${env.PORT}`);
+const PORT = process.env.PORT || 5000; // כאן 5000 יפעל רק אצלך במחשב
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
