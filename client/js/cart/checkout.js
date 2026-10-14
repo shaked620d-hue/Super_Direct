@@ -1,4 +1,4 @@
-import { getCurrentUser } from '../shared/storage.js';
+import { getCurrentUser, broadcastTabSync } from '../shared/storage.js';
 import { getProducts } from '../products/productService.js';
 import { readCart, writeCart, showToast } from './cart.js';
 import { createOrderRequest } from '../orders/orderService.js';
@@ -46,6 +46,7 @@ const formatMoney = (amount) => {
 const renderCheckout = () =>{
   const cart=  readCart();
    const confirmItems=  document.getElementById('confirmItems');
+  confirmItems.replaceChildren();
   let totalP=0;
   cart.forEach(element => {
    const el= document.createElement('p');
@@ -191,6 +192,7 @@ const response = await createOrderRequest({ items, customerId: currentUser._id |
     const orderResult = await response.json();
     emailSent = orderResult.emailSent === true;
     orderCompleted = true;
+    broadcastTabSync('orders-updated', { userId: String(currentUser._id || currentUser.id) });
 } catch {
     showToast('אירעה שגיאה בשליחת ההזמנה');
     return;
@@ -215,4 +217,8 @@ showToast(emailSent
 }
 
 document.addEventListener('DOMContentLoaded', renderCheckout);
+window.addEventListener('storage', (event) => {
+  const userId = currentUser?._id || currentUser?.id;
+  if (userId && event.key === `superDirectCart_${userId}`) renderCheckout();
+});
 document.addEventListener('DOMContentLoaded', handleConfirmOrder);

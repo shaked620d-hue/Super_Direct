@@ -2,6 +2,39 @@ import { API_BASE_URL } from './config.js';
 import { getCategories } from '../categories/categoryService.js';
 import { showToast } from '../cart/cart.js';
 
+const tabSyncChannel = typeof BroadcastChannel === 'undefined'
+    ? null
+    : new BroadcastChannel('superDirectTabSync');
+
+const getUserId = (user) => String(user?._id || user?.id || '');
+
+tabSyncChannel?.addEventListener('message', ({ data }) => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    if (data?.type === 'user-updated' && getUserId(currentUser) === getUserId(data.user)) {
+        sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(data.user));
+        updateAuthUI();
+        window.dispatchEvent(new CustomEvent('superDirect:user-updated'));
+        return;
+    }
+
+    if (data?.type === 'logout' && getUserId(currentUser) === data.userId) {
+        clearCurrentUser(false);
+        window.location.reload();
+        return;
+    }
+
+    if (data?.type === 'orders-updated'
+        && (currentUser.role === 'admin' || !data.userId || getUserId(currentUser) === data.userId)) {
+        window.dispatchEvent(new CustomEvent('superDirect:orders-updated'));
+    }
+});
+
+export const broadcastTabSync = (type, details = {}) => {
+    tabSyncChannel?.postMessage({ type, ...details });
+};
+
 /**
  * מחזירה את הנתיב היחסי הבסיסי לקבצי ה-HTML, בהתאם לתיקייה הנוכחית.
  * @returns {string} 'HTML/' אם הדף הנוכחי מחוץ לתיקיית HTML, אחרת מחרוזת ריקה.
@@ -32,13 +65,19 @@ export const getCurrentUser = () => {
 export const setCurrentUser = (user) => {
     sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
     localStorage.removeItem('superDirectCurrentUser');
+    broadcastTabSync('user-updated', { user });
 };
 
 /**
- * מוחק את ההתחברות מהכרטיסייה הנוכחית בלבד.
+ * מוחק את ההתחברות מהכרטיסייה הנוכחית, ומעדכן כרטיסיות של אותו משתמש.
+ * @param {boolean} [broadcast=true] - האם להודיע לכרטיסיות האחרות.
  */
-export const clearCurrentUser = () => {
+export const clearCurrentUser = (broadcast = true) => {
+    const currentUser = getCurrentUser();
     sessionStorage.removeItem('superDirectCurrentUser');
+    if (broadcast && currentUser) {
+        broadcastTabSync('logout', { userId: getUserId(currentUser) });
+    }
 };
 
 /**

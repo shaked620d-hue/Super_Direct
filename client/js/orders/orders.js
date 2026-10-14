@@ -79,4 +79,5 @@ const loadOrders = async () => {
     }
 };
 
+window.addEventListener('superDirect:orders-updated', loadOrders);
 document.addEventListener('DOMContentLoaded', loadOrders);
