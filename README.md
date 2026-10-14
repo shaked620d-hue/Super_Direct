@@ -57,13 +57,13 @@ docs/       תיעוד API ואוסף בקשות Postman
    JWT_SECRET=<long-random-secret>
    ADMIN_EMAIL=<administrator-email>
    ADMIN_PASSWORD=<strong-administrator-password>
-   EMAIL_USER=<gmail-address>
-   EMAIL_APP_PASSWORD=<gmail-app-password>
+   RESEND_API_KEY=<resend-api-key>
+   EMAIL_FROM=<verified-sender-address>
    ```
 
    יש להחליף את ערכי הדוגמה בערכים שלכם. אין לשמור סיסמאות, מפתחות או מחרוזת חיבור אמיתית בקובץ README או במאגר Git.
 
-   כדי לשלוח אישורי הזמנה דרך Gmail, הפעילו אימות דו־שלבי בחשבון Google וצרו App Password בהגדרות האבטחה של החשבון. הגדירו אותו ב־`EMAIL_APP_PASSWORD` ללא רווחים ואת כתובת Gmail השולחת ב־`EMAIL_USER`. אין להשתמש בסיסמת הכניסה הרגילה לחשבון.
+   לשליחה בפריסה בענן, הגדירו ב־Render מפתח API של Resend ואת כתובת השולח שאומתה בחשבון Resend. אפשר להגדיר לחלופין `EMAIL_USER` ו־`EMAIL_APP_PASSWORD` לשימוש ב־Gmail דרך SMTP; יש להפעיל אימות דו־שלבי וליצור App Password, ולא להשתמש בסיסמת הכניסה הרגילה.
 
 3. הפעילו את השרת:
 
@@ -116,7 +116,7 @@ docs/       תיעוד API ואוסף בקשות Postman
 
 ## פריסה בענן
 
-הפרויקט כולל שרת Express שמגיש באותו מקור גם את ה־API וגם את קובצי האתר. בעת פריסה של השרת יש להגדיר בסביבת האירוח את משתני הסביבה `PORT`, `MONGODB_URI`, `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `EMAIL_USER` ו־`EMAIL_APP_PASSWORD`; אין להעלות את `.env` לענן דרך Git. יש להגדיר ב־Atlas הרשאת רשת עבור סביבת האירוח ולוודא שהשרת מצליח להתחבר למסד.
+הפרויקט כולל שרת Express שמגיש באותו מקור גם את ה־API וגם את קובצי האתר. בעת פריסה של השרת יש להגדיר בסביבת האירוח את משתני הסביבה `PORT`, `MONGODB_URI`, `JWT_SECRET`, `ADMIN_EMAIL` ו־`ADMIN_PASSWORD`, וגם את `RESEND_API_KEY` ו־`EMAIL_FROM` או לחלופין את `EMAIL_USER` ו־`EMAIL_APP_PASSWORD`; אין להעלות את `.env` לענן דרך Git. יש להגדיר ב־Atlas הרשאת רשת עבור סביבת האירוח ולוודא שהשרת מצליח להתחבר למסד.
 
 לאחר יצירת הזמנה, השרת שולח אישור עם פרטי ההזמנה לכתובת האימייל שבחשבון הלקוח. כשל בשליחת האימייל נרשם ביומן השרת ומוחזר ללקוח כמצב נפרד; ההזמנה שכבר נשמרה נשארת תקינה.
 

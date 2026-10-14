@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { readFile } from 'node:fs/promises';
 import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
 
@@ -55,6 +56,53 @@ const createTransporter = () => {
     });
 };
 
+const sendEmail = async (message) => {
+    if (env.RESEND_API_KEY) {
+        if (!env.EMAIL_FROM) {
+            throw new Error('EMAIL_FROM must be configured when RESEND_API_KEY is used');
+        }
+
+        const attachments = await Promise.all((message.attachments || []).map(async (attachment) => ({
+            filename: attachment.filename,
+            content: (await readFile(attachment.path)).toString('base64'),
+            content_type: 'image/png',
+            ...(attachment.cid ? { content_id: attachment.cid } : {})
+        })));
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${env.RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: env.EMAIL_FROM,
+                to: [message.to],
+                subject: message.subject,
+                text: message.text,
+                html: message.html,
+                ...(attachments.length ? { attachments } : {})
+            })
+        });
+
+        if (!response.ok) {
+            const details = await response.text();
+            throw new Error(`Resend email request failed (${response.status}): ${details}`);
+        }
+
+        return;
+    }
+
+    const transporter = createTransporter();
+    try {
+        await transporter.sendMail({
+            ...message,
+            from: `"סופר דיירקט" <${env.EMAIL_USER}>`
+        });
+    } finally {
+        transporter.close();
+    }
+};
+
 /**
  * שולח ללקוח מייל אישור הזמנה עם פירוט הפריטים, המשלוח והסכום לתשלום.
  * @param {object} customer - פרטי הלקוח לשליחת המייל.
@@ -64,8 +112,6 @@ const createTransporter = () => {
  * @returns {Promise<void>}
  */
 export const sendOrderConfirmationEmail = async (customer, order) => {
-    const transporter = createTransporter();
-
     const itemRows = order.items.map((item) => `
         <tr>
             <td style="padding:8px;border-bottom:1px solid #e4e9df">${escapeHtml(item.name)}</td>
@@ -79,30 +125,28 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
     const customerName = customer.firstName || 'לקוח/ה';
     const orderId = String(order._id);
 
-    try {
-        await transporter.sendMail({
-            from: `"סופר דיירקט" <${env.EMAIL_USER}>`,
-            to: customer.email,
-            subject: `אישור הזמנה ${orderId}`,
-            attachments: [{
-                filename: 'super-direct-logo.png',
-                path: logoPath,
-                cid: 'super-direct-logo'
-            }],
-            text: [
-                `שלום ${customerName},`,
-                '',
-                'קיבלנו את ההזמנה שלך:',
-                itemText,
-                '',
-                `משלוח: ${formatMoney(order.deliveryFee)}`,
-                `סה"כ: ${formatMoney(order.totalPrice)}`,
-                `טלפון למשלוח: ${order.phone}`,
-                `מספר הזמנה: ${orderId}`,
-                '',
-                'תודה שקניתם בסופר דיירקט.'
-            ].join('\n'),
-            html: `
+    await sendEmail({
+        to: customer.email,
+        subject: `אישור הזמנה ${orderId}`,
+        attachments: [{
+            filename: 'super-direct-logo.png',
+            path: logoPath,
+            cid: 'super-direct-logo'
+        }],
+        text: [
+            `שלום ${customerName},`,
+            '',
+            'קיבלנו את ההזמנה שלך:',
+            itemText,
+            '',
+            `משלוח: ${formatMoney(order.deliveryFee)}`,
+            `סה"כ: ${formatMoney(order.totalPrice)}`,
+            `טלפון למשלוח: ${order.phone}`,
+            `מספר הזמנה: ${orderId}`,
+            '',
+            'תודה שקניתם בסופר דיירקט.'
+        ].join('\n'),
+        html: `
             <div dir="rtl" style="font-family:Arial,sans-serif;color:#18322f;max-width:600px;margin:auto">
                 <div style="text-align:center;margin-bottom:24px">
                     <img src="cid:super-direct-logo" alt="סופר דיירקט" width="64" height="64" style="display:inline-block;border:0">
@@ -126,10 +170,7 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
                 <p>תודה שקניתם בסופר דיירקט.</p>
             </div>
             `
-        });
-    } finally {
-        transporter.close();
-    }
+    });
 };
 
 /**
@@ -139,15 +180,11 @@ export const sendOrderConfirmationEmail = async (customer, order) => {
  * @returns {Promise<void>}
  */
 export const sendMessageReplyEmail = async (message, replyText) => {
-    const transporter = createTransporter();
-
-    try {
-        await transporter.sendMail({
-            from: `"סופר דיירקט" <${env.EMAIL_USER}>`,
-            to: message.email,
-            subject: `Re: ${message.subject}`,
-            text: replyText,
-            html: `
+    await sendEmail({
+        to: message.email,
+        subject: `Re: ${message.subject}`,
+        text: replyText,
+        html: `
             <div dir="rtl" style="font-family:Arial,sans-serif;color:#18322f;max-width:600px;margin:auto">
                 <p>שלום ${escapeHtml(message.name)},</p>
                 <p style="white-space:pre-wrap">${escapeHtml(replyText)}</p>
@@ -155,8 +192,5 @@ export const sendMessageReplyEmail = async (message, replyText) => {
                 <p style="color:#5c6b66;font-size:.9rem">בתגובה להודעה ששלחת: "${escapeHtml(message.subject)}"</p>
             </div>
             `
-        });
-    } finally {
-        transporter.close();
-    }
+    });
 };
