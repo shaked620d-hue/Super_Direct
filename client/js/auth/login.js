@@ -1,5 +1,6 @@
 import { loginRequest } from './authService.js';
 import { showToast, mergeGuestCartIntoUserCart } from '../cart/cart.js';
+import { setCurrentUser } from '../shared/storage.js';
 
 /**
  * מטפלת בשליחת טופס ההתחברות.
@@ -32,7 +33,7 @@ const handleLoginSubmit = () => {
 
       // שומרים את המשתמש שהשרת החזיר כדי לזהות אותו בדפים הבאים.
       const user = await response.json();
-      localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+      setCurrentUser(user);
       mergeGuestCartIntoUserCart();
       showToast('התחברת בהצלחה');
       // אחרי התחברות שנדרשה לצורך הזמנה או צפייה בהזמנות, חוזרים לעמוד המבוקש.

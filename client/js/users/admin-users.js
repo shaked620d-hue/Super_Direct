@@ -1,4 +1,4 @@
-import { getCurrentUser, guardAdminOnly } from '../shared/storage.js';
+import { getCurrentUser, clearCurrentUser, guardAdminOnly } from '../shared/storage.js';
 import { deleteUserRequest, getUsersRequest } from './userService.js';
 import { showToast } from '../cart/cart.js';
 
@@ -50,7 +50,7 @@ const handleUserDelete = async () => {
     try {
         const response = await deleteUserRequest(userPendingDeletion._id);
         if (response.status === 401) {
-            localStorage.removeItem('superDirectCurrentUser');
+            clearCurrentUser();
             window.location.href = 'login.html';
             return;
         }
@@ -84,7 +84,7 @@ const loadUsers = async () => {
     try {
         const response = await getUsersRequest();
         if (response.status === 401) {
-            localStorage.removeItem('superDirectCurrentUser');
+            clearCurrentUser();
             window.location.href = 'login.html';
             return;
         }

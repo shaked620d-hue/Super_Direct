@@ -1,4 +1,4 @@
-import { getCurrentUser, createOrderItemRow, renderOrdersGroupedByStatus, guardAdminOnly } from '../shared/storage.js';
+import { getCurrentUser, clearCurrentUser, createOrderItemRow, renderOrdersGroupedByStatus, guardAdminOnly } from '../shared/storage.js';
 import { getOrdersRequest, updateOrderStatusRequest } from './orderService.js';
 import { showToast } from '../cart/cart.js';
 
@@ -88,7 +88,7 @@ const loadOrders = async () => {
         const response = await getOrdersRequest();
         if (response.status === 401) {
             // אסימון שנדחה אינו שימושי; מתחברים מחדש וחוזרים לעמוד הניהול.
-            localStorage.removeItem('superDirectCurrentUser');
+            clearCurrentUser();
             window.location.href = 'login.html?returnTo=admin-orders.html';
             return;
         }
@@ -124,7 +124,7 @@ const initializeAdminOrders = () => {
     }
 
     if (!currentUser.token) {
-        localStorage.removeItem('superDirectCurrentUser');
+        clearCurrentUser();
         window.location.href = 'login.html?returnTo=admin-orders.html';
         return;
     }

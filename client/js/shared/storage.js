@@ -9,10 +9,37 @@ import { showToast } from '../cart/cart.js';
 export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 /**
- * מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
+ * מחזיר את המשתמש המחובר בכרטיסייה הנוכחית, או מעביר התחברות קיימת מגרסה קודמת.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
-export const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+export const getCurrentUser = () => {
+    const storageKey = 'superDirectCurrentUser';
+    const currentUser = sessionStorage.getItem(storageKey);
+    if (currentUser) return JSON.parse(currentUser);
+
+    const legacyUser = localStorage.getItem(storageKey);
+    if (!legacyUser) return null;
+
+    localStorage.removeItem(storageKey);
+    sessionStorage.setItem(storageKey, legacyUser);
+    return JSON.parse(legacyUser);
+};
+
+/**
+ * שומר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
+ * @param {object} user - פרטי המשתמש ואסימון ההתחברות.
+ */
+export const setCurrentUser = (user) => {
+    sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+    localStorage.removeItem('superDirectCurrentUser');
+};
+
+/**
+ * מוחק את ההתחברות מהכרטיסייה הנוכחית בלבד.
+ */
+export const clearCurrentUser = () => {
+    sessionStorage.removeItem('superDirectCurrentUser');
+};
 
 /**
  * בודקת אם המשתמש המחובר כרגע הוא מנהל.
@@ -153,24 +180,19 @@ const updateAuthUI = ()=>{
 
 }
 /**
- * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מה-localStorage ומרעננת את הדף.
+ * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מהכרטיסייה הנוכחית ומרעננת את הדף.
  */
 const handleLogout = ()=>{
-    
-    const logoutButton  = document.getElementById('logoutButton');
-    if(!logoutButton  ){return; }
-    logoutButton .addEventListener('click', (event)=>{
-      
+    const logoutButton = document.getElementById('logoutButton');
+    if (!logoutButton) return;
 
-   const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
-   if(currentUser){ 
-   event.preventDefault();
-    localStorage.removeItem('superDirectCurrentUser'); 
-    showToast('התנתקת בהצלחה'); 
-
-    location.reload();
-    }
-    })
+    logoutButton.addEventListener('click', (event) => {
+        if (!getCurrentUser()) return;
+        event.preventDefault();
+        clearCurrentUser();
+        showToast('התנתקת בהצלחה');
+        location.reload();
+    });
 }
 
 

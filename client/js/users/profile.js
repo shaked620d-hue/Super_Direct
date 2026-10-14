@@ -1,4 +1,4 @@
-import { getCurrentUser } from '../shared/storage.js';
+import { getCurrentUser, setCurrentUser } from '../shared/storage.js';
 import { updateUserRequest } from './userService.js';
 import { changePasswordRequest } from '../auth/authService.js';
 import { showToast } from '../cart/cart.js';
@@ -59,7 +59,7 @@ try{
             return;
     }
     const updateUser= await response.json();
-    localStorage.setItem('superDirectCurrentUser', JSON.stringify({ ...updateUser, token: currentUser.token }));
+    setCurrentUser({ ...updateUser, token: currentUser.token });
 
      showToast('הפרטים נשמרו בהצלחה');
     } catch {
