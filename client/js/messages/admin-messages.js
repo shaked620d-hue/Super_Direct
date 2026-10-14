@@ -72,6 +72,9 @@ const createMessageCard = (message) => {
                 showToast('יש לכתוב תגובה לפני השליחה');
                 return;
             }
+
+            sendButton.disabled = true;
+            sendButton.textContent = 'שולחת...';
             try {
                 const response = await replyToMessageRequest(message._id, replyText);
                 if (!response.ok) {
@@ -84,8 +87,15 @@ const createMessageCard = (message) => {
                 }
                 showToast('התגובה נשלחה בהצלחה ללקוח, וההודעה סומנה כטופלה');
                 loadMessages();
-            } catch {
-                showToast('אירעה שגיאה בשליחת התגובה');
+            } catch (error) {
+                showToast(error instanceof Error && error.message
+                    ? `אירעה שגיאה בשליחת התגובה: ${error.message}`
+                    : 'אירעה שגיאה בשליחת התגובה');
+            } finally {
+                if (sendButton.isConnected) {
+                    sendButton.disabled = false;
+                    sendButton.textContent = 'שליחה';
+                }
             }
         });
 
