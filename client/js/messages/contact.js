@@ -1,4 +1,5 @@
-
+import { createMessage } from './messageService.js';
+import { showToast } from '../cart/cart.js';
 
 /**
  * מטפלת בטופס יצירת הקשר - תצוגה מקדימה של קובץ מצורף, ניקוי הקובץ ושליחת ההודעה לשרת.

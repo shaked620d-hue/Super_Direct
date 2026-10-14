@@ -1,3 +1,5 @@
+import { loginRequest } from './authService.js';
+import { showToast, mergeGuestCartIntoUserCart } from '../cart/cart.js';
 
 /**
  * מטפלת בשליחת טופס ההתחברות.

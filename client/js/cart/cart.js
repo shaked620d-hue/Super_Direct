@@ -1,3 +1,6 @@
+import { getCurrentUser } from '../shared/storage.js';
+import { getProductById } from '../products/productService.js';
+
 /**
  * מחזירה מזהה ייחודי לפריט בעגלה, לצורך השוואה ומיזוג פריטים זהים.
  * @param {object} item - פריט בעגלה (עם productId או name).
@@ -50,7 +53,7 @@ const getCartStorage = () => {
  * קוראת את תוכן העגלה הנוכחית מהאחסון המתאים.
  * @returns {object[]} רשימת הפריטים בעגלה, או מערך ריק אם אין עגלה שמורה או שהקריאה נכשלה.
  */
-const readCart = () => {
+export const readCart = () => {
     try {
         const { storage, key } = getCartStorage();
         return JSON.parse(storage.getItem(key)) || [];
@@ -63,7 +66,7 @@ const readCart = () => {
  * שומרת את רשימת העגלה באחסון המתאים ומעדכנת את מספר הפריטים המוצג.
  * @param {object[]} cart - רשימת הפריטים לשמירה.
  */
-const writeCart = (cart) => {
+export const writeCart = (cart) => {
     const { storage, key } = getCartStorage();
     storage.setItem(key, JSON.stringify(cart));
     updateCartCount(cart);
@@ -72,7 +75,7 @@ const writeCart = (cart) => {
 /**
  * מעבירה את תוכן עגלת האורח (sessionStorage) לעגלת המשתמש המחובר, בעת התחברות/הרשמה.
  */
-const mergeGuestCartIntoUserCart = () => {
+export const mergeGuestCartIntoUserCart = () => {
     const guestCart = JSON.parse(sessionStorage.getItem('superDirectCart_guest')) || [];
     if (guestCart.length === 0) return;
 
@@ -185,7 +188,7 @@ const handleAddToCartClick = async (event) => {
  * מציגה הודעת טוסט קצרה בתחתית העמוד ומסתירה אותה אוטומטית אחרי כמה שניות.
  * @param {string} message - תוכן ההודעה להצגה.
  */
-const showToast = (message) => {
+export const showToast = (message) => {
     let toast = document.querySelector('.toast');
     if (!toast) {
         toast = document.createElement('div');

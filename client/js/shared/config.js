@@ -1,2 +1,2 @@
-// זה הכתובת של השרת 
-const API_BASE_URL = ''; 
+// זה הכתובת של השרת
+export const API_BASE_URL = '';

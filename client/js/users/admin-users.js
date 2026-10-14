@@ -1,3 +1,7 @@
+import { getCurrentUser, guardAdminOnly } from '../shared/storage.js';
+import { deleteUserRequest, getUsersRequest } from './userService.js';
+import { showToast } from '../cart/cart.js';
+
 let userPendingDeletion = null;
 
 const createUserCard = (user, currentUserId) => {

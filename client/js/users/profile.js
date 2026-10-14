@@ -1,3 +1,7 @@
+import { getCurrentUser } from '../shared/storage.js';
+import { updateUserRequest } from './userService.js';
+import { changePasswordRequest } from '../auth/authService.js';
+import { showToast } from '../cart/cart.js';
 
 /**
  * מפנה לעמוד ההתחברות אם אין משתמש מחובר, כדי להגן על עמוד הפרופיל.

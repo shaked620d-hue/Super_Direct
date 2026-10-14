@@ -1,3 +1,7 @@
+import { loadCategoryOptionsInto, guardAdminOnly } from '../shared/storage.js';
+import { createCategoryRequest, deleteCategoryRequest, getCategoryById, updateCategoryRequest } from './categoryService.js';
+import { showToast } from '../cart/cart.js';
+
 let id;
 let imagePreviewObjectUrl;
 

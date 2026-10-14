@@ -1,4 +1,5 @@
-
+import { registerRequest } from './authService.js';
+import { showToast, mergeGuestCartIntoUserCart } from '../cart/cart.js';
 
 /**
  * מטפלת בשליחת טופס ההרשמה - בודקת שהסיסמאות תואמות, שולחת את הפרטים לשרת ושומרת את המשתמש שחזר.

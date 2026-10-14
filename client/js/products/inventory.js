@@ -1,3 +1,8 @@
+import { isAdmin, guardAdminOnly } from '../shared/storage.js';
+import { getProducts, updateProduct } from './productService.js';
+import { getCategories } from '../categories/categoryService.js';
+import { showToast } from '../cart/cart.js';
+
 let inventoryProducts = [];
 let inventoryCategories = [];
 

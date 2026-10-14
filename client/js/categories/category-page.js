@@ -1,3 +1,6 @@
+import { getCategories } from './categoryService.js';
+import { showToast } from '../cart/cart.js';
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('cat');
 document.getElementById('productGrid').dataset.category = slug;
