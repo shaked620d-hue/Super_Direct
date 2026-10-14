@@ -42,6 +42,9 @@ const createTransporter = () => {
 
     return nodemailer.createTransport({
         service: 'gmail',
+        // מכריח חיבור דרך IPv4 - בענן (כמו Render) יש לפעמים נתיב IPv6 שלא עובד,
+        // וברירת המחדל מנסה אותו קודם ונתקעת בטיימאאוט לפני שהיא בכלל מגיעה ל-IPv4 התקין.
+        family: 4,
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 20000,
