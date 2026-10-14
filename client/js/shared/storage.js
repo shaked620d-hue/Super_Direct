@@ -42,20 +42,14 @@ export const broadcastTabSync = (type, details = {}) => {
 export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 /**
- * מחזיר את המשתמש המחובר בכרטיסייה הנוכחית, או מעביר התחברות קיימת מגרסה קודמת.
+ * מחזיר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
 export const getCurrentUser = () => {
     const storageKey = 'superDirectCurrentUser';
     const currentUser = sessionStorage.getItem(storageKey);
-    if (currentUser) return JSON.parse(currentUser);
-
-    const legacyUser = localStorage.getItem(storageKey);
-    if (!legacyUser) return null;
-
     localStorage.removeItem(storageKey);
-    sessionStorage.setItem(storageKey, legacyUser);
-    return JSON.parse(legacyUser);
+    return currentUser ? JSON.parse(currentUser) : null;
 };
 
 /**
