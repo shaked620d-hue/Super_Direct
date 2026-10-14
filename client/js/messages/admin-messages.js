@@ -75,7 +75,11 @@ const createMessageCard = (message) => {
             try {
                 const response = await replyToMessageRequest(message._id, replyText);
                 if (!response.ok) {
-                    showToast('שליחת התגובה נכשלה');
+                    const payload = await response.json().catch(() => null);
+                    const serverMessage = payload?.error?.message;
+                    showToast(serverMessage
+                        ? `שליחת התגובה נכשלה: ${serverMessage}`
+                        : `שליחת התגובה נכשלה (שגיאה ${response.status})`);
                     return;
                 }
                 showToast('התגובה נשלחה בהצלחה ללקוח, וההודעה סומנה כטופלה');
