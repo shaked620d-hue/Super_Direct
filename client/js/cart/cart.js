@@ -345,6 +345,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     renderCart();
 });
+
+window.addEventListener('storage', (event) => {
+    const { storage, key } = getCartStorage();
+    if (storage !== localStorage || event.key !== key) return;
+
+    const cart = readCart();
+    updateCartCount(cart);
+    renderCart();
+    window.dispatchEvent(new CustomEvent('superDirect:cart-updated', { detail: cart }));
+});
+
  document.addEventListener('DOMContentLoaded', handleCheckout);
 document.addEventListener('DOMContentLoaded', initMobileMenu);
 document.addEventListener('click', handleAddToCartClick);

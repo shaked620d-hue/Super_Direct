@@ -1,4 +1,4 @@
-import { getCurrentUser, createOrderItemRow, renderOrdersGroupedByStatus, guardAdminOnly } from '../shared/storage.js';
+import { getCurrentUser, clearCurrentUser, broadcastTabSync, createOrderItemRow, renderOrdersGroupedByStatus, guardAdminOnly } from '../shared/storage.js';
 import { getOrdersRequest, updateOrderStatusRequest } from './orderService.js';
 import { showToast } from '../cart/cart.js';
 
@@ -35,6 +35,7 @@ const createOrderCard = (order) => {
     const select = document.createElement('select');
     select.className = 'order-status-select';
     select.dataset.orderId = order._id;
+    select.dataset.customerId = String(order.customerId?._id || order.customerId || '');
     // שומרים את הערך האחרון שהשרת אישר כדי שנוכל לבטל שינוי שלא נשמר.
     select.dataset.currentStatus = order.status;
     statusOptions.forEach((statusOption) => {
@@ -73,6 +74,7 @@ const handleStatusChange = async (event) => {
             return;
         }
         select.dataset.currentStatus = select.value;
+        broadcastTabSync('orders-updated', { userId: select.dataset.customerId });
         showToast('הסטטוס עודכן');
     } catch {
         select.value = select.dataset.currentStatus;
@@ -88,7 +90,7 @@ const loadOrders = async () => {
         const response = await getOrdersRequest();
         if (response.status === 401) {
             // אסימון שנדחה אינו שימושי; מתחברים מחדש וחוזרים לעמוד הניהול.
-            localStorage.removeItem('superDirectCurrentUser');
+            clearCurrentUser();
             window.location.href = 'login.html?returnTo=admin-orders.html';
             return;
         }
@@ -124,7 +126,7 @@ const initializeAdminOrders = () => {
     }
 
     if (!currentUser.token) {
-        localStorage.removeItem('superDirectCurrentUser');
+        clearCurrentUser();
         window.location.href = 'login.html?returnTo=admin-orders.html';
         return;
     }
@@ -132,4 +134,5 @@ const initializeAdminOrders = () => {
     loadOrders();
 };
 
+window.addEventListener('superDirect:orders-updated', loadOrders);
 document.addEventListener('DOMContentLoaded', initializeAdminOrders);

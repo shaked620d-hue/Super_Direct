@@ -21,6 +21,8 @@ export const errorHandler = (err, req, res, next) => {
   // אם לא הוגדר קוד שגיאה, מחזירים 500 כברירת מחדל.
   const statusCode = err.statusCode || 500;
 
+  console.error(`Request failed (${statusCode}) ${req.method} ${req.path}: ${err.message || 'Internal Server Error'}`);
+
   // בניית גוף התשובה ללקוח.
   const payload = {
     error: {

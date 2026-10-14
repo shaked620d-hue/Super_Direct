@@ -2,6 +2,39 @@ import { API_BASE_URL } from './config.js';
 import { getCategories } from '../categories/categoryService.js';
 import { showToast } from '../cart/cart.js';
 
+const tabSyncChannel = typeof BroadcastChannel === 'undefined'
+    ? null
+    : new BroadcastChannel('superDirectTabSync');
+
+const getUserId = (user) => String(user?._id || user?.id || '');
+
+tabSyncChannel?.addEventListener('message', ({ data }) => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    if (data?.type === 'user-updated' && getUserId(currentUser) === getUserId(data.user)) {
+        sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(data.user));
+        updateAuthUI();
+        window.dispatchEvent(new CustomEvent('superDirect:user-updated'));
+        return;
+    }
+
+    if (data?.type === 'logout' && getUserId(currentUser) === data.userId) {
+        clearCurrentUser(false);
+        window.location.reload();
+        return;
+    }
+
+    if (data?.type === 'orders-updated'
+        && (currentUser.role === 'admin' || !data.userId || getUserId(currentUser) === data.userId)) {
+        window.dispatchEvent(new CustomEvent('superDirect:orders-updated'));
+    }
+});
+
+export const broadcastTabSync = (type, details = {}) => {
+    tabSyncChannel?.postMessage({ type, ...details });
+};
+
 /**
  * מחזירה את הנתיב היחסי הבסיסי לקבצי ה-HTML, בהתאם לתיקייה הנוכחית.
  * @returns {string} 'HTML/' אם הדף הנוכחי מחוץ לתיקיית HTML, אחרת מחרוזת ריקה.
@@ -9,10 +42,37 @@ import { showToast } from '../cart/cart.js';
 export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
 /**
- * מחזיר את המשתמש המחובר כרגע (או null אם אין), קורא מ-localStorage.
+ * מחזיר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
-export const getCurrentUser = () => JSON.parse(localStorage.getItem('superDirectCurrentUser'));
+export const getCurrentUser = () => {
+    const storageKey = 'superDirectCurrentUser';
+    const currentUser = sessionStorage.getItem(storageKey);
+    localStorage.removeItem(storageKey);
+    return currentUser ? JSON.parse(currentUser) : null;
+};
+
+/**
+ * שומר את המשתמש המחובר בכרטיסייה הנוכחית בלבד.
+ * @param {object} user - פרטי המשתמש ואסימון ההתחברות.
+ */
+export const setCurrentUser = (user) => {
+    sessionStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+    localStorage.removeItem('superDirectCurrentUser');
+    broadcastTabSync('user-updated', { user });
+};
+
+/**
+ * מוחק את ההתחברות מהכרטיסייה הנוכחית, ומעדכן כרטיסיות של אותו משתמש.
+ * @param {boolean} [broadcast=true] - האם להודיע לכרטיסיות האחרות.
+ */
+export const clearCurrentUser = (broadcast = true) => {
+    const currentUser = getCurrentUser();
+    sessionStorage.removeItem('superDirectCurrentUser');
+    if (broadcast && currentUser) {
+        broadcastTabSync('logout', { userId: getUserId(currentUser) });
+    }
+};
 
 /**
  * בודקת אם המשתמש המחובר כרגע הוא מנהל.
@@ -153,24 +213,19 @@ const updateAuthUI = ()=>{
 
 }
 /**
- * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מה-localStorage ומרעננת את הדף.
+ * מחברת את כפתור ההתנתקות - מוחקת את המשתמש מהכרטיסייה הנוכחית ומרעננת את הדף.
  */
 const handleLogout = ()=>{
-    
-    const logoutButton  = document.getElementById('logoutButton');
-    if(!logoutButton  ){return; }
-    logoutButton .addEventListener('click', (event)=>{
-      
+    const logoutButton = document.getElementById('logoutButton');
+    if (!logoutButton) return;
 
-   const currentUser = JSON.parse(localStorage.getItem('superDirectCurrentUser'));
-   if(currentUser){ 
-   event.preventDefault();
-    localStorage.removeItem('superDirectCurrentUser'); 
-    showToast('התנתקת בהצלחה'); 
-
-    location.reload();
-    }
-    })
+    logoutButton.addEventListener('click', (event) => {
+        if (!getCurrentUser()) return;
+        event.preventDefault();
+        clearCurrentUser();
+        showToast('התנתקת בהצלחה');
+        location.reload();
+    });
 }
 
 

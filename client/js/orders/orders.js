@@ -1,4 +1,4 @@
-import { getCurrentUser, renderOrdersGroupedByStatus, createOrderItemRow } from '../shared/storage.js';
+import { getCurrentUser, clearCurrentUser, renderOrdersGroupedByStatus, createOrderItemRow } from '../shared/storage.js';
 import { getMyOrdersRequest } from './orderService.js';
 import { showToast } from '../cart/cart.js';
 
@@ -42,7 +42,7 @@ total.append(totalLabel, totalValue);
 const loadOrders = async () => {
     const currentUser = getCurrentUser();
     if (!currentUser?.token) {
-        localStorage.removeItem('superDirectCurrentUser');
+        clearCurrentUser();
         window.location.href = 'login.html?returnTo=orders.html';
         return;
     }
@@ -55,7 +55,7 @@ const loadOrders = async () => {
     try {
         const response = await getMyOrdersRequest();
         if (response.status === 401) {
-            localStorage.removeItem('superDirectCurrentUser');
+            clearCurrentUser();
             window.location.href = 'login.html?returnTo=orders.html';
             return;
         }
@@ -79,4 +79,5 @@ const loadOrders = async () => {
     }
 };
 
+window.addEventListener('superDirect:orders-updated', loadOrders);
 document.addEventListener('DOMContentLoaded', loadOrders);

@@ -1,5 +1,6 @@
 import { registerRequest } from './authService.js';
 import { showToast, mergeGuestCartIntoUserCart } from '../cart/cart.js';
+import { setCurrentUser } from '../shared/storage.js';
 
 /**
  * מטפלת בשליחת טופס ההרשמה - בודקת שהסיסמאות תואמות, שולחת את הפרטים לשרת ושומרת את המשתמש שחזר.
@@ -34,7 +35,7 @@ const handleRegisterSubmit = () => {
             }
 
             const user = await response.json();
-            localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+            setCurrentUser(user);
             mergeGuestCartIntoUserCart();
             showToast('נרשמת בהצלחה');
             window.setTimeout(() => { window.location.href = '../index.html'; }, 1500);
