@@ -87,6 +87,9 @@ const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
     bottom.append(price);
 
     if (!isAdmin()) {
+        const actions = document.createElement('div');
+        actions.className = 'product-actions';
+
         const addButton = document.createElement('button');
         addButton.className = 'add-button';
         addButton.type = 'button';
@@ -97,9 +100,37 @@ const unit = categorySoldByWeight[product.categoryId] ? 'לק"ג' : 'ליח׳';
             addButton.disabled = true;
             addButton.setAttribute('aria-label', `${product.name} אזל מהמלאי`);
         } else {
+            const quantityControl = document.createElement('div');
+            quantityControl.className = 'quantity-control product-quantity-control';
+            quantityControl.setAttribute('aria-label', `כמות ${product.name}`);
+
+            const decreaseButton = document.createElement('button');
+            decreaseButton.type = 'button';
+            decreaseButton.className = 'product-quantity-button';
+            decreaseButton.dataset.productQuantityAction = 'decrease';
+            decreaseButton.setAttribute('aria-label', 'הפחתת יחידה');
+            decreaseButton.textContent = '−';
+            decreaseButton.disabled = true;
+
+            const quantityValue = document.createElement('span');
+            quantityValue.className = 'product-quantity-value';
+            quantityValue.dataset.quantity = '1';
+            quantityValue.textContent = `1 ${unit.startsWith('ל') ? unit.slice(1) : unit}`;
+
+            const increaseButton = document.createElement('button');
+            increaseButton.type = 'button';
+            increaseButton.className = 'product-quantity-button';
+            increaseButton.dataset.productQuantityAction = 'increase';
+            increaseButton.setAttribute('aria-label', 'הוספת יחידה');
+            increaseButton.textContent = '+';
+            increaseButton.disabled = stock <= 1;
+
+            quantityControl.append(decreaseButton, quantityValue, increaseButton);
+            actions.append(quantityControl);
             addButton.textContent = 'הוסף לסל +';
         }
-        bottom.append(addButton);
+        actions.append(addButton);
+        bottom.append(actions);
     }
 
     const info = document.createElement('div');

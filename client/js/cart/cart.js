@@ -99,11 +99,18 @@ const updateCartCount = (cart = readCart()) => {
     });
 };
 
+const findProductInCart = (cart, productId, name) => cart.find((item) => {
+    if (productId && item.productId) return item.productId === productId;
+    return item.name === name;
+});
+
 /**
- * מוסיפה את המוצר המתואר בכרטיס המוצר לעגלה, בכפוף לבדיקת מלאי.
+ * מוסיפה את הכמות שנבחרה בכרטיס המוצר לעגלה, בכפוף לבדיקת מלאי.
  * @param {HTMLElement} card - אלמנט כרטיס המוצר שממנו נלקחים פרטי המוצר.
+ * @param {number} quantity - הכמות שנבחרה להוספה.
+ * @returns {boolean} האם המוצר נוסף לעגלה.
  */
-const addToCart = (card) => {
+const addToCart = (card, quantity = 1) => {
     const name = card.querySelector('h3')?.textContent.trim();
     const price = Number.parseFloat(card.querySelector('.price')?.textContent.replace(',', '.'));
     const image = card.querySelector('.product-image')?.src || '';
@@ -111,33 +118,63 @@ const addToCart = (card) => {
     const unit = card.dataset.unit || 'ליח׳';
     const stock = Number(card.dataset.stock);
 
-    if (!name || Number.isNaN(price)) return;
+    if (!name || Number.isNaN(price) || !Number.isInteger(quantity) || quantity < 1) return false;
 
     const cart = readCart();
-    const existing = cart.find((item) => {
-        if (productId && item.productId) return item.productId === productId;
-        return item.name === name;
-    });
-    const currentQuantity = existing ? existing.quantity : 0;
+    const existing = findProductInCart(cart, productId, name);
+    const currentQuantity = Number(existing?.quantity || 0);
 
     if (!Number.isFinite(stock) || stock <= 0) {
         showToast(`${name} אזל מהמלאי`);
-        return;
+        return false;
     }
 
-    if (currentQuantity >= stock) {
-        showToast(`אין יותר מ-${stock} יחידות מ${name} במלאי`);
-        return;
+    if (currentQuantity + quantity > stock) {
+        const availableQuantity = Math.max(stock - currentQuantity, 0);
+        showToast(`ניתן להוסיף עוד ${availableQuantity} יחידות מ${name} במלאי`);
+        return false;
     }
 
     if (existing) {
-        existing.quantity += 1;
+        existing.quantity = currentQuantity + quantity;
     } else {
-        cart.push({ productId, name, price, image, quantity: 1, unit, stock });
+        cart.push({ productId, name, price, image, quantity, unit, stock });
     }
 
     writeCart(cart);
     showToast(`${name} נוסף לסל`);
+    return true;
+};
+
+const handleProductQuantityClick = (event) => {
+    const button = event.target.closest('.product-quantity-button');
+    if (!button) return;
+
+    const card = button.closest('.product-card');
+    const control = button.closest('.product-quantity-control');
+    const quantityValue = control?.querySelector('.product-quantity-value');
+    if (!card || !quantityValue) return;
+
+    const name = card.querySelector('h3')?.textContent.trim();
+    const cartItem = findProductInCart(readCart(), card.dataset.id, name);
+    const availableStock = Math.max(Number(card.dataset.stock) - Number(cartItem?.quantity || 0), 0);
+    let quantity = Number.parseInt(quantityValue.dataset.quantity, 10);
+
+    if (button.dataset.productQuantityAction === 'increase') {
+        if (quantity >= availableStock) {
+            showToast(`ניתן להוסיף עוד ${availableStock} יחידות מ${name} במלאי`);
+        } else {
+            quantity += 1;
+        }
+    } else if (button.dataset.productQuantityAction === 'decrease' && quantity > 1) {
+        quantity -= 1;
+    }
+
+    quantityValue.dataset.quantity = String(quantity);
+    const unit = card.dataset.unit || 'ליח׳';
+    quantityValue.textContent = `${quantity} ${unit.startsWith('ל') ? unit.slice(1) : unit}`;
+    control.querySelector('[data-product-quantity-action="decrease"]').disabled = quantity <= 1;
+    control.querySelector('[data-product-quantity-action="increase"]').disabled = quantity >= availableStock;
 };
 
 /**
@@ -176,7 +213,25 @@ const handleAddToCartClick = async (event) => {
         }
 
         // מוסיף לסל רק לאחר בדיקת מלאי עדכנית מול השרת.
-        addToCart(card);
+        const selectedQuantity = Number.parseInt(
+            card.querySelector('.product-quantity-value')?.dataset.quantity || '1',
+            10
+        );
+        if (addToCart(card, selectedQuantity)) {
+            const cartItem = findProductInCart(readCart(), card.dataset.id, product.name);
+            const remainingStock = currentStock - Number(cartItem?.quantity || 0);
+            const quantityValue = card.querySelector('.product-quantity-value');
+            const quantityControl = card.querySelector('.product-quantity-control');
+            const unit = card.dataset.unit || 'ליח׳';
+            if (quantityValue) {
+                quantityValue.dataset.quantity = '1';
+                quantityValue.textContent = `1 ${unit.startsWith('ל') ? unit.slice(1) : unit}`;
+            }
+            const decreaseButton = quantityControl?.querySelector('[data-product-quantity-action="decrease"]');
+            const increaseButton = card.querySelector('[data-product-quantity-action="increase"]');
+            if (decreaseButton) decreaseButton.disabled = true;
+            if (increaseButton) increaseButton.disabled = remainingStock <= 1;
+        }
     } catch {
         showToast('לא ניתן לבדוק את זמינות המוצר כרגע');
     } finally {
@@ -261,7 +316,8 @@ const renderCart = () => {
         increaseButton.setAttribute('aria-label', 'הוספת יחידה');
         increaseButton.textContent = '+';
         const quantityValue = document.createElement('span');
-        quantityValue.textContent = `${item.quantity} ${item.unit}`;
+        const quantityUnit = item.unit === 'לק"ג' || item.unit === 'לק״ג' ? 'ק"ג' : item.unit;
+        quantityValue.textContent = `${item.quantity} ${quantityUnit}`;
         const decreaseButton = document.createElement('button');
         decreaseButton.type = 'button';
         decreaseButton.dataset.action = 'decrease';
@@ -358,4 +414,5 @@ window.addEventListener('storage', (event) => {
 
  document.addEventListener('DOMContentLoaded', handleCheckout);
 document.addEventListener('DOMContentLoaded', initMobileMenu);
-document.addEventListener('click', handleAddToCartClick);
+ document.addEventListener('click', handleProductQuantityClick);
+ document.addEventListener('click', handleAddToCartClick);
