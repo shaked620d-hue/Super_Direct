@@ -48,7 +48,7 @@ server.use(requestLogger);
 // מוסיף ל־req את currentDate עבור בקשות GET.
 server.use(requestDate);
 
-// חוסם גישה בימי שישי ושבת בתקופה האסורה.
+// חוסם גישה בימי שישי ושבת לפי שעון ישראל.
 // האתר נסגר בשישי ב-17:00 ונפתח בשבת ב-19:00.
 server.use(createTimeBlocker({
   blockedDays: [5, 6],
