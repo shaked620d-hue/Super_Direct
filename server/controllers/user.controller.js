@@ -105,7 +105,7 @@ export const updateUser = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 export const deleteUser = async (req, res, next) => {
-	let session;
+	const session = await mongoose.startSession();
 	try {
 		if (req.user._id.toString() === req.params.id) {
 			const error = new Error('מנהל אינו יכול למחוק את החשבון שבו הוא משתמש');
@@ -116,7 +116,6 @@ export const deleteUser = async (req, res, next) => {
 
 		let messageAttachments = [];
 		let deletedMessageCount = 0;
-		session = await mongoose.startSession();
 		// withTransaction() הוא עטיפה נוחה יותר ל-session: היא עושה startTransaction,
 		// מריצה את ה-callback, ועושה commit/abort אוטומטית לפי אם הוא זרק שגיאה או לא -
 		// לעומת order.controller.js/category.controller.js ששם כתבנו את כל זה ידנית
@@ -188,6 +187,6 @@ export const deleteUser = async (req, res, next) => {
 		error.statusCode = error.name === 'CastError' ? 400 : 500;
 		next(error);
 	} finally {
-		if (session) await session.endSession();
+		await session.endSession();
 	}
 };
