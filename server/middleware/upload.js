@@ -7,9 +7,9 @@ const messagesDir = path.join(publicDir, 'messages');
 const productsDir = path.join(publicDir, 'products');
 const categoriesDir = path.join(publicDir, 'categories');
 try {
-  fs.mkdirSync(messagesDir, { recursive: true });
-  fs.mkdirSync(productsDir, { recursive: true });
-  fs.mkdirSync(categoriesDir, { recursive: true });
+  for (const dir of [messagesDir, productsDir, categoriesDir]) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 } catch (error) {
   console.error('Failed to create upload directories:', error);
   throw error;
@@ -64,20 +64,17 @@ const fileFilter = (req, file, cb) => {
 };
 
 
-export const uploadMessageAttachment = multer({
-  storage: makeStorage(messagesDir),
+/**
+ * בונה middleware של multer להעלאת קובץ יחיד לתיקייה נתונה, עם סינון תמונות והגבלת גודל.
+ * @param {string} dir - נתיב התיקייה שבה יישמרו הקבצים שהועלו.
+ * @returns {import('multer').Multer} מופע multer מוכן לשימוש בראוט (`.single('field')`).
+ */
+const createUploader = (dir) => multer({
+  storage: makeStorage(dir),
   fileFilter,
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
 });
 
-export const uploadProductImage = multer({
-  storage: makeStorage(productsDir),
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
-});
-
-export const uploadCategoryImage = multer({
-  storage: makeStorage(categoriesDir),
-  fileFilter,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB בבייטים
-});
+export const uploadMessageAttachment = createUploader(messagesDir);
+export const uploadProductImage = createUploader(productsDir);
+export const uploadCategoryImage = createUploader(categoriesDir);
