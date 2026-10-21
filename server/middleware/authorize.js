@@ -3,20 +3,31 @@
  * @param {...string} allowedRoles - רשימת התפקידים המורשים לגשת לנתיב.
  * @returns {import('express').RequestHandler} ה-middleware שמבצע את הבדיקה.
  */
-// ...allowedRoles (rest parameter) הופך את זה לגמיש: authorizeRoles('admin') עובד
-// היום, אבל אם פעם יתווסף תפקיד שלישי, authorizeRoles('admin', 'moderator') היה
-// עובד בלי לשנות את הפונקציה בכלל - req.user.role רק צריך להיות אחד מהרשימה.
+// השימוש ב־...allowedRoles (Rest Parameter) הופך את הפונקציה לגמישה לחלוטין:
+// אפשר להעביר תפקיד יחיד (כמו 'admin') או כמה תפקידים (כמו 'admin', 'moderator') 
+// מבלי לשנות את מבנה הפונקציה.
 export const authorizeRoles = (...allowedRoles) => (req, res, next) => {
-    // האימות מתבצע קודם; כאן בודקים רק אם תפקיד המשתמש מתאים לנתיב.
-    // תלות חשובה: req.user חייב כבר להיות מוגדר - זה קורה ב-middleware/auth.js
-    // (authenticate), שחייב תמיד להופיע ברשימת ה-middlewares *לפני* authorizeRoles
-    // ב-route (ר' כל קובץ routes - שני אלה תמיד מופיעים ביחד, באותו סדר).
+    // האימות (authenticate) חייב להתבצע קודם לכן. 
+    // תלות חשובה: req.user 
+    // חייב להיות מוגדר כבר בבקשה, ולכן מירשם ה־
+    // middlewares
+    // בראוטר מחייב ש־
+    // authenticate 
+    // יופיע תמיד *לפני* 
+    // authorizeRoles.
+    
+    // בדיקה: האם המשתמש לא מחובר, או שתפקידו אינו כלול ברשימת התפקידים המורשים?
     if (!req.user || !allowedRoles.includes(req.user.role)) {
+        // יצירת שגיאה כאשר למשתמש אין הרשאה מתאימה
         const error = new Error('Insufficient permissions');
+
+        // קוד סטטוס 403 (Forbidden - המשתמש מזוהה אך אין לו הרשאה לפעולה)
         error.statusCode = 403;
         error.type = 'forbidden';
+
+        // עצירת הריצה והעברת השגיאה למערכת ניהול השגיאות
         return next(error);
     }
-
+// אם התפקיד תקין, ממשיכים למידלווואר או לקונטרולר הבא בשרשרת
     next();
 };

@@ -1,9 +1,7 @@
-// זהו ה-middleware המקורי החובה שהמסמך של המורה דרש (לא ספריה מותקנת) - ובדיוק
-// בסגנון המומלץ שם: "middleware creator", כלומר פונקציה שמקבלת הגדרות ומחזירה
-// middleware אמיתי (לא ה-middleware עצמו). זה מאפשר לקרוא ל-createTimeBlocker({...})
-// פעם אחת ב-app.js עם ימים/שעות ספציפיים, בלי לכתוב לוגיקת חסימה גנרית נפרדת
-// לכל תרחיש. הדוגמה מהמסמך ("חסימת האתר בשבתות") ממומשת כאן בדיוק.
+// הגדרת אזור הזמן העסקי (שעון ישראל)
 const BUSINESS_TIME_ZONE = 'Asia/Jerusalem';
+
+// הגדרת פורמט תאריך ושעה לשימוש מול אזור הזמן המקומי
 const businessTimeFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: BUSINESS_TIME_ZONE,
   weekday: 'short',
@@ -15,8 +13,14 @@ const businessTimeFormatter = new Intl.DateTimeFormat('en-US', {
   second: 'numeric',
   hourCycle: 'h23'
 });
+// מיפוי שמות הימים למספרים (0 = ראשון, ..., 5 = שישי, 6 = שבת)
 const weekdayNumbers = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
 
+/**
+ * מחלץ את חלקי הזמן המקומיים (שנה, חודש, יום, שעה וכו') לפי שעון ישראל.
+ * @param {Date} date - אובייקט תאריך לבדיקה
+ * @returns {Object} אובייקט המכיל את נתוני הזמן המקומיים
+ */
 const getBusinessTimeParts = (date) => {
   const parts = Object.fromEntries(
     businessTimeFormatter.formatToParts(date).map(({ type, value }) => [type, value])
@@ -33,6 +37,10 @@ const getBusinessTimeParts = (date) => {
   };
 };
 
+/**
+ * מחשב את תאריך ה-
+ * UTC המדויק לפי שעה עסקית מקומית.
+ */
 const getDateAtBusinessTime = (year, month, day, hour) => {
   const targetAsUtc = Date.UTC(year, month - 1, day, hour);
   let timestamp = targetAsUtc;
@@ -54,7 +62,9 @@ const getDateAtBusinessTime = (year, month, day, hour) => {
 };
 
 /**
- * Middleware גמיש: מקבל פרמטרים של ימים/שעות חסומים ומחזיר middleware שחוסם גישה בפרק הזמן הזה.
+ * Middleware 
+ * גמיש: מקבל פרמטרים של ימים/שעות חסומים ומחזיר 
+ * middleware שחוסם גישה בפרק הזמן הזה.
  * @param {object} [options] - הגדרות החסימה.
  * @param {number[]} [options.blockedDays] - מספרי הימים החסומים (0 = יום ראשון, 5 = יום שישי, 6 = שבת).
  * @param {number} [options.startHour] - השעה שבה מתחילה החסימה ביום שישי.
@@ -63,10 +73,15 @@ const getDateAtBusinessTime = (year, month, day, hour) => {
  * @param {string} [options.message] - הודעת השגיאה שתוחזר לבקשות API בזמן חסימה.
  * @returns {import('express').RequestHandler} ה-middleware שבודק את החסימה בכל בקשה.
  */
+// זהו ה-middleware 
+// המקורי והמומלץ במבנה "middleware creator": 
+// פונקציה שמקבלת הגדרות ומחזירה middleware 
+// אמיתי. כך אפשר להגדיר את השעות פעם אחת 
+// ב-app.js בלי לכתוב לוגיקת חסימה גנרית מפוזרת.
 export const createTimeBlocker = ({
   blockedDays = [5, 6], // 5 = יום שישי, 6 = שבת
-  startHour = 12,
-  endHour = 19,
+  startHour = 12, //ברירת מחדל
+  endHour = 19,//ברירת מחדל
   statusCode = 503,
   message = 'השרת סגור בשעות אלו. נסה שוב מאוחר יותר.'
 } = {}) => {
@@ -81,6 +96,9 @@ export const createTimeBlocker = ({
     // דף הסגירה והנכסים שלו חייבים להישאר זמינים גם כשהאתר חסום.
     const allowedClosedPageAssets = new Set(['/HTML/closed.html', '/css/closed.css', '/js/closed.js']);
     if (allowedClosedPageAssets.has(req.path)) return next();
+
+    // שימוש בתאריך מהבקשה (אם הוגדר ב-requestDate) 
+    // או יצירת תאריך חדש כגיבוי
     const currentDate = req.currentDate || new Date();
     const { day, year, month, date, hour } = getBusinessTimeParts(currentDate);
 
@@ -90,9 +108,9 @@ export const createTimeBlocker = ({
     const isFridayBlocked = isFriday && hour >= startHour;
     const isSaturdayBlocked = isSaturday && hour < endHour;
 
+    // בדיקה האם הזמן הנוכחי נופל בטווח החסימה
     if (isFridayBlocked || isSaturdayBlocked) {
-      // בשישי הפתיחה תהיה למחרת; בשבת היא תהיה באותו היום.
-      const reopenDate = new Date(Date.UTC(year, month - 1, date + (isFridayBlocked ? 1 : 0)));
+    // חישוב מתי האתר יפתח מחדש (בשישי הפתיחה למחרת, בשבת באותו היום)  
       const reopensAt = getDateAtBusinessTime(
         reopenDate.getUTCFullYear(),
         reopenDate.getUTCMonth() + 1,
@@ -100,12 +118,15 @@ export const createTimeBlocker = ({
         endHour
       );
 
-      // ניווט בדפדפן מקבל את דף הסגירה; בקשות API מקבלות 503 עם זמן הפתיחה.
-      const acceptsHtml = req.method === 'GET' && req.headers.accept?.includes('text/html') && !req.path.startsWith('/api/');
+// זיהוי האם הבקשה הגיעה מדפדפן (מבקשת HTML ולא API) 
+// כדי להפנות אותה לדף סגירה ייעודי
       if (acceptsHtml) {
         return res.redirect(`/HTML/closed.html?reopensAt=${encodeURIComponent(reopensAt.toISOString())}`);
       }
 
+      // עבור בקשות API 
+      // בפורמט JSON
+      // או לקוחות שאינם דפדפן - מחזירים שגיאת  503 
       return res.status(statusCode).json({
         success: false,
         message,

@@ -16,14 +16,16 @@ const findCustomersByEmail = (email) => Customer.find({ email: createEmailPatter
  */
 export const register = async (req, res,next) => {
 	try {
+
 	const existingCustomers = await findCustomersByEmail(req.body.email);
 	if (existingCustomers.length > 0) {
+		//בדיקה אם כבר קיים משתמש עם כתובת האימייל הזו, ואם כן מחזירים שגיאה מתאימה.
 		const error = new Error('כתובת האימייל כבר רשומה');
 		error.statusCode = 409;
 		error.type = 'conflict';
 		return next(error);
 	}
-
+//יצירת משתמש חדש עם פרטי הלקוח שנשלחו בבקשה ושמירתו במסד הנתונים.
 	const newCustomer = await Customer.create({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -58,6 +60,7 @@ catch (error) {
 export const login = async (req, res, next) => {
 	try {
 	const customers = await findCustomersByEmail(req.body.email);
+	//בדיקה אם קיים משתמש עם כתובת האימייל שנשלחה בבקשה, ואם לא מחזירים שגיאה מתאימה.
 	if (customers.length === 0) {
 		const error = new Error('User not found');
 		error.statusCode = 404;
@@ -65,17 +68,35 @@ export const login = async (req, res, next) => {
 		return next(error);
 	}
 
-	// למה בכלל יכולים להיות כמה customers לאותו אימייל: אם שני חשבונות נוצרו לפני
-	// שה-unique index על email נאכף (או בגרסאות ישנות של הנתונים), ייתכנו כמה
-	// מסמכים עם אותו email. עוברים על כולם ובודקים איזה *סיסמה* באמת תואמת -
-	// זה מה שבאמת מזהה את החשבון הנכון, לא רק האימייל.
+	// =========================================================================
+    // טיפול במקרה קצה: מספר חשבונות תחת אותו אימייל
+    // =========================================================================
+    // למה ייתכנו כמה customers 
+	// עם אותו אימייל?
+    // אם שני חשבונות נוצרו לפני שהאינדקס הייחודי 
+	// (unique index) 
+	// על שדה ה-email 
+	// הוגדר ונאכף במסד הנתונים (או בגרסאות ישנות של הנתונים),
+	//  ייתכנו כמה מסמכים עם אותו אימייל.
+    // במקרה כזה, האימייל לבדו אינו מספיק לזיהוי,
+	//  ולכן עוברים על כולם ובודקים 
+    // איזו *סיסמה* באמת תואמת. זה מה שמזהה את החשבון הנכון.
+    // =========================================================================
 	const matchingCustomers = [];
+	// מעבר על כל הלקוחות שנמצאו תחת אותו אימייל
 	for (const customer of customers) {
+		// השוואת הסיסמה שהוזנה בבקשה מול הסיסמה המוצפנת של כל לקוח במסד הנתונים
 		if (await bcrypt.compare(req.body.password, customer.password)) {
+			// אם הסיסמה תואמת, מוסיפים את הלקוח למערך ההתאמות
 			matchingCustomers.push(customer);
 		}
 	}
 
+	// =========================================================================
+    // שלב 1: בדיקת תוצאות ההשוואה של הסיסמאות
+    // =========================================================================
+
+    // אם לא נמצא אף חשבון שבו הסיסמה תואמת
 	if (matchingCustomers.length === 0) {
 		const error = new Error('Wrong password');
 		error.statusCode = 401;
@@ -83,6 +104,7 @@ export const login = async (req, res, next) => {
 		return next(error);
 	}
 
+	// מקרה קצה: אם נמצאו *יותר מחשבון אחד* עם אותה סיסמה ותחת אותו אימייל
 	if (matchingCustomers.length > 1) {
 		const error = new Error('נמצאו כמה חשבונות עם כתובת האימייל הזו; נדרשת בדיקת מנהל');
 		error.statusCode = 409;
@@ -90,11 +112,27 @@ export const login = async (req, res, next) => {
 		return next(error);
 	}
 
+	// =========================================================================
+    // שלב 2: התחברות מוצלחת
+    // =========================================================================
+
+    // מכיוון שיש בדיוק התאמה אחת תקינה, שולפים את הלקוח מתוך המערך
 	const [customer] = matchingCustomers;
+	// ניקוי נתונים רגישים (כמו הסרת הסיסמה המוצפנת) לפני שליחתם ללקוח
 	const safeCustomer = sanitizeCustomer(customer.toObject());
-	// כשיש חשבונות כפולים, הכניסה מתבצעת לחשבון שסיסמתו אומתה בפועל.
+
+// החזרת תשובת הצלחה (200 OK) 
+// הכוללת את פרטי המשתמש הבטוחים יחד עם טוקן 
+// (JWT) חדש
 	res.status(200).json({ ...safeCustomer, token: createToken(customer) });
 } catch (error) {
+	// =========================================================================
+    // טיפול בשגיאות כלליות (Catch)
+    // =========================================================================
+    // אם זו שגיאת CastError 
+	// (למשל בעיה במבנה ה-ID 
+	// מול מסד הנתונים) 
+	// - מחזירים 400, אחרת 500.
         error.statusCode = error.name === 'CastError' ? 400 : 500;
         next(error);
     }
@@ -106,7 +144,10 @@ export const login = async (req, res, next) => {
  * @returns {void}
  */
 export const getCurrentUser = (req, res) => {
-	// req.user הוזן על ידי middleware האימות לאחר בדיקת ה-JWT.
+	// req.user 
+	// הוזן על ידי ,
+	// middleware האימות
+	//  לאחר בדיקת ה-JWT.
 	res.status(200).json(sanitizeCustomer(req.user.toObject()));
 };
 
@@ -118,7 +159,10 @@ export const getCurrentUser = (req, res) => {
  * @returns {Promise<void>}
  */
 export const changePassword = async (req, res, next) => {
-	try {
+	try {// =========================================================================
+        // שלב 1: אימות הסיסמה הנוכחית
+        // =========================================================================
+        // השוואת הסיסמה שהוזנה מול הסיסמה המוצפנת השמורה אצל המשתמש המחובר
 		if (!(await bcrypt.compare(req.body.currentPassword, req.user.password))) {
 			const error = new Error('Current password is incorrect');
 			error.statusCode = 401;
@@ -126,10 +170,22 @@ export const changePassword = async (req, res, next) => {
 			return next(error);
 		}
 
+		// =========================================================================
+        // שלב 2: עדכון ושמירת הסיסמה החדשה
+        // =========================================================================
+        // עדכון הסיסמה 
+		// (לרוב תעבור הצפנה אוטומטית דרך 
+		// pre-save hook 
+		// במודל ה-Mongoose)
 		req.user.password = req.body.newPassword;
+		// שמירת המסמך המעודכן במסד הנתונים
 		await req.user.save();
+		// =========================================================================
+        // שלב 3: החזרת תשובת הצלחה ללקוח
+        // =========================================================================
 		res.status(200).json({ message: 'Password updated successfully' });
 	} catch (error) {
+		// טיפול בשגיאות: שומרים על קוד הסטטוס הקיים אם הוגדר, או נופלים ל-500 (שגיאת שרת פנימית)
 		error.statusCode = error.statusCode || 500;
 		next(error);
 	}

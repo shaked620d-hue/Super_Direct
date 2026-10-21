@@ -14,6 +14,7 @@ import {
   updateProduct
 } from '../controllers/product.controller.js';
 
+// השורה יוצרת אובייקט ניתוב מודולרי (Router) שמאפשר לארגן, לפצל ולנהל את כתובות ה-API של השרת בקבצים נפרדים ונקיים.
 const router = express.Router();
 
 router.get('/', getProducts);
