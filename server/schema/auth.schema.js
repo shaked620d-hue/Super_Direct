@@ -1,3 +1,5 @@
+// מייבא את ספריית Joi
+// , שמשמשת לבדיקת תקינות ואימות נתונים (וולידציה) שהמשתמש שולח לשרת.
 import Joi from "joi"
 
 export const  registerSchema = Joi.object({
@@ -21,9 +23,13 @@ export const loginSchema = Joi.object({
 
 export const changePasswordSchema = Joi.object({
     currentPassword: Joi.string().required(),
-    // Joi.ref('currentPassword') משווה את newPassword לערך ששלחו בשדה currentPassword
-    // *באותה בקשה* (לא למה ששמור במסד - זה עוד לא ידוע בשלב ה-Joi, לפני שהגענו
-    // לקונטרולר) - invalid() דוחה את הבקשה אם שתי הסיסמאות באותה בקשה זהות.
+    // Joi.ref('currentPassword')
+    //  משווה את newPassword לערך ששלחו בשדה 
+    // currentPassword
+    // *באותה בקשה*
+    //  (לא למה ששמור במסד - זה עוד לא ידוע בשלב ה-Joi, 
+    // לפני שהגענו לקונטרולר)
+    //  - invalid() דוחה את הבקשה אם שתי הסיסמאות באותה בקשה זהות.
     newPassword: Joi.string().min(6).invalid(Joi.ref('currentPassword')).required()
 })
 

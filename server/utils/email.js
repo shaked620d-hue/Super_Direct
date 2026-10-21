@@ -1,10 +1,18 @@
-// Builds an exact, case-insensitive email matcher that also tolerates legacy surrounding spaces.
-// למה regex ולא השוואה רגילה: המודל מנרמל email חדש ל-lowercase+trim אוטומטית, אבל
-// חשבונות שנוצרו *לפני* שהנרמול נוסף יכולים להיות שמורים עם אותיות גדולות/רווחים -
-// regex עם דגל 'i' (case-insensitive) מוצא גם אותם. replace() הראשון "בורח" (escape)
-// מתווים מיוחדים של regex בתוך כתובת המייל עצמה (כמו + או .) כדי שהם יתפרשו
-// כתווים רגילים ולא כפקודות regex.
+/**
+ * יוצר ביטוי רגולרי (Regex) מדויק ורגיש-לאותיות (case-insensitive) 
+ * שגם יודע להתמודד עם רווחים מסביב בנתונים ישנים.
+ * 
+ * @param {string} email - כתובת האימייל לחיפוש
+ * @returns {RegExp} אובייקט Regex מוכן לחיפוש במסד הנתונים
+ */
 export const createEmailPattern = (email) => {
+    // 1. "בריחה" (Escape) 
+    // מתווים מיוחדים של Regex בתוך כתובת המייל 
+    // (כמו נקודה '.' או פלוס '+') כדי שיתפרשו כתווים רגילים ולא כפקודות סינטקס.
     const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // 2. יצירת אובייקט Regex דינמי:
+    //    - ^\\s* ו- \\s*$ : מתעלמים מרווחים מיותרים בתחילת ובסוף המחרוזת.
+    //    - הדגל 'i' : מאפשר חיפוש שאינו רגיש לאותיות גדולות/קטנות (case-insensitive).
     return new RegExp(`^\\s*${escapedEmail}\\s*$`, 'i');
 };

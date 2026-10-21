@@ -1,16 +1,26 @@
 import Joi from "joi"
 
+
+/**
+ * סכמת וולידציה עבור יצירת הודעה חדשה (טופס צור קשר)
+ */
 export const createMessageSchema = Joi.object({
     name: Joi.string().min(2).required(),
     email: Joi.string().email().required(),
     subject: Joi.string().min(2).required(),
     message: Joi.string().min(2).required(),
-    // הקובץ עצמו מגיע דרך multer ל-req.file, לא לכאן - multer רץ *לפני* ה-validator
-    // (ר' message.route.js), אז זה רק מאפשר לשדה הזה לעבור בלי לדחות את הבקשה
-    // אם במקרה הוא קיים כטקסט ב-body.
+  // קובץ מצורף: הקובץ עצמו מגיע דרך 
+  // Multer אל 
+  // req.file ולא לכאן.
+    // שדה זה מוגדר כאן רק כדי לאפשר לו לעבור ב-
+    // body
+    //  במידת הצורך מבלי לדחות את הבקשה.
     attachment: Joi.string()
 });
 
+/**
+ * סכמת וולידציה עבור מענה על הודעה קיימת
+ */
 export const replyMessageSchema = Joi.object({
     replyText: Joi.string().min(2).required()
 });

@@ -1,8 +1,33 @@
+/**
+ * @file seed.js
+ * @description סקריפט איכלוס נתונים ראשוניים (Database Seeding).
+ * 
+ * מטרות הסקריפט:
+ * 1. אתחול ראשוני 
+ *    (Initial Setup): 
+ *    הזרקת נתונים בסיסיים והכרחיים למסד הנתונים 
+ *    (כמו קטגוריות, תפקידים, או נתוני ברירת מחדל) כדי שהמערכת תוכל לתפקד 
+ *    מיד עם פריסתה או התקנתה בסביבה חדשה.
+ * 
+ * 2. אחידות סביבתית (Environment Consistency): 
+ *    הבטחה שכל המפתחים בצוות 
+ *    או כל סביבות העבודה (Development, Staging) 
+ *    חולקים בדיוק את אותו 
+ *    סט נתונים בסיסי ואחיד לצורך פיתוח ובדיקות.
+ * 
+ * 3. הרצה חוזרת בטוחה (Idempotency): 
+ *    שימוש בפעולות חכמות (כמו upsert) 
+ *    המאפשרות להריץ את הסקריפט שוב ושוב ללא חשש מיצירת רשומות כפולות 
+ *    או דריסת נתונים קיימים שאינם רלוונטיים.
+ */
+
+
 import '../config/env.js';
 import mongoose from 'mongoose';
 import { connectDB } from '../config/db.js';
 import { Category } from '../models/category.model.js';
 
+// רשימת הקטגוריות הראשוניות שיוזנו למסד הנתונים (Seed Data)
 const categoryDocuments = [
   { id: 1, name: "פירות", slug: "fruits", description: "פירות טריים בסופר דיירקט.", eyebrow: "טרי מהשדה", intro: "פירות מתוקים, עסיסיים וטריים שנבחרו בקפידה כדי להוסיף צבע וטעם לכל יום.", bannerAlt: "פירות טריים", productsTitle: "כל הפירות", icon: "🍎" },
   { id: 2, name: "ירקות", slug: "vegetables", description: "ירקות טריים בסופר דיירקט.", eyebrow: "מהגינה למטבח", intro: "ירקות צבעוניים ופריכים, שנבחרו כשהם בשיא הטריות שלהם.", bannerAlt: "ירקות טריים", productsTitle: "כל הירקות", icon: "🥬" },
@@ -13,11 +38,18 @@ const categoryDocuments = [
 ];
 
 try {
+    // התחברות למסד הנתונים
     const connected = await connectDB();
     if (!connected) {
         process.exitCode = 1;
     } else {
-        // מעדכן לפי slug או יוצר רשומה חדשה, כדי שאפשר יהיה להריץ את ה-seed שוב בלי כפילויות.
+    // הכנסה או עדכון חכם (Upsert): 
+        // מעדכן לפי slug קיים
+        //  או יוצר רשומה חדשה אם אינה קיימת.
+        // כך ניתן להריץ את ה
+        // -seed
+        //  שוב ושוב בלי ליצור כפילויות במסד הנתונים.
+
         await Category.bulkWrite(categoryDocuments.map((category) => ({
             updateOne: {
                 filter: { slug: category.slug },
