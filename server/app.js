@@ -59,7 +59,7 @@ server.use(createTimeBlocker({
 }));
 
 
-// רושם לכל בקשת HTTP לקונסולה. )
+// כלי פופולרי להצגת לוגים של בקשות HTTP בצורה נוחה בקונסולה בזמן פיתוח.
 server.use(morgan('dev'));
 
 
@@ -128,6 +128,7 @@ if (!databaseConnected) {
  */
 const PORT = process.env.PORT || 5000; // כאן 5000 יפעל רק אצלך במחשב
 
+//localhost:5000 - זה מה שמופיע בכתובת הדפדפן כשאתה מריץ את השרת אצלך במחשב.
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
