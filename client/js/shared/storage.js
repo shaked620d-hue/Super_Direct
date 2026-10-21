@@ -32,6 +32,8 @@ export const broadcastTabSync = (type, details = {}) => {
  */
 export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '' : 'HTML/';
 
+
+//============================================================
 /**
  * מחזיר את המשתמש המחובר המשותף לכל כרטיסיות האתר.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
@@ -51,6 +53,9 @@ export const setCurrentUser = (user) => {
     localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
     sessionStorage.removeItem('superDirectCurrentUser');
 };
+
+
+// ===========================================================
 
 /**
  * מוחק את ההתחברות המשותפת לכל כרטיסיות האתר.
@@ -77,7 +82,7 @@ export const guardAdminOnly = () => {
         window.location.href = '../index.html';
     }
 };
-
+//===================================================================
 /**
  * מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
  * @returns {object} אובייקט עם כותרת Authorization אם יש משתמש מחובר עם אסימון, אחרת אובייקט ריק.
@@ -88,6 +93,13 @@ const getAuthHeaders = () => {
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
 
+//============================================================
+
+
+
+
+
+//============================================================
 /**
  * פונקציית fetch משותפת לכל קבצי ה-services. body יכול להיות FormData (תמונה) או אובייקט רגיל (הופך ל-JSON אוטומטית).
  * auth:true מצרף את כותרת ההרשאה, לבקשות שדורשות משתמש מחובר.
@@ -120,6 +132,7 @@ export const apiRequest = async (path, { method = 'GET', body, auth = false } = 
 
     return response;
 };
+//=============================================================
 
 /**
  * מעדכנת את ממשק הכותרת (header) בהתאם למשתמש המחובר - שם, קישור לפרופיל, קישורי הזמנות ותפריט ניהול למנהל.
