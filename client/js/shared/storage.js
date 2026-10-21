@@ -38,10 +38,33 @@ export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '
  * מחזיר את המשתמש המחובר המשותף לכל כרטיסיות האתר.
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
+
+//המטרה: 
+// "מי מחובר כרגע לאתר, אם בכלל מישהו?"
+//קודם, הפונקציה מנקה שאריות ישנות - בעבר הייתה דרך אחרת לשמור את זה, וזה מוודא שלא נשאר שום דבר מבלבל מהגרסה הישנה.
+//אז היא הולכת לארון הקבוע 
+// (localStorage) 
+// ובודקת - "יש שם מישהו שמור?"
+//אם אין כלום - היא עונה "אין משתמש מחובר"
+//  (null).
+//אם יש - המידע שמור שם בתור טקסט 
+// (כי הארון הזה יודע לשמור רק טקסט, לא "אובייקטים אמיתיים") 
+// - אז היא 
+// "מתרגמת" את הטקסט הזה בחזרה לאובייקט שאפשר לעבוד איתו בקוד
+//במילה אחת: "תבדקי אם מישהו שמור כמחובר, ואם כן - תחזירי לי אותו בצורה שאני יכולה להשתמש בה."
 export const getCurrentUser = () => {
+    
+    //storageKey - המפתח שבו נשמר המידע על המשתמש המחובר. זה כמו שם הארון שבו אנחנו שומרים את המידע הזה.
     const storageKey = 'superDirectCurrentUser';
+
+    // מנקה את הארון הזמני (sessionStorage) 
+    // מכל מידע ישן על המשתמש המחובר. זה כדי לוודא שאין בלבול עם מידע ישן או לא רלוונטי.
     sessionStorage.removeItem(storageKey);
+
+    // בודקת אם יש מידע על המשתמש המחובר בארון הקבוע (localStorage).
     const currentUser = localStorage.getItem(storageKey);
+    // אם יש מידע כזה, היא מחזירה אותו כאובייקט (לא כטקסט).
+    //  אם אין - מחזירה null.
     return currentUser ? JSON.parse(currentUser) : null;
 };
 
@@ -50,7 +73,11 @@ export const getCurrentUser = () => {
  * @param {object} user - פרטי המשתמש ואסימון ההתחברות.
  */
 export const setCurrentUser = (user) => {
+    // שומר את המידע על המשתמש המחובר בארון הקבוע (localStorage) 
+    // כדי שיהיה זמין בכל הכרטיסיות.
     localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
+    // מנקה את הארון הזמני (sessionStorage)
+    //  מכל מידע ישן על המשתמש המחובר.
     sessionStorage.removeItem('superDirectCurrentUser');
 };
 
@@ -82,12 +109,17 @@ export const guardAdminOnly = () => {
         window.location.href = '../index.html';
     }
 };
+
+
 //===================================================================
 /**
  * מחזיר את כותרת ההרשאה עבור בקשות שדורשות משתמש מחובר.
- * @returns {object} אובייקט עם כותרת Authorization אם יש משתמש מחובר עם אסימון, אחרת אובייקט ריק.
+ * @returns {object} אובייקט עם כותרת Authorization
+ *  אם יש משתמש מחובר עם אסימון, אחרת אובייקט ריק.
+ * 
  */
 const getAuthHeaders = () => {
+    // שולף את המשתמש המחובר כדי לקבל את האסימון שלו.
     const currentUser = getCurrentUser();
     // מצרפים את האסימון לכל בקשה מוגנת שנשלחת מהלקוח.
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
@@ -101,20 +133,26 @@ const getAuthHeaders = () => {
 
 //============================================================
 /**
- * פונקציית fetch משותפת לכל קבצי ה-services. body יכול להיות FormData (תמונה) או אובייקט רגיל (הופך ל-JSON אוטומטית).
- * auth:true מצרף את כותרת ההרשאה, לבקשות שדורשות משתמש מחובר.
- * @param {string} path - נתיב ה-API היחסי לבקשה (לדוגמה '/api/product').
+ * פונקציית fetch
+ *  משותפת לכל קבצי ה-services. 
+ * גוף הבקשה (body) יכול להיות FormData (להעלאת תמונות/קבצים) או אובייקט רגיל (שמומר ל-JSON אוטומטית).
+ * פרמטר auth: true מצרף את כותרת ההרשאה לבקשות שדורשות משתמש מחובר.
+ * 
+ * @param {string} path - נתיב ה-API היחסי לבקשה (לדוגמה: '/api/product').
  * @param {object} [options] - אפשרויות הבקשה.
- * @param {string} [options.method='GET'] - מתודת ה-HTTP.
+ * @param {string} [options.method='GET'] - מתודת ה-HTTP (GET, POST, PUT, DELETE וכו').
  * @param {object|FormData} [options.body] - גוף הבקשה.
- * @param {boolean} [options.auth=false] - האם לצרף כותרת הרשאה.
- * @returns {Promise<Response>} תשובת השרת.
+ * @param {boolean} [options.auth=false] - האם לצרף כותרת הרשאה (טוקן).
+ * @returns {Promise<Response>} תשובת השרת הגולמית.
  */
 export const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => {
+    // בדיקה האם גוף הבקשה הוא מסוג FormData (משמש להעלאת קבצים/תמונות)
     const isFormData = body instanceof FormData;
+
+    // הרכבת כותרות (Headers) הבקשה דינמית
     const headers = {
-        ...(auth ? getAuthHeaders() : {}),
-        ...(body && !isFormData ? { 'Content-Type': 'application/json' } : {})
+        ...(auth ? getAuthHeaders() : {}), // הוספת טוקן אימות אם נדרש
+        ...(body && !isFormData ? { 'Content-Type': 'application/json' } : {}) // הגדרת JSON רק אם זה לא FormData
     };
     const response = await fetch(`${API_BASE_URL}${path}`, {
         method,
@@ -122,7 +160,8 @@ export const apiRequest = async (path, { method = 'GET', body, auth = false } = 
         body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
     });
 
-    // מפנים לעמוד הסגירה רק אם השרת צירף את מועד הפתיחה הבא.
+    // בדיקה האם השרת חזר בסטטוס 503 (השרת סגור זמנית / שבת)
+    // אם כן, בודקים אם יש תאריך פתיחה מחדש (reopensAt) ומפנים את המשתמש לדף הסגירה הייעודי.
     if (response.status === 503) {
         const details = await response.clone().json().catch(() => null);
         if (details?.reopensAt) {
