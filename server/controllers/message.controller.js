@@ -88,10 +88,7 @@ export const replyToMessage = async (req, res, next) => {
             return next(error);
         }
 
-        // כוונה: שליחת המייל קורית *לפני* עדכון "handled" במסד, ובלי try/catch משלה -
-        // אם השליחה נכשלת, ה-await זורק, הפונקציה כולה קופצת ל-catch למטה, וה-update
-        // של handled אף פעם לא רץ. ככה ההודעה *לא* מסומנת כטופלה אם המייל לא באמת
-        // יצא - בדיוק מה שקרה בדיפלוי כשחיבור ה-IPv6 נכשל: גם ה"טופלה" לא התעדכן.
+        // מייל נשלח לפני עדכון handled - כשל במייל משאיר את ההודעה לא-מטופלת
         await sendMessageReplyEmail(message, req.body.replyText);
 
         const updates = { handled: true };

@@ -32,7 +32,7 @@ export const getOrders = async (req, res, next) => {
  */
 export const getMyOrders = async (req, res, next) => {
     try {
-        // מזהים את הלקוח לפי ה-JWT ולא לפי customerId שהלקוח יכול לזייף.
+        // מזהים לפי JWT, לא לפי customerId מהלקוח
         const orders = await Order.find({ customerId: req.user._id });
         res.json(orders);
     } catch (error) {
@@ -151,13 +151,10 @@ function calculateExpectedDelivery() {
  * @returns {Promise<void>}
  */
 export const createOrder = async (req, res, next) => {
-    // למה transaction בכלל: הפעולה הזו נוגעת בשני אוספים (מורידה מלאי ב-Product,
-    // ויוצרת מסמך חדש ב-Order) - אם אחת מהן תצליח והשנייה תיכשל, נקבל נתונים לא
-    // עקביים (מלאי ירד בלי שנוצרה הזמנה, או הזמנה נוצרה בלי שהמלאי ירד).
-    // ה-session מבטיח ששתי הפעולות קורות "ביחד" - או שתיהן, או אף אחת.
+    // transaction: עדכון מלאי ויצירת הזמנה חייבים לקרות יחד
     const session = await mongoose.startSession();
     try {
-        // חשבון אדמין הוא לניהול בלבד - לא מיועד לביצוע הזמנות אישיות.
+        // אדמין לא מזמין
         if (req.user.role === 'admin') {
             const error = new Error('Admin accounts cannot place orders');
             error.statusCode = 403;
@@ -165,7 +162,6 @@ export const createOrder = async (req, res, next) => {
             throw error;
         }
 
-    // כל שינויי המלאי ושמירת ההזמנה יבוצעו יחד באותה transaction.
     await session.startTransaction();
         // מונעים יצירת הזמנה בשם משתמש אחר.
         if (req.body.customerId !== req.user._id.toString()) {
@@ -185,14 +181,14 @@ export const createOrder = async (req, res, next) => {
 
         const quantitiesByProduct = new Map();
         for (const item of req.body.items) {
-            // איחוד כמויות מונע מצב שבו אותו מוצר נבדק בנפרד כמה פעמים.
+            // איחוד כמויות של אותו מוצר
             const currentQuantity = quantitiesByProduct.get(item.productId) || 0;
             quantitiesByProduct.set(item.productId, currentQuantity + item.qty);
         }
 
         const productsById = new Map();
         for (const [productId, quantity] of quantitiesByProduct) {
-            // מאמתים שכל המוצרים קיימים ושיש מספיק מלאי לפני שמעדכנים משהו.
+            // בדיקת קיום ומלאי מראש
             const product = await Product.findById(productId).session(session);
             if (!product) {
                 const error = new Error('Product not found');
@@ -233,11 +229,7 @@ export const createOrder = async (req, res, next) => {
         }
 
         for (const [productId, quantity] of quantitiesByProduct) {
-            // חשוב: בדקנו מלאי כבר למעלה (בלולאה שבנתה את productsById) - אז למה לבדוק שוב?
-            // כי בין הבדיקה הראשונה לבין הרגע הזה, הזמנה *אחרת* (ממשתמש/ת אחר/ת, במקביל)
-            // יכלה "לתפוס" את אותו מלאי קודם. לכן stock: {$gte: quantity} בתוך ה-filter
-            // של updateOne בודק ומעדכן *באותה פעולה אטומית אחת* - אם מישהי הקדימה אותנו,
-            // ה-filter לא ימצא התאמה, modifiedCount יהיה 0, ונדע שצריך לבטל הכל.
+            // בדיקה אטומית חוזרת - מונעת race condition על המלאי מול הזמנות מקבילות
             const stockUpdate = await Product.updateOne(
                 { _id: productId, stock: { $gte: quantity } },
                 { $inc: { stock: -quantity } },
@@ -263,14 +255,9 @@ export const createOrder = async (req, res, next) => {
             status: 'התקבלה'
         }], { session });
 
-        // רק לאחר שההזמנה נשמרה בהצלחה מאשרים את כל שינויי המלאי.
         await session.commitTransaction();
 
-        // חשוב: שליחת המייל קורית *אחרי* ה-commit, בבלוק try/catch נפרד משלה.
-        // ה-transaction כבר הסתיימה בהצלחה בשלב הזה - אם שליחת המייל נכשלת (כמו
-        // שבאמת קרה לנו עם IPv6), זה לא אמור לבטל את ההזמנה שכבר נשמרה ואת המלאי
-        // שכבר ירד! לכן זו לא חלק מה-try/catch הראשי, ולכן emailSent מוחזר ללקוח
-        // כדי שהוא ידע אם המייל נשלח בלי שההזמנה עצמה תיכשל.
+        // מייל נשלח אחרי commit - כשל במייל לא מבטל את ההזמנה
         let emailSent = false;
         try {
             await sendOrderConfirmationEmail({
@@ -284,7 +271,7 @@ export const createOrder = async (req, res, next) => {
 
         res.status(201).json({ ...newOrder.toObject(), emailSent });
     } catch (error) {
-        // במקרה של כשל, לא נשאיר עדכון מלאי חלקי במסד הנתונים.
+        // ביטול transaction אם נכשל
         if (session.inTransaction()) {
             await session.abortTransaction();
         }

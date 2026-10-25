@@ -4,13 +4,11 @@
 const initializeAccessibilityWidget = () => {
     if (document.getElementById('accessibilityWidget')) return;
 
-    // מגבילים את ההגדלה לשלוש דרגות ושומרים את בחירת המשתמש בין עמודים.
     const allowedTextScales = [100, 112.5, 125];
     const savedTextScale = Number(localStorage.getItem('superDirectAccessibilityTextScale'));
     let textScale = allowedTextScales.includes(savedTextScale) ? savedTextScale : 100;
     let highContrast = localStorage.getItem('superDirectAccessibilityHighContrast') === 'true';
 
-    // יוצרים את התפריט בקוד כדי להשתמש באותו מבנה בכל עמודי האתר.
     const widget = document.createElement('aside');
     widget.id = 'accessibilityWidget';
     widget.className = 'accessibility-widget';
@@ -92,7 +90,6 @@ const initializeAccessibilityWidget = () => {
         panel.hidden = true;
         toggle.setAttribute('aria-expanded', 'false');
         toggle.setAttribute('aria-label', 'פתיחת תפריט נגישות');
-        // בעת סגירה עם Escape מחזירים את המיקוד לכפתור שפתח את התפריט.
         if (returnFocus) toggle.focus();
     };
 
@@ -136,12 +133,10 @@ const initializeAccessibilityWidget = () => {
         if (event.key === 'Escape' && !panel.hidden) closePanel(true);
     });
 
-    // לחיצה מחוץ לתפריט סוגרת אותו, בלי לשנות את מיקום המיקוד.
     document.addEventListener('click', (event) => {
         if (!panel.hidden && !widget.contains(event.target)) closePanel();
     });
 
-    // מחילים מיד את ההעדפות שנשמרו, כדי שיהיו פעילות עם פתיחת העמוד.
     updateTextSize();
     updateContrast();
 };

@@ -40,7 +40,7 @@ const createMessageCard = (message) => {
     const handledCheckbox = document.createElement('input');
     handledCheckbox.type = 'checkbox';
     handledCheckbox.checked = message.handled;
-    // ברגע שהודעה מסומנת כטופלה זה חד-כיווני - הקובץ המצורף כבר נמחק בשרת, אז אין טעם לאפשר לבטל את הסימון.
+    // סימון חד-כיווני - הקובץ נמחק בשרת
     handledCheckbox.disabled = message.handled;
     handledCheckbox.dataset.messageId = message._id;
     handledCheckbox.addEventListener('change', handleStatusChange);
@@ -53,7 +53,6 @@ const createMessageCard = (message) => {
     const children = [summary, subject, email, body];
     let replyBox;
 
-    // תיבת התגובה מוצגת ישירות (בלי כפתור "מענה" נפרד) - מיותר להודעה שכבר טופלה.
     if (!message.handled) {
         replyBox = document.createElement('div');
         replyBox.className = 'message-reply-box';

@@ -36,7 +36,6 @@ const createOrderCard = (order) => {
     select.className = 'order-status-select';
     select.dataset.orderId = order._id;
     select.dataset.customerId = String(order.customerId?._id || order.customerId || '');
-    // שומרים את הערך האחרון שהשרת אישר כדי שנוכל לבטל שינוי שלא נשמר.
     select.dataset.currentStatus = order.status;
     statusOptions.forEach((statusOption) => {
         const option = document.createElement('option');
@@ -89,7 +88,7 @@ const loadOrders = async () => {
     try {
         const response = await getOrdersRequest();
         if (response.status === 401) {
-            // אסימון שנדחה אינו שימושי; מתחברים מחדש וחוזרים לעמוד הניהול.
+            // טוקן לא תקף
             clearCurrentUser();
             window.location.href = 'login.html?returnTo=admin-orders.html';
             return;

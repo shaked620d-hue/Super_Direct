@@ -52,10 +52,10 @@ export const getCategoryById = async (req, res, next) => {
  */
 export const createCategory = async (req, res, next) => {
 	try {
-		// מקצה מזהה מספרי אוטומטית - הבא אחרי המזהה הגבוה ביותר הקיים.
+		// מזהה אוטומטי: הבא אחרי הגבוה ביותר
 		const lastCategory = await Category.findOne().sort({ id: -1 });
 		const nextId = lastCategory ? lastCategory.id + 1 : 1;
-		// שדות שיווקיים שלא מולאו מקבלים ברירת מחדל הגיונית, כדי שדף הקטגוריה לא ייראה ריק.
+		// ברירות מחדל לשדות שיווקיים ריקים
 		const newCategory = await Category.create({
 			...req.body,
 			id: nextId,
@@ -68,9 +68,7 @@ export const createCategory = async (req, res, next) => {
 		});
 		res.status(201).json(newCategory);
 	} catch (error) {
-		// 11000 הוא קוד השגיאה הקבוע של MongoDB לכפילות על שדה עם unique index (למשל
-		// שני יצירות-קטגוריה בו-זמנית שקיבלו אותו nextId מחושב) - מתורגם ל-409
-		// "התנגשות" ללקוח, במקום 500 כללי שהיה מרמז על באג בשרת.
+		// 11000 = כפילות unique index -> 409
 		error.statusCode = error.code === 11000 ? 409 : 500;
 		error.type = error.code === 11000 ? 'conflict' : 'server error';
 		next(error);
@@ -128,7 +126,7 @@ export const deleteCategory = async (req, res, next) => {
 			throw error;
 		}
 
-		// שני המחיקות קורות באותה transaction, כדי שלא יישארו מוצרים יתומים אם השנייה נכשלת.
+		// שתי המחיקות ב-transaction אחת - מונע מוצרים יתומים
 		await Product.deleteMany({ categoryId: deletedCategory.id }).session(session);
 
 		await session.commitTransaction();

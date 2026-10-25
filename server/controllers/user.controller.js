@@ -87,7 +87,7 @@ export const updateUser = async (req, res, next) => {
 			return next(error);
 		}
 	} catch (error) {
-		// כתובת דוא"ל שכבר שייכת למשתמש אחר לא תחליף את פרטי החשבון.
+		// אימייל כפול לא יתקבל
 		error.statusCode = error.code === 11000 ? 409 : error.name === 'CastError' ? 400 : 500;
 		if (error.code === 11000) {
 			error.type = 'conflict';
@@ -116,11 +116,7 @@ export const deleteUser = async (req, res, next) => {
 
 		let messageAttachments = [];
 		let deletedMessageCount = 0;
-		// withTransaction() הוא עטיפה נוחה יותר ל-session: היא עושה startTransaction,
-		// מריצה את ה-callback, ועושה commit/abort אוטומטית לפי אם הוא זרק שגיאה או לא -
-		// לעומת order.controller.js/category.controller.js ששם כתבנו את כל זה ידנית
-		// (startTransaction/commitTransaction/abortTransaction/try-catch). שתי הדרכים
-		// תקינות, זו רק יותר קצרה כשאין צורך בשליטה עדינה יותר על מתי ה-commit קורה.
+		// withTransaction עושה commit/abort אוטומטית
 		await session.withTransaction(async () => {
 			const customer = await Customer.findById(req.params.id).session(session);
 			if (!customer) {
@@ -152,17 +148,12 @@ export const deleteUser = async (req, res, next) => {
 				throw new Error('Customer account could not be deleted');
 			}
 		});
-		// שימו לב: מחיקת החשבון וההודעות - שתיהן בתוך ה-transaction למעלה. אבל
-		// *ההזמנות* של הלקוח *לא* נמחקות בכלל (לא כאן, לא בשום מקום) - הן נשארות
-		// במסד כרשומה היסטורית גם אחרי שהחשבון עצמו נעלם, כי זה מידע עסקי/חשבונאי
-		// אמיתי (מה שבאמת נמכר ונשלח), לא רק "נתוני פרופיל" שאפשר למחוק יחד איתו.
+		// הזמנות לא נמחקות - נשארות כרשומה היסטורית
 
 		let deletedAttachmentCount = 0;
 		const attachmentCleanupFailures = [];
 		for (const attachment of new Set(messageAttachments)) {
-			// בדיקה נוספת לפני מחיקת הקובץ מהדיסק: ייתכן (נדיר) ששתי הודעות שונות
-			// הצביעו בטעות לאותו נתיב קובץ - Set כבר מסנן כפילויות ברשימה, אבל זו
-			// הגנה נוספת שבאמת בודקת מול המסד שאף הודעה אחרת עדיין לא "צריכה" את הקובץ.
+			// בדיקה שאף הודעה אחרת לא צריכה את הקובץ
 			const stillInUse = await Message.exists({ attachment });
 			if (stillInUse) continue;
 

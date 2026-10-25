@@ -15,9 +15,7 @@ categoryId: Joi.number().integer().positive().required(),
 })
 
 
-// .fork() יוצר סכמה *חדשה*, מבוססת על הסכמה המקורית, עם שינוי רק בשדות שמציינים -
-// כך אין צורך להעתיק את כל השדות פעמיים (יצירה+עדכון) ולהסתכן שהן יתפצלו בעתיד.
-// בעדכון חלקי אפשר להשאיר קטגוריה קיימת ללא שינוי; ביצירה היא חובה.
+// fork יוצר סכמה חדשה מהמקורית, רק עם שדות אלה אופציונליים
 export const updateProductSchema = createProductSchema.fork(
     ['name', 'description', 'price', 'categoryId'],
     /**

@@ -182,9 +182,7 @@ const handleProductQuantityClick = (event) => {
  * @param {Event} event - אירוע הלחיצה.
  */
 const handleAddToCartClick = async (event) => {
-    // מחפש את כפתור ההוספה שעליו המשתמש לחץ או שבתוכו הוא לחץ.
     const button = event.target.closest('.add-button');
-    // אם הלחיצה לא הייתה על כפתור הוספה, לא מבצעים פעולה.
     if (!button) return;
     const card = button.closest('.product-card');
     if (!card || button.disabled) return;
@@ -212,7 +210,7 @@ const handleAddToCartClick = async (event) => {
             return;
         }
 
-        // מוסיף לסל רק לאחר בדיקת מלאי עדכנית מול השרת.
+        // בדיקת מלאי עדכנית לפני הוספה
         const selectedQuantity = Number.parseInt(
             card.querySelector('.product-quantity-value')?.dataset.quantity || '1',
             10

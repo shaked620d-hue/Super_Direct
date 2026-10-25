@@ -1,7 +1,7 @@
 const reopenTime = document.getElementById('reopenTime');
 const reopenValue = new URLSearchParams(window.location.search).get('reopensAt');
 
-// מציגים את מועד הפתיחה שהשרת העביר בפורמט קריא בעברית.
+// מועד הפתיחה בפורמט עברי
 if (reopenValue) {
     const reopenDate = new Date(reopenValue);
     if (!Number.isNaN(reopenDate.getTime())) {

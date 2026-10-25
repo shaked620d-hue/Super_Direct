@@ -7,42 +7,24 @@
  * @param {import('express').NextFunction} next - פונקציית ה-next של Express.
  * @returns {void}
  */
-// Express מזהה middleware כ"error handler" *רק* לפי מספר הפרמטרים שהוא מקבל - 4
-// (err, req, res, next), לא 3 כמו middleware רגיל. זו הסיבה היחידה שהפונקציה הזו
-// בכלל "יודעת" לתפוס שגיאות: next(error) בכל מקום בקוד (controllers, middlewares)
-// מדלג על כל ה-middleware הרגילים וקופץ ישר לפונקציה הזו, כי היא רשומה אחרונה
-// ב-app.js ומתאימה לחתימה המיוחדת.
+// Express מזהה error handler לפי 4 הפרמטרים (err, req, res, next)
 export const errorHandler = (err, req, res, next) => {
-  // בודק אם המערכת נמצאת במצב פיתוח כדי להציג
-  // stack trace. בפועל: NODE_ENV אף פעם לא מוגדר בפרויקט הזה (לא ב-.env, לא
-  // בשום סקריפט) - כך שה-isDev הזה תמיד false, וה-stack אף פעם לא מוצג בפועל.
+  // NODE_ENV לא מוגדר בפרויקט הזה בפועל, אז isDev תמיד false
   const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev';
 
-  // אם לא הוגדר קוד שגיאה, מחזירים 500 כברירת מחדל.
   const statusCode = err.statusCode || 500;
 
   console.error(`Request failed (${statusCode}) ${req.method} ${req.path}: ${err.message || 'Internal Server Error'}`);
 
-  // בניית גוף התשובה ללקוח.
   const payload = {
     error: {
-      // לפי דרישת הלקוח, השדה נקרא 
-      // 'message'.
       message: err.message || 'Internal Server Error',
       type: err.type || 'server error',
-
-
-
-      // אם לבעיה יש פרטים מוסיפים לג'ייסון
       ...(err.details && { details: err.details }),
-
-
-
-      // stack מופיע רק במצב פיתוח כדי לא לחשוף מידע sensitive בייצור.
+      // stack רק בפיתוח
       ...(isDev && { stack: err.stack || '' })
     }
   };
 
-  // מחזירים ללקוח את ה־JSON עם הקוד המתאים.
   res.status(statusCode).json(payload);
 };

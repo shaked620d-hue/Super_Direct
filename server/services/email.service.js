@@ -46,8 +46,7 @@ const createTransporter = () => {
 
     return nodemailer.createTransport({
         service: 'gmail',
-        // מכריח חיבור דרך IPv4 - בענן (כמו Render) יש לפעמים נתיב IPv6 שלא עובד,
-        // וברירת המחדל מנסה אותו קודם ונתקעת בטיימאאוט לפני שהיא בכלל מגיעה ל-IPv4 התקין.
+        // מכריח IPv4 - נמנע מטיימאאוט ב-IPv6 בענן
         family: 4,
         connectionTimeout: 10000,
         greetingTimeout: 10000,
@@ -60,9 +59,7 @@ const createTransporter = () => {
 };
 
 const sendEmail = async (message) => {
-    // זמנית מושבת: חשבון Resend עדיין לא מאומת עם דומיין אמיתי, ולכן הוא שולח רק
-    // לכתובת המייל של בעל/ת החשבון עצמה (מגבלת sandbox של השירות) - כל לקוח/ה אחר/ת נכשל.
-    // חוזרים אוטומטית ל-Gmail (עם תיקון ה-IPv4) עד שיאומת דומיין אצל Resend.
+    // Resend זמנית מושבת (דומיין לא מאומת) - חוזרים ל-Gmail
     if (false && env.RESEND_API_KEY) {
         if (!env.EMAIL_FROM) {
             throw new Error('EMAIL_FROM must be configured when RESEND_API_KEY is used');

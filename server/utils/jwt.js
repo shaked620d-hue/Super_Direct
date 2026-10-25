@@ -13,15 +13,7 @@ export const createToken = (customer) => {
         throw new Error('JWT_SECRET is not configured');
     }
 
-    // role/email 
-    // נשמרים כאן לנוחות - כדי שה*לקוח* (לא השרת) ידע מיד מי המשתמש בלי
-    // קריאה נוספת. השרת עצמו 
-    // (middleware/auth.js) לא סומך על הערכים האלה בפועל -
-    // הוא תמיד שולף מחדש את המשתמש ממונגו לפי userId, 
-    // כי ה-
-    // token 
-    // לא מתעדכן
-    // אוטומטית אם ההרשאה של המשתמש משתנה אחרי שהוא התחבר.
+    // role/email נשמרים לנוחות הלקוח; השרת לא סומך עליהם ושולף מחדש מה-DB
     return jwt.sign(
         {
             userId: customer._id.toString(),

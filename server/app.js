@@ -14,11 +14,7 @@ import indexRouter from './routes/index.route.js';
 import { connectDB } from './config/db.js';
 
 
-// הסדר של כל ה-server.use למטה קובע הכל - express מריץ middleware בדיוק בסדר
-// הרישום. זה מה שעומד מאחורי כל כלל פה: json/cors/helmet צריכים לרוץ לפני
-// שמגיעים לכל route; timeBlocker חייב לרוץ *לפני* ה-static/routes כדי שיוכל
-// לעצור גם בקשת API וגם בקשת דף רגיל; קבצי closed.html עצמם חייבים להיות
-// מוגשים *אחרי* ה-timeBlocker (אחרת לא יהיה אפשר להציג אותם כשהאתר "סגור").
+// סדר ה-middleware חשוב
 const server = express();
 const clientDir = path.join(import.meta.dirname, '..', 'client');
 
@@ -26,10 +22,7 @@ const clientDir = path.join(import.meta.dirname, '..', 'client');
 server.use(express.json());
 // מאפשר לבקשות מהדפדפן להגיע לשרת גם אם המקור שונה.
 server.use(cors());
-// זמני כדי שהתמונות יעלו כשהם עדיין לא בשרת 
-// אבטחה: מוסיף כותרות HTTP
-// שמגנות על השרת מפני התקפות נפוצות.
-// img-src מורחב כדי לאפשר תמונות מוצר מ-Unsplash (מוק זמני, עד שיהיו תמונות אמיתיות מ-public/).
+// img-src מורחב בשביל תמונות מ-Unsplash
  server.use(helmet({
    contentSecurityPolicy: {
      directives: {
@@ -48,8 +41,7 @@ server.use(requestLogger);
 // מוסיף ל־req את currentDate עבור בקשות GET.
 server.use(requestDate);
 
-// חוסם גישה בימי שישי ושבת לפי שעון ישראל.
-// האתר נסגר בשישי ב-17:00 ונפתח בשבת ב-19:00.
+// חוסם גישה בשישי-שבת
 server.use(createTimeBlocker({
   blockedDays: [5, 6],
   startHour: 17,
@@ -59,7 +51,6 @@ server.use(createTimeBlocker({
 }));
 
 
-// כלי פופולרי להצגת לוגים של בקשות HTTP בצורה נוחה בקונסולה בזמן פיתוח.
 server.use(morgan('dev'));
 
 
@@ -90,10 +81,7 @@ server.get('/favicon.ico', (req, res) => {
 });
 
 
-// הגבלה מחמירה במיוחד על התחברות/הרשמה - זה המקום שבו תוקף באמת ינסה לנחש סיסמאות.
-// שני ההגבלות הבאות *שתיהן* חלות על בקשה ל-/api/auth/login: express.use מתאים
-// לפי prefix, אז "/api" הוא גם prefix חוקי של "/api/auth" - הבקשה עוברת קודם דרך
-// המגבלה הנוקשה (20) ואז גם דרך הכללית (1000), לא רק אחת מהן.
+// הגבלה מחמירה יותר על login/register
 server.use('/api/auth', rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -113,10 +101,6 @@ server.use(notFoundHandler);
 // Middleware לטיפול בשגיאות כלליות.
 server.use(errorHandler);
 
-// עד כאן
-// await ברמה העליונה של הקובץ (לא בתוך פונקציה) - אפשרי כי app.js הוא ES module
-// (type:"module" בpackage.json). לפני שהשרת מתחיל להאזין לבקשות, מחכים שהחיבור
-// למונגו יצליח או ייכשל בוודאות - כדי לא "לעלות" עם שרת שנראה פעיל אבל בלי DB.
 const databaseConnected = await connectDB();
 if (!databaseConnected) {
   throw new Error('Server startup aborted because MongoDB connection failed');
@@ -128,7 +112,6 @@ if (!databaseConnected) {
  */
 const PORT = process.env.PORT || 5000; // כאן 5000 יפעל רק אצלך במחשב
 
-//localhost:5000 - זה מה שמופיע בכתובת הדפדפן כשאתה מריץ את השרת אצלך במחשב.
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

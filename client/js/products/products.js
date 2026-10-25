@@ -3,8 +3,8 @@ import { getCategories } from '../categories/categoryService.js';
 import { getProducts, deleteProductRequest } from './productService.js';
 import { showToast } from '../cart/cart.js';
 
-let categoryNames = {}; //categoryNames נראית ככה: { 1: 'פירות', 2: 'ירקות', 3: 'מחלבה', 4: 'מאפים', 5: 'מזווה' }
-let categoryIdsBySlug = {}; //categoryIdsBySlug : { fruits: 1, vegetables: 2, dairy: 3, bakery: 4, pantry: 5 }
+let categoryNames = {}; // id -> שם
+let categoryIdsBySlug = {}; // slug -> id
 let categorySoldByWeight = {};
 let products = [];
 let productsLoaded = false;
@@ -286,32 +286,21 @@ const clearCatalogFilters = () => {
  * @param {string} query - טקסט החיפוש (ריק להצגת מוצרים אקראיים).
  */
 const renderSearchResults = (query) => {
-    // מאתרים את מיכל המוצרים שבו יוצגו תוצאות החיפוש.
     const productContainer = document.querySelector('#productGrid');
-    // אם המיכל לא קיים בדף הנוכחי, אין פעולה שאפשר לבצע.
     if (!productContainer) return;
-    // אם יש טקסט לחיפוש, מסננים לפי שם המוצר או התיאור שלו.
     const visibleProducts = query
-        // מחברים את שם המוצר והתיאור למחרוזת אחת ובודקים אם היא מכילה את החיפוש.
         ? products.filter((product) => `${product.name} ${product.description}`.includes(query))
-        // אם החיפוש ריק, מציגים ארבעה מוצרים אקראיים כמו בדף הבית.
+        // חיפוש ריק = ארבעה מוצרים אקראיים
         : [...products].sort(() => Math.random() - 0.5).slice(0, 4);
 
-    // בודקים אם הסינון לא מצא אף מוצר.
     if (visibleProducts.length === 0) {
-        // יוצרים אלמנט טקסט שיודיע למשתמש שאין תוצאות מתאימות.
         const emptyMessage = document.createElement('p');
-        // מוסיפים לאלמנט מחלקה כדי שאפשר יהיה לעצב אותו ב-CSS.
         emptyMessage.className = 'search-empty';
-        // מגדירים את הטקסט שיופיע למשתמש.
         emptyMessage.textContent = 'לא מצאנו מוצרים שמתאימים לחיפוש';
-        // מחליפים את תוכן אזור המוצרים בהודעת האפס תוצאות.
         productContainer.replaceChildren(emptyMessage);
-        // עוצרים את הטיפול לאחר הצגת הודעת האפס תוצאות.
         return;
     }
 
-    // יוצרים כרטיס HTML עבור כל מוצר ומחליפים את התוצאות הישנות בחדשות.
     productContainer.replaceChildren(...visibleProducts.map(createProductCard));
 };
 
@@ -320,20 +309,13 @@ const renderSearchResults = (query) => {
  * @param {Event} event - אירוע שליחת טופס החיפוש.
  */
 const handleSearch = (event) => {
-    // מונע מהטופס לבצע רענון רגיל של הדף לאחר השליחה.
     event.preventDefault();
-    // מאתר את שדה החיפוש בדף.
     const input = document.querySelector('#searchInput');
-    // קורא את הערך, מסיר רווחים וממיר אותיות לטיניות לאותיות קטנות.
     const query = input?.value.trim().toLocaleLowerCase('he') || '';
-    // מאתר את הכותרת שמעל אזור תוצאות המוצרים.
     const resultsTitle = document.querySelector('#fresh-title');
 
-    // מציג את המוצרים שמתאימים לטקסט שהמשתמש חיפש.
     renderSearchResults(query);
-    // משנה את הכותרת לתוצאות החיפוש, או מחזיר אותה לכותרת המקורית בחיפוש ריק.
     if (resultsTitle) resultsTitle.textContent = query ? `תוצאות לחיפוש: ${input.value.trim()}` : 'נבחרת טרייה להיום';
-    // גולל בצורה חלקה אל אזור התוצאות כדי שהמשתמש יראה אותן מיד.
     document.querySelector('#fresh')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
@@ -350,7 +332,7 @@ const deleteProduct = async  (event) => {
             showToast('מחיקת המוצר נכשלה');
             return;
         }
-        // שולפים מחדש מהשרת ולא רק מרנדרים שוב - אחרת המוצר שנמחק ממשיך להופיע מהרשימה הישנה שכבר בזיכרון.
+        // טעינה מחדש מהשרת, לא רנדר מהזיכרון
         loadProducts();
     } catch {
         showToast('אירעה שגיאה במחיקת המוצר');

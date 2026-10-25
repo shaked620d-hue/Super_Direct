@@ -43,13 +43,7 @@ try {
     if (!connected) {
         process.exitCode = 1;
     } else {
-    // הכנסה או עדכון חכם (Upsert): 
-        // מעדכן לפי slug קיים
-        //  או יוצר רשומה חדשה אם אינה קיימת.
-        // כך ניתן להריץ את ה
-        // -seed
-        //  שוב ושוב בלי ליצור כפילויות במסד הנתונים.
-
+        // upsert לפי slug, אפשר להריץ שוב בלי כפילויות
         await Category.bulkWrite(categoryDocuments.map((category) => ({
             updateOne: {
                 filter: { slug: category.slug },
@@ -63,6 +57,5 @@ try {
     console.error(error);
     process.exitCode = 1;
 } finally {
-    // זהו תהליך חד-פעמי, לכן סוגרים את החיבור למסד הנתונים בסיום.
     await mongoose.disconnect();
 }

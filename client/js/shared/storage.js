@@ -39,32 +39,14 @@ export const getBasePath = () => window.location.pathname.includes('/HTML/') ? '
  * @returns {object|null} אובייקט המשתמש, או null אם אין משתמש מחובר.
  */
 
-//המטרה: 
-// "מי מחובר כרגע לאתר, אם בכלל מישהו?"
-//קודם, הפונקציה מנקה שאריות ישנות - בעבר הייתה דרך אחרת לשמור את זה, וזה מוודא שלא נשאר שום דבר מבלבל מהגרסה הישנה.
-//אז היא הולכת לארון הקבוע 
-// (localStorage) 
-// ובודקת - "יש שם מישהו שמור?"
-//אם אין כלום - היא עונה "אין משתמש מחובר"
-//  (null).
-//אם יש - המידע שמור שם בתור טקסט 
-// (כי הארון הזה יודע לשמור רק טקסט, לא "אובייקטים אמיתיים") 
-// - אז היא 
-// "מתרגמת" את הטקסט הזה בחזרה לאובייקט שאפשר לעבוד איתו בקוד
-//במילה אחת: "תבדקי אם מישהו שמור כמחובר, ואם כן - תחזירי לי אותו בצורה שאני יכולה להשתמש בה."
+// שולף את המשתמש המחובר מ-localStorage
 export const getCurrentUser = () => {
-    
-    //storageKey - המפתח שבו נשמר המידע על המשתמש המחובר. זה כמו שם הארון שבו אנחנו שומרים את המידע הזה.
+
     const storageKey = 'superDirectCurrentUser';
 
-    // מנקה את הארון הזמני (sessionStorage) 
-    // מכל מידע ישן על המשתמש המחובר. זה כדי לוודא שאין בלבול עם מידע ישן או לא רלוונטי.
     sessionStorage.removeItem(storageKey);
 
-    // בודקת אם יש מידע על המשתמש המחובר בארון הקבוע (localStorage).
     const currentUser = localStorage.getItem(storageKey);
-    // אם יש מידע כזה, היא מחזירה אותו כאובייקט (לא כטקסט).
-    //  אם אין - מחזירה null.
     return currentUser ? JSON.parse(currentUser) : null;
 };
 
@@ -73,11 +55,7 @@ export const getCurrentUser = () => {
  * @param {object} user - פרטי המשתמש ואסימון ההתחברות.
  */
 export const setCurrentUser = (user) => {
-    // שומר את המידע על המשתמש המחובר בארון הקבוע (localStorage) 
-    // כדי שיהיה זמין בכל הכרטיסיות.
     localStorage.setItem('superDirectCurrentUser', JSON.stringify(user));
-    // מנקה את הארון הזמני (sessionStorage)
-    //  מכל מידע ישן על המשתמש המחובר.
     sessionStorage.removeItem('superDirectCurrentUser');
 };
 
@@ -119,9 +97,7 @@ export const guardAdminOnly = () => {
  * 
  */
 const getAuthHeaders = () => {
-    // שולף את המשתמש המחובר כדי לקבל את האסימון שלו.
     const currentUser = getCurrentUser();
-    // מצרפים את האסימון לכל בקשה מוגנת שנשלחת מהלקוח.
     return currentUser?.token ? { Authorization: `Bearer ${currentUser.token}` } : {};
 };
 
@@ -146,7 +122,6 @@ const getAuthHeaders = () => {
  * @returns {Promise<Response>} תשובת השרת הגולמית.
  */
 export const apiRequest = async (path, { method = 'GET', body, auth = false } = {}) => {
-    // בדיקה האם גוף הבקשה הוא מסוג FormData (משמש להעלאת קבצים/תמונות)
     const isFormData = body instanceof FormData;
 
     // הרכבת כותרות (Headers) הבקשה דינמית
@@ -160,8 +135,7 @@ export const apiRequest = async (path, { method = 'GET', body, auth = false } = 
         body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
     });
 
-    // בדיקה האם השרת חזר בסטטוס 503 (השרת סגור זמנית / שבת)
-    // אם כן, בודקים אם יש תאריך פתיחה מחדש (reopensAt) ומפנים את המשתמש לדף הסגירה הייעודי.
+    // סטטוס 503 = האתר סגור זמנית
     if (response.status === 503) {
         const details = await response.clone().json().catch(() => null);
         if (details?.reopensAt) {
@@ -203,7 +177,7 @@ const updateAuthUI = ()=>{
         }
 
         if (currentUser.role === 'admin') {
-            // חשבון מנהל הוא לניהול בלבד - אין לו עגלת קניות, הזמנות אישיות, או צורך ליצור קשר עם עצמו.
+            // חשבון מנהל - בלי עגלת קניות/הזמנות
             document.querySelectorAll('[aria-label="פתיחת סל הקניות"], [aria-label="סל הקניות"]').forEach((cartLink) => {
                 cartLink.hidden = true;
             });
@@ -214,7 +188,7 @@ const updateAuthUI = ()=>{
 
             const navLinks = document.querySelector('.nav-links');
             if (navLinks) {
-                // כל קישורי הניהול מאוחדים לתפריט נפתח אחד, בדיוק כמו "קטגוריות" - כדי שתוספת עמוד ניהול נוסף בעתיד לא תדחוף שוב את שאר הכפתורים בכותרת.
+                // תפריט ניהול נפתח אחד
                 const adminDropdown = document.createElement('div');
                 adminDropdown.className = 'nav-dropdown';
 
@@ -285,7 +259,7 @@ const populateCategoryDropdown = async () => {
             return link;
         }));
     } catch {
-        // אם הטעינה נכשלת, משאירים את התפריט כמו שהוא (הקישורים הקבועים שכבר בדף).
+        // נכשל - משאירים כמו שהיה
     }
 };
 

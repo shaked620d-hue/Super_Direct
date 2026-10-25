@@ -6,13 +6,8 @@
  * @returns {RegExp} אובייקט Regex מוכן לחיפוש במסד הנתונים
  */
 export const createEmailPattern = (email) => {
-    // 1. "בריחה" (Escape) 
-    // מתווים מיוחדים של Regex בתוך כתובת המייל 
-    // (כמו נקודה '.' או פלוס '+') כדי שיתפרשו כתווים רגילים ולא כפקודות סינטקס.
+    // escape תווים מיוחדים של Regex
     const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-    // 2. יצירת אובייקט Regex דינמי:
-    //    - ^\\s* ו- \\s*$ : מתעלמים מרווחים מיותרים בתחילת ובסוף המחרוזת.
-    //    - הדגל 'i' : מאפשר חיפוש שאינו רגיש לאותיות גדולות/קטנות (case-insensitive).
     return new RegExp(`^\\s*${escapedEmail}\\s*$`, 'i');
 };

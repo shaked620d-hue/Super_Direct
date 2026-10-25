@@ -1,8 +1,4 @@
-// סקריפט חד-פעמי, לא רץ אוטומטית עם השרת - מריצים אותו ידנית: node scripts/seedAdmin.js
-// בטוח להריץ שוב ושוב (בודק existingAdmin קודם, לא יוצר כפילות). חשוב לזכור:
-// ברגע שהמנהל כבר נוצר במסד, שינוי ADMIN_PASSWORD בקובץ .env לא משנה שום דבר
-// בפועל - הערך הזה נקרא רק כשהסקריפט הזה רץ, לא בכל הפעלה של השרת. אם רוצים
-// לשנות את סיסמת המנהל בפועל, צריך לעשות את זה דרך "שינוי סיסמה" באתר עצמו.
+// סקריפט חד-פעמי: node scripts/seedAdmin.js. בטוח להריץ שוב (בודק existingAdmin קודם)
 import mongoose from 'mongoose';
 import { connectDB } from '../config/db.js';
 import { Customer } from '../models/auth.model.js';

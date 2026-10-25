@@ -9,12 +9,7 @@ export const createMessageSchema = Joi.object({
     email: Joi.string().email().required(),
     subject: Joi.string().min(2).required(),
     message: Joi.string().min(2).required(),
-  // קובץ מצורף: הקובץ עצמו מגיע דרך 
-  // Multer אל 
-  // req.file ולא לכאן.
-    // שדה זה מוגדר כאן רק כדי לאפשר לו לעבור ב-
-    // body
-    //  במידת הצורך מבלי לדחות את הבקשה.
+    // הקובץ עצמו מגיע דרך Multer ל-req.file, לא לכאן
     attachment: Joi.string()
 });
 

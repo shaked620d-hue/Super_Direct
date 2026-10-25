@@ -22,7 +22,7 @@ const refreshCartStock = async () => {
     });
     writeCart(cart);
   } catch {
-    // אפשר לחזור לסל גם אם רענון המלאי נכשל.
+    // לא קריטי אם נכשל
   }
 };
 

@@ -73,11 +73,6 @@ const getDateAtBusinessTime = (year, month, day, hour) => {
  * @param {string} [options.message] - הודעת השגיאה שתוחזר לבקשות API בזמן חסימה.
  * @returns {import('express').RequestHandler} ה-middleware שבודק את החסימה בכל בקשה.
  */
-// זהו ה-middleware 
-// המקורי והמומלץ במבנה "middleware creator": 
-// פונקציה שמקבלת הגדרות ומחזירה middleware 
-// אמיתי. כך אפשר להגדיר את השעות פעם אחת 
-// ב-app.js בלי לכתוב לוגיקת חסימה גנרית מפוזרת.
 export const createTimeBlocker = ({
   blockedDays = [5, 6], // 5 = יום שישי, 6 = שבת
   startHour = 12, //ברירת מחדל
@@ -93,12 +88,10 @@ export const createTimeBlocker = ({
    * @returns {void}
    */
   return (req, res, next) => {
-    // דף הסגירה והנכסים שלו חייבים להישאר זמינים גם כשהאתר חסום.
+    // דף הסגירה עצמו חייב להישאר זמין
     const allowedClosedPageAssets = new Set(['/HTML/closed.html', '/css/closed.css', '/js/closed.js']);
     if (allowedClosedPageAssets.has(req.path)) return next();
 
-    // שימוש בתאריך מהבקשה (אם הוגדר ב-requestDate) 
-    // או יצירת תאריך חדש כגיבוי
     const currentDate = req.currentDate || new Date();
     const { day, year, month, date, hour } = getBusinessTimeParts(currentDate);
 
@@ -108,9 +101,8 @@ export const createTimeBlocker = ({
     const isFridayBlocked = isFriday && hour >= startHour;
     const isSaturdayBlocked = isSaturday && hour < endHour;
 
-    // בדיקה האם הזמן הנוכחי נופל בטווח החסימה
     if (isFridayBlocked || isSaturdayBlocked) {
-    // חישוב מתי האתר יפתח מחדש (בשישי הפתיחה למחרת, בשבת באותו היום)  
+      // חישוב מתי האתר נפתח מחדש
       const reopensAt = getDateAtBusinessTime(
         reopenDate.getUTCFullYear(),
         reopenDate.getUTCMonth() + 1,
@@ -118,15 +110,10 @@ export const createTimeBlocker = ({
         endHour
       );
 
-// זיהוי האם הבקשה הגיעה מדפדפן (מבקשת HTML ולא API) 
-// כדי להפנות אותה לדף סגירה ייעודי
       if (acceptsHtml) {
         return res.redirect(`/HTML/closed.html?reopensAt=${encodeURIComponent(reopensAt.toISOString())}`);
       }
 
-      // עבור בקשות API 
-      // בפורמט JSON
-      // או לקוחות שאינם דפדפן - מחזירים שגיאת  503 
       return res.status(statusCode).json({
         success: false,
         message,

@@ -12,7 +12,7 @@ let imagePreviewObjectUrl;
 const setImagePreview = (source) => {
     const preview = document.getElementById('imagePreview');
     if (imagePreviewObjectUrl) {
-        // משחררים כתובת blob קודמת כדי למנוע שימוש מיותר בזיכרון.
+        // משחררים blob קודם
         URL.revokeObjectURL(imagePreviewObjectUrl);
         imagePreviewObjectUrl = null;
     }

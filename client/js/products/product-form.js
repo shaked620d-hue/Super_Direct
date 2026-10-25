@@ -12,7 +12,7 @@ let imagePreviewObjectUrl;
 const setImagePreview = (source) => {
     const preview = document.getElementById('imagePreview');
     if (imagePreviewObjectUrl) {
-        // משחררים כתובת blob קודמת כדי למנוע שימוש מיותר בזיכרון.
+        // משחררים blob קודם
         URL.revokeObjectURL(imagePreviewObjectUrl);
         imagePreviewObjectUrl = null;
     }
@@ -96,13 +96,13 @@ formData.append('containsSoy', document.getElementById('containsSoy').checked);
 formData.append('containsEggs', document.getElementById('containsEggs').checked);
 
 
-const imageFile = document.getElementById('image').files[0];// שאפשר להכניס יותר מתמונה אחת 
+const imageFile = document.getElementById('image').files[0];
 if (imageFile) {
     formData.append('image', imageFile);
 }
 
 try {
-    // אם יש מוצר קוראים לו ומשנים אותו אם לא יוצרים חדש
+    // עדכון אם יש id, אחרת יצירה
     const response = id ? await updateProduct(id, formData) : await createProduct(formData);
 
     if (!response.ok) {

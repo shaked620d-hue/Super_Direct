@@ -110,11 +110,7 @@ export const updateProduct = async (req, res, next) => {
 	const product = await Product.findById(req.params.id);
 
 	if (product) {
-		// עדכון חלקי: רק שדות שבאמת נשלחו משתנים (לא כמו createProduct, ששם תמיד
-		// קובעים הכל). שימו לב להבדל בין price (if (req.body.price)) ל-stock
-		// (if (req.body.stock !== undefined)) - price עם truthy-check לא יאפשר
-		// לעדכן מחיר ל-0 בפועל (0 הוא falsy), בעוד ש-stock כן תומך בעדכון ל-0
-		// במפורש. זו אי-עקביות אמיתית בקוד, לא כוונה - שווה לדעת להסביר את זה.
+		// עדכון חלקי - שימו לב: price משתמש ב-truthy check, stock לא (אי-עקביות)
 		if (req.body.name) product.name = req.body.name;
 		if (req.body.description) product.description = req.body.description;
 		if (req.body.price) product.price = req.body.price;
@@ -153,10 +149,7 @@ export const deleteProduct = async (req, res, next) => {
 	try {
 		const deleted = await Product.findByIdAndDelete(req.params.id);
 		if (deleted) {
-			// הסדר חשוב: מוחקים את הרשומה במונגו קודם, ורק *אחרי* שזה הצליח (deleted
-			// truthy) מוחקים את קובץ התמונה. אם היינו הופכים את הסדר ומחיקת המונגו
-			// נכשלת, היינו נשארים עם רשומה חיה שמצביעה לתמונה שכבר נעלמה - גרוע יותר
-			// מקובץ יתום בודד על הדיסק (שזה המחיר של הסדר הנוכחי, אם משהו קורס כאן).
+			// מוחקים במונגו קודם, תמונה אחרי - כדי לא להישאר עם רשומה שמצביעה לתמונה שנעלמה
 			await deleteProductImageIfExists(deleted);
 			res.status(200).send({ message: 'deleted successfuly' });
 		} else {
